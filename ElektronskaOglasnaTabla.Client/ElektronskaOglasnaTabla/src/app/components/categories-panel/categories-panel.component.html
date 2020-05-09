@@ -1,0 +1,63 @@
+<app-announcement-legend></app-announcement-legend>
+<div class="container">
+    <div class="row" *ngIf="!listCategory && !listAnnouncements">
+        <h1>Nema unesenih podataka o kategorijama i obvještenjima</h1>
+    </div>
+    <div class="row" *ngIf="listCategory">
+        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12"></div>
+        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+            <h3 class="text-center mb-4">Kategorija (Interpolacija na izbor iz card-a da se ipisu sa paginacijom)</h3>
+        </div>
+    </div>
+    <div class="row" *ngIf="!listCategory">
+        <h1>Nema unesenih kategorija</h1>
+    </div>
+    <div class="row" *ngIf="listCategory">
+        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 mb-4">
+            <div class="card border-dark">
+                <h3 class="card-header">Kategorije</h3>
+                <div class="card-body">
+                    <a class="d-block" href="#" *ngFor="let cat of listCategory">{{ cat.categoryName }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+
+            <!-- <router-outlet></router-outlet> -->
+
+            <!-- OVDJE POZVATI JOS JEDNU LISTU FILTRIRANU PO KATEGORIJAMA 
+                 I STAVITI JE U *ngIf (*ngIg="listAnnouncementInCategory") -->
+            <div class="d-block mb-2" *ngIf="!listAnnouncements">
+                <h1>Trenutno nema obavještenja iz ove kategorije</h1>
+            </div>
+            <div class="d-block mb-2" *ngIf="listAnnouncements">
+                <input class="form-control col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3" 
+                        type="text" 
+                        name="searchByCategory" 
+                        placeholder="Unesite pojam za pretragu" 
+                        [(ngModel)]="searchByCategory">
+    
+                <div class="d-inline-block col-lg-6 col-md-12 col-sm-12 col-xs-12" 
+                        *ngFor="let ann of listAnnouncements | filter : searchByCategory
+                                | paginate: { itemsPerPage: itmsPerPage, currentPage: p };">
+                    <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)"></app-announcement>
+                </div>
+            </div>
+            <pagination-controls *ngIf="listAnnouncements" (pageChange)="p = $event"></pagination-controls>            
+            <div class="input-group" *ngIf="listAnnouncements">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">
+                        Prikaza po stranici
+                    </span>
+                </div>
+                <select class="form-control d-inline-block" 
+                        [(ngModel)]="itmsPerPage">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+

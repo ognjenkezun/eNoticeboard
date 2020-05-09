@@ -1,0 +1,157 @@
+<div class="float-left d-block mb-2">
+    <button class="btn btn-primary mb-1" 
+            type="button" 
+            data-toggle="modal" 
+            data-target="#modalAddAnnouncement">
+
+        <i class="fa fa-plus mr-1" aria-hidden="true"></i> 
+        Novo obavještenje
+    </button>
+
+    <div class="modal fade" id="modalAddAnnouncement" 
+                            tabindex="-1" 
+                            role="dialog" 
+                            aria-labelledby="modalAddAnnouncement" 
+                            aria-hidden="true">
+
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <h5 class="modal-title d-inline-block" 
+                            id="exampleModalLabel">
+                            
+                            Dodavanje novog obavještenja
+                        </h5>
+                        <button type="button" 
+                                class="close d-inline-block" 
+                                data-dismiss="modal" 
+                                aria-label="Close">
+
+                            <i class="fa fa-times" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="form-group">
+                            <div class="input-group">
+                                    <input id="addNewCategory" 
+                                           type="text" 
+                                           class="form-control"
+                                           placeholder="Dodajte novu kategoriju"
+                                           [(ngModel)]="newCategory.categoryName">
+                                    <button type="button"
+                                            title="Dodaj"
+                                            class="form-control btn btn-primary col-lg-1 col-md-1 col-sm-1 col-xs-1"
+                                            (click)="addNewCategory()">
+                                            
+                                        <i class="fa fa-plus" aria-hidden="true"></i>
+                                    </button>
+                            </div>
+                        </div>
+                        <form [formGroup]="addAnnouncementForm" (ngSubmit)="onSubmit()">
+                            <div class="form-group">
+                                <!--<label for="title">Enter Title</label>-->
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            Naslov
+                                        </span>
+                                    </div>
+                                    <input type="text" 
+                                           formControlName="announcementTitle" 
+                                           class="form-control" 
+                                           placeholder="Unesite naslov">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--<label style="padding-right: 10px;">Choose Category</label>
+                                <kendo-dropdownlist [data]="listOfCategories">
+                                </kendo-dropdownlist>
+                                <br>-->
+                                <!--<label class="d-inline-block" style="padding-right: 10px;">Izaberite kategoriju</label>-->
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            Izaberite kategoriju
+                                        </span>
+                                    </div>
+                                    <select class="form-control d-inline-block"
+                                            [(ngModel)]="selectedCategoryId"
+                                            formControlName="announcementCategory">
+                                        <option *ngFor="let cat of listOfCategories" 
+                                                [value]="cat.categoryId"> 
+                                                
+                                            {{ cat.categoryName }} 
+                                        </option>
+                                    </select>
+                                </div>
+                                Selected Category : {{ selectedCategoryId }}
+                            </div>
+                            <div class="form-group">
+                                <div class="card bg-danger">
+                                    <div class="card-body">
+                                        <p class="card-text"> 
+                                            Dodati notifikaciju za uspjesno dodavanje
+                                            i prebaciti fokus na dropdown kategorije ili odmah selektovati
+                                            dodatu aktegoriju u dropdownu!!!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="datePicker">Rok važenja</label>
+                                <input id="datePicker" type="date" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                      <span class="input-group-text">Rok prikaza (broj dana)</span>
+                                    </div>
+                                    <input type="number" class="form-control" pattern="\d*" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--
+                                <label for="priority">
+                                <strong>Important Indicator</strong>
+                                </label>
+                                <input id="priority" type="checkbox" formControlName="announcementPriority" class="form-control">
+                                -->
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           formControlName="announcementImportant"
+                                           [(ngModel)]="importantIndicator"
+                                           id="impCheckBox">
+                                    <label class="form-check-label" 
+                                           for="impCheckBox">
+                                           
+                                        Indikator važnosti
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Unesite opis</label>
+                                <!--<kendo-editor [(ngModel)]="annDescription" name="annDescription" style="height: 370px;"></kendo-editor>-->
+                                <kendo-editor class="custom-kendo-text-editor" 
+                                              [value]="annDescription" 
+                                              formControlName="announcementDescription" 
+                                              name="annDescription">
+                                </kendo-editor>
+                                <!--<input type="text" formControlName="announcementDescription" class="form-control" placeholder="Description">-->
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" 
+                                        class="btn btn-primary form-control">
+                                    Dodaj
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

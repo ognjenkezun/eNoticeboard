@@ -1,0 +1,60 @@
+<!--<div class="mt-3">
+    <div class="card col-lg-3 col-md-3 col-sm-12 col-xs-12 p-0 float-left">
+        <img class="card-img-top w-100" 
+             src="https://www.w3schools.com/howto/img_avatar.png" 
+             alt="User image">
+        <div class="card-body">
+            <h4 class="card-title text-center">Stefan Stefanovic</h4>
+            <p class="card-text text-center text-muted">stefan123@gmail.com</p>
+        </div>
+        <div class="card-footer">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a [routerLink]="'./list-of-user-announcements'" 
+                       routerLinkActive="active" 
+                       class="m-1 nav-link">
+                        
+                        Vaše objave
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a [routerLink]="'./show-all-users'" 
+                       routerLinkActive="active" 
+                       class="m-1 nav-link">
+                       
+                        Prikaz svih korisnika
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 float-left p-0">
+        <div class="wrapper">
+            <h2 class="underlineHover d-inline-block" 
+                [routerLink]="'./list-of-user-announcements'" 
+                routerLinkActive="active">
+                PRIJAVI SE
+            </h2>
+            <h2 class="underlineHover d-inline-block" 
+                [routerLink]="'./show-all-users'" 
+                routerLinkActive="active">
+                REGISTRUJ SE
+            </h2>
+        </div>
+        <router-outlet></router-outlet>
+    </div>
+</div>-->
+
+<div class="wrapper">
+    <div class="wrapped-div">
+      <div class="tab-header">
+        <h2 [routerLink]="'./sign-in'" routerLinkActive='active'>Prijavi se</h2>
+        <h2 [routerLink]="'./sign-up'" routerLinkActive='active'>Registruj se</h2>
+      </div>
+      <div class="row">
+        <div class="col-md-10 offset-md-1">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+</div>

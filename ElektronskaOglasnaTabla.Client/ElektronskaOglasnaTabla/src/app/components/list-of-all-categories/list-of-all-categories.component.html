@@ -1,0 +1,62 @@
+<h1 *ngIf="listOfAllCategories">Postojeće kategorije</h1>
+<h1 *ngIf="!listOfAllCategories">Trenutno nema unesenih kategorija</h1>
+<button type="button" class="btn btn-primary mb-2">
+    <i class="fa fa-plus mr-1" aria-hidden="true"></i> 
+    Nova Kategorija
+</button>
+<div class="d-block mb-2" *ngIf="listOfAllCategories">
+    <input class="form-control" 
+           type="text" 
+           name="search" 
+           placeholder="Unesite pojam za pretragu"
+           [(ngModel)]="searchText">
+</div>
+<div class="table-responsive" *ngIf="listOfAllCategories">
+    <table class="table table-hover shadow">
+        <caption>Postojeće kategorije</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Naziv</th>
+                <th>Prioritet</th>
+                <th>Broj obavještenja</th>
+                <th>Izmjena/Brisanje</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let cat of listOfAllCategories | filter : searchText | 
+                        paginate: { itemsPerPage: itmsPerPage, currentPage: p }; let i=index">
+                <td> {{ i+1 }} </td>
+                <td class="text-visible-column-ann-title"><a href="#"> {{ cat.categoryName }} </a></td>
+                <td class="text-visible-column-ann-title"> {{ cat.priorityId }} </td>
+                <td> 19/100 </td>
+                <td class="d-inline-block">
+                    <button class="btn btn-primary btn-sm mr-2 d-inline-block" 
+                            (click)="updateAnnouncement(ann);" 
+                            title="Izmjena">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm d-inline-block" 
+                            (click)="deleteAnnouncement(ann);" 
+                            title="Brisanje">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                Prikaza po stranici
+            </span>
+        </div>
+        <select class="form-control d-inline-block" 
+                [(ngModel)]="itmsPerPage">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+        </select>
+    </div>
+</div>

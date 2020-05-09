@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+* {
+    font-family: Playfair Display, Georgia, Times New Roman, serif;
+}
+
+.text-overflow-ellipsis {
+    overflow: hidden; 
+    white-space: nowrap; 
+    text-overflow: ellipsis;
+}
+
+.fa-eye-slash:hover,
+.fa-eye:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,30 @@
+.zoomElement:hover{
+    transition-duration: 0.5s;
+    transform: scale(1.02);
+}
+
+.myShadow:hover{
+    transition-duration: 0.3s;
+    box-shadow: 2px 4px rgb(139, 139, 139); 
+}
+
+.pointerCursor {
+    cursor: pointer;
+}
+
+.custom-link-class:hover {
+    text-decoration: underline;
+}
+
+.ann-info{
+    width: 50%;
+}
+
+@media (max-width: 767px) {
+    .pic-class{
+        display: none;
+    }
+    .ann-info{
+        width: 100%;
+    }
+}

@@ -1,0 +1,18 @@
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\bin\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.deps.json
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\bin\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.dll
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.csprojAssemblyReference.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.AssemblyInfoInputs.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.AssemblyInfo.cs
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\bin\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.pdb
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.dll
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.pdb
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\bin\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.deps.json
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\bin\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.dll
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\bin\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.pdb
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.csprojAssemblyReference.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.AssemblyInfoInputs.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.AssemblyInfo.cs
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.dll
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Domain\obj\Debug\netstandard2.0\ElektronskaOglasnaTabla.Domain.pdb

@@ -1,0 +1,234 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-dark custom-sticky-navbar">
+    <a class="navbar-brand text-white" [routerLink]="'/pocetna'">eOglasna Tabla</a>
+    <button class="navbar-toggler bg-white" 
+            type="button" 
+            data-toggle="collapse" 
+            data-target="#navbarSupportedContent" 
+            aria-controls="navbarSupportedContent" 
+            aria-expanded="false" 
+            aria-label="Toggle navigation">
+
+        <span class="navbar-toggler-icon"></span>
+    </button>
+  
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link mr-3 text-white" 
+                   [routerLink]="'/pocetna'" 
+                   routerLinkActive="active">
+                    
+                    Početna
+                    <!--<span class="sr-only">(current)</span>-->
+                </a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle mr-3 text-white" 
+                   href="#"
+                   routerLinkActive="active"
+                   id="navbarDropdownCategory" 
+                   role="button"
+                   data-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+
+                    Kategorije
+                </a>
+                <div class="dropdown-menu"
+                     aria-labelledby="navbarDropdownCategory">
+
+                    <a *ngIf="!listOfAllCategories">Kategorije nisu unesene</a>
+                    <a *ngIf="listOfAllCategories" class="dropdown-item" [routerLink]="'/show-all-categories'">
+                        <strong>Vidi sve objave</strong>
+                    </a>
+                    <a class="dropdown-item" href="#" *ngFor="let cat of listOfAllCategories">
+                        {{ cat.categoryName }}
+                    </a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link mr-3 text-white"
+                   [routerLink]="''" 
+                   routerLinkActive="active">
+
+                    Sva obavještenja
+                </a>
+            </li>
+            <li class="nav-item dropdown"
+                *ngIf="userLogged">
+                <a class="nav-link dropdown-toggle mr-3 text-white"
+                   routerLinkActive="active"
+                   id="navbarDropdownProfile" 
+                   role="button"
+                   data-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false">
+
+                    Profil
+                </a>
+                <div class="dropdown-menu"
+                     aria-labelledby="navbarDropdownProfile">
+
+                    <a class="dropdown-item" [routerLink]="'/list-of-user-announcements'">Vaša obavještenja</a>
+                    <a class="dropdown-item" [routerLink]="'/show-all-users'">Prikaz korisnika</a>
+                    <a class="dropdown-item" [routerLink]="'/list-of-all-categories'">Upravljanje kategorijama</a>
+                    <a class="dropdown-item">Upravljanje prikazom</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown"
+                *ngIf="userLogged">
+
+                <a class="nav-link mr-3 text-white" 
+                   [routerLink]="'/user-profile'" 
+                   routerLinkActive="active">
+                    
+                    Profil
+                </a>
+            </li>
+            <!--<li *ngIf="isVisible"><a href="#">Korisnici</a></li>
+            <li *ngIf="isVisible"><a href="#">Statistika</a></li>
+            <li *ngIf="isVisible"><a href="#">Upravljanje nalozima</a></li>-->
+        </ul>
+        <form class="form-inline my-2 my-lg-0 mr-4">
+            <input class="form-control mr-sm-2" 
+                    type="search" 
+                    placeholder="Pretražite"
+                    aria-label="Search">
+            <div class="btn-group">
+                <button class="btn btn-outline-primary my-2 my-sm-0" 
+                    type="button" 
+                    title="Traži"
+                    [routerLink]="'/search-results'">
+
+                    <i class="fa fa-search" aria-hidden="true"></i>
+                </button>
+                <button class="btn btn-primary dropdown-toggle" 
+                        type="button" id="dropdownMenuButton" 
+                        data-toggle="dropdown" 
+                        aria-expanded="false">
+
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <div class="d-block">
+                        <input class="d-inline-block ml-2" id="chckbxTitle" type="checkbox">
+                        <label class="ml-2 d-inline-block" for="chckbxTitle">Naslov</label>
+                    </div>
+                    <div class="d-block">
+                        <input class="d-inline-block ml-2" id="chckbxDescription" type="checkbox">
+                        <label class="ml-2 d-inline-block" for="chckbxDescription">Opis</label>
+                    </div>
+                    <div class="d-block">
+                        <input class="d-inline-block ml-2" id="chckbxCategory" type="checkbox">
+                        <label class="ml-2 d-inline-block" for="chckbxCategory">Kategorija</label>
+                    </div>
+                    <div class="d-block">
+                        <input class="d-inline-block ml-2" id="chckbxUser" type="checkbox">
+                        <label class="ml-2 d-inline-block" for="chckbxUser">Korisnik</label>
+                    </div>
+                    <div class="d-block">
+                        <input class="d-inline-block ml-2" id="chckbxTime" type="checkbox">
+                        <label class="ml-2 d-inline-block" for="chckbxTime">Vremenski period (dd-mm-yyyy)</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <button type="button" 
+                class="btn btn-primary my-2 my-sm-0" 
+                data-toggle="modal" 
+                data-target="#logInModal">
+
+                Prijavi se
+                <i class="fa fa-sign-in" aria-hidden="true"></i>
+        </button>
+        <!--<button class="btn btn-success my-2 my-sm-0">Prijavi se</button>-->
+    </div>
+</nav>
+
+<div class="modal fade" 
+     id="logInModal" 
+     tabindex="-1"
+     role="dialog" 
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" 
+                        class="close" 
+                        data-dismiss="modal" 
+                        aria-label="Close">
+
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+                <br>
+                <br>
+                <!--<div class="w-100 text-center">
+                    <img class="img-fluid" 
+                    src="https://www.singaporeg.sg/images/Login.png" width="200px" height="200px" alt="Sign In Image">
+                </div>-->
+                <div class="w-100 text-center">
+                    <img class="img-fluid" 
+                         src="https://img.pngio.com/cyber-security-lock-free-image-on-pixabay-security-png-free-720_720.png" 
+                         width="200px" 
+                         height="200px" 
+                         alt="Sign In Image">
+                    <!--<img class="img-fluid" 
+                    src="https://d259t2jj6zp7qm.cloudfront.net/images/v1371103177-zaixahhzvf20dafb6ys8.png" width="200px" height="200px" alt="Sign In Image">-->
+                </div>
+                <br>
+                <nav class="text-center">
+                    <div class="nav nav-tabs" 
+                         id="nav-tab" 
+                         role="tablist">
+
+                        <a class="w-50 nav-item nav-link active" 
+                           id="nav-home-tab" 
+                           data-toggle="tab" 
+                           href="#nav-home" 
+                           role="tab" 
+                           aria-controls="nav-home" 
+                           aria-selected="true">
+
+                            <strong>Sign In</strong>
+                        </a>
+                        <a class="w-50 nav-item nav-link" 
+                           id="nav-profile-tab" 
+                           data-toggle="tab" 
+                           href="#nav-profile" 
+                           role="tab" 
+                           aria-controls="nav-profile" 
+                           aria-selected="false">
+
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade" 
+                         id="nav-home" 
+                         role="tabpanel" 
+                         aria-labelledby="nav-home-tab">
+
+                        <app-login-form></app-login-form>
+                    </div>
+                    <div class="tab-pane fade" 
+                         id="nav-profile" 
+                         role="tabpanel" 
+                         aria-labelledby="nav-profile-tab">
+
+                        <app-registration-form></app-registration-form>
+                    </div>
+                </div>
+                <!--<mat-tab-group class="col-ls-12 col-md-12 col-sm-12 col-xs-12" animationDuration="0ms">
+                    <mat-tab label="Sign In">
+                        <app-login-form></app-login-form>
+                    </mat-tab>
+                    <mat-tab label="Sign Up">
+                        <app-registration-form></app-registration-form>
+                    </mat-tab>
+                </mat-tab-group>-->
+            </div>
+        </div>
+    </div>
+</div>

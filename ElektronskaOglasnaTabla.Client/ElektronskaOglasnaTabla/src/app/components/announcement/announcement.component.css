@@ -1,0 +1,42 @@
+.zoomElement:hover{
+    transition-duration: 0.5s;
+    transform: scale(1.02);
+}
+
+.myShadow:hover{
+    transition-duration: 0.3s;
+    box-shadow: 2px 4px rgb(139, 139, 139); 
+}
+
+.custom-link-class:hover {
+    text-decoration: underline;
+}
+
+@media only screen and (max-width: 767px) {
+    .myShadow{
+        
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .myShadow{
+        height: 250px;
+    }
+}
+
+.custom-card-style {
+    max-height: 300px;
+}
+
+.custom-card-style :hover{
+    cursor: pointer;
+}
+
+.custom-ann-description-style {
+    max-height: 75px;
+    overflow: hidden;
+}
+
+h5 :hover {
+    text-decoration: none;
+}

@@ -1,0 +1,7 @@
+.custom-link-style {
+    color: white;
+}
+
+.custom-link-style:hover {
+    text-decoration: none;
+}

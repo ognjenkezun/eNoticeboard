@@ -1,0 +1,129 @@
+    <!--<kendo-grid [data]="listOfUserAnnouncements"
+                [filterable]="true"
+                [filter]="filter"
+                (filterChange)="filterChange($event)"
+                [selectable]="true"
+                [pageable]="true"
+                [skip]="1"
+                [pageSize]="10"
+                [sortable]="{
+                    mode: 'multiple'
+                }"
+                [resizable]="true">
+        <kendo-grid-column field="announcementId" title="ID"></kendo-grid-column>
+        <kendo-grid-column field="announcementTitle" title="Title"></kendo-grid-column>
+        <kendo-grid-column title="Announcement Management">
+            <ng-template kendoGridCellTemplate>
+                <button kendoGridEditCommand class="k-warning mr-1">Update</button>
+                <button kendoGridRemoveCommand class="k-primary">Delete</button>
+            </ng-template>
+        </kendo-grid-column>
+    </kendo-grid>-->
+    <!--
+    <div class="float-right">
+        <button class="btn btn-primary mb-1">Add Announcement</button>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover" *ngIf="listOfUserAnnouncements">
+            <thead>
+                <tr>
+                    <td>#</td>
+                    <td>Title</td>
+                    <td>Description</td>
+                    <td></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let ann of listOfUserAnnouncements, let i=index" (click)="RowSelected(ann);">
+                    <td>{{i+1}}</td>
+                    <td style="max-width: 100px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;"><a href="#">{{ann.announcementTitle}}</a></td>
+                    <td style="max-width: 200px; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">{{ann.announcementDescription}}</td>
+                    <td>
+                        <button class="btn btn-primary mr-2" (click)="updateAnnouncement(ann);">Update</button>
+                        <button class="btn btn-danger" (click)="deleteAnnouncement();">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td colspan="5" class="float-left">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-end">
+                            <li class="page-item disabled">
+                            <a class="page-link" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item"><a class="page-link">1</a></li>
+                            <li class="page-item"><a class="page-link">2</a></li>
+                            <li class="page-item"><a class="page-link">3</a></li>
+                            <li class="page-item">
+                            <a class="page-link">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+            </tfoot> 
+        </table>
+    </div>
+    -->
+
+<h1 *ngIf="listOfUserAnnouncements">Vaša obavještenja</h1>
+<h4>Petar Petrovic (example@email.com)</h4>
+<div *ngIf="!listOfUserAnnouncements">
+    <h1>Trenutno nemate unesenih obavještenja</h1>
+</div>
+<app-add-announcement-form></app-add-announcement-form>
+<div class="d-block mb-2" *ngIf="listOfUserAnnouncements">
+    <input class="form-control" 
+           type="text" 
+           name="search" 
+           placeholder="Unesite pojam za pretragu" 
+           [(ngModel)]="searchText">
+</div>
+<div class="table-responsive" *ngIf="listOfUserAnnouncements">
+    <table class="table table-hover shadow">
+        <caption>Vaša obavještenja</caption>
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Naslov</th>
+                <th>Opis</th>
+                <th>Izmjena/Brisanje</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let ann of listOfUserAnnouncements | filter : searchText | 
+                        paginate: { itemsPerPage: itmsPerPage, currentPage: p }; let i=index">
+                <td> {{ i+1 }} </td>
+                <td class="text-visible-column-ann-title"><a href="#"> {{ ann.announcementTitle }} </a></td>
+                <td class="text-visible-column-ann-title" [innerHTML]="ann.announcementDescription"></td>
+                <td class="d-inline-block">
+                    <button class="btn btn-primary btn-sm mr-2 d-inline-block" 
+                            (click)="updateAnnouncement(ann);" 
+                            title="Izmjena">
+                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm d-inline-block" 
+                            (click)="deleteAnnouncement(ann);" 
+                            title="Brisanje">
+                        <i class="fa fa-trash-o" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <pagination-controls (pageChange)="p = $event"></pagination-controls>
+    <div class="input-group">
+        <div class="input-group-prepend">
+            <span class="input-group-text">
+                Prikaza po stranici
+            </span>
+        </div>
+        <select class="form-control d-inline-block" 
+                [(ngModel)]="itmsPerPage">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+        </select>
+    </div>
+</div>

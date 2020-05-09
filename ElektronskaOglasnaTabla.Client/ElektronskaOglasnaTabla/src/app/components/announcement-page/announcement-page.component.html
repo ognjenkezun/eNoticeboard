@@ -1,0 +1,155 @@
+<app-announcement-legend></app-announcement-legend>
+<div class="row">
+    <div class="col-lg-9 col-md-9 col-xs-12">
+
+        <!-- Title -->
+        <h1 class="mt-4">
+            <span class="badge badge-success"> Novo </span> 
+            {{ announcement.announcementTitle }} 
+        </h1>
+        
+        <!-- Category -->
+        <h4>
+            <span [className]="announcement.announcementImportantIndicator ? 'badge-danger' : 'badge-primary'"
+                  class="badge badge-primary">
+
+                <a class="custom-link-style" href="#"> {{ announcement.categoryId }} </a>
+            </span>
+        </h4>
+        <hr>
+
+        <!-- Data/Time and Author -->
+        <p class="lead">
+            Obajvljeno {{ announcement.announcementDateCreated }} od 
+            <a href="#"> {{ announcement.userId }} </a>
+        </p>
+        <hr>
+
+        <!-- Preview Image -->
+        <img *ngIf="false" class="img-fluid rounded" src="http://placehold.it/1200x300" alt="Slika vijesti">
+        <hr *ngIf="false">
+
+        <!-- Post Content -->
+        <p [innerHTML]="announcement.announcementDescription"></p>
+        <hr>
+        <div class="w-100 mb-2" style="border: 1px solid red;">
+            <h1>Iz iste kategorije (postaviti 3 obavještenja)</h1>
+            <div class="bg-primary card col-lg-4 p-0 d-inline-block">
+                <div class="card-header">
+                    <h5>Naslov</h5>
+                </div>
+                <div class="card-body">
+                    <p>Text</p>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <div class="bg-danger card col-lg-4 p-0 d-inline-block">
+                <div class="card-header">
+                    <h5>Naslov</h5>
+                </div>
+                <div class="card-body">
+                    <p>Text</p>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <div class="bg-success card col-lg-4 p-0 d-inline-block">
+                <div class="card-header">
+                    <h5>Naslov</h5>
+                </div>
+                <div class="card-body">
+                    <p>Text</p>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div class="border-secondary w-100" style="height: 250px; border: 1px solid;">
+            <h1>Slideshow</h1>
+            <div class="bg-primary card col-lg-4 p-0 d-inline-block">
+                <div class="card-header">
+                    <h5>Naslov</h5>
+                </div>
+                <div class="card-body">
+                    <p>Text</p>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <div class="bg-danger card col-lg-4 p-0 d-inline-block">
+                <div class="card-header">
+                    <h5>Naslov</h5>
+                </div>
+                <div class="card-body">
+                    <p>Text</p>
+                    <br>
+                    <br>
+                </div>
+            </div>
+            <div class="bg-success card col-lg-4 p-0 d-inline-block">
+                <div class="card-header">
+                    <h5>Naslov</h5>
+                </div>
+                <div class="card-body">
+                    <p>Text</p>
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-3 col-xs-12">
+        <div class="card shadow" style="margin-top: 130px;">
+            <div class="card-header">
+                <h5>Iz iste kategorija</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <ul class="list-unstyled mb-0 text-truncate">
+                        <strong>INTERPOLACIJOM</strong>
+                        <li class="text-overflow-ellipsis">
+                            <a href="#" >Naslov 1 dsadasdadlkasjdklajsjadjjkdlajdkljaskljalks</a>
+                        </li>
+                        <li>
+                            <a href="#">Naslov 2</a>
+                        </li>
+                        <li>
+                            <a href="#">Naslov 3</a>
+                        </li>
+                        <li>
+                            <a href="#">Naslov 4</a>
+                        </li>
+                        <li>
+                            <a href="#">Naslov 5</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                <a href="">Prikaži sve kategorije</a>
+            </div>
+        </div>
+        <div class="card shadow my-4 bg-light">
+            <h5 class="card-header">Sve kategorije</h5>
+            <div class="card-body">
+                <div class="row">
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <strong>INTERPOLACIJOM</strong>
+                        </li>
+                        <li>
+                            <a href="#">HTML</a>
+                        </li>
+                        <li>
+                            <a href="#">CSS</a>
+                        </li>
+                        <li>
+                            <a href="#">JavaScript</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

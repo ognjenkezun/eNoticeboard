@@ -1,0 +1,97 @@
+<button type="button" 
+        class="btn btn-primary my-2 my-sm-0" 
+        data-toggle="modal" 
+        data-target="#logInModal">
+
+    Prijavi se
+    <i class="fa fa-sign-in" aria-hidden="true"></i>
+</button>
+
+<div class="modal fade" 
+     id="logInModal" 
+     tabindex="-1"
+     role="dialog" 
+     aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" 
+                        class="close" 
+                        data-dismiss="modal" 
+                        aria-label="Close">
+
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+                <br>
+                <br>
+                <!--<div class="w-100 text-center">
+                    <img class="img-fluid" 
+                    src="https://www.singaporeg.sg/images/Login.png" width="200px" height="200px" alt="Sign In Image">
+                </div>-->
+                <div class="w-100 text-center">
+                    <img class="img-fluid" 
+                         src="https://img.pngio.com/cyber-security-lock-free-image-on-pixabay-security-png-free-720_720.png" 
+                         width="200px" 
+                         height="200px" 
+                         alt="Sign In Image">
+                    <!--<img class="img-fluid" 
+                    src="https://d259t2jj6zp7qm.cloudfront.net/images/v1371103177-zaixahhzvf20dafb6ys8.png" width="200px" height="200px" alt="Sign In Image">-->
+                </div>
+                <br>
+                <nav class="text-center">
+                    <div class="nav nav-tabs" 
+                         id="nav-tab" 
+                         role="tablist">
+
+                        <a class="w-50 nav-item nav-link active" 
+                           id="nav-home-tab" 
+                           data-toggle="tab" 
+                           href="#nav-home" 
+                           role="tab" 
+                           aria-controls="nav-home" 
+                           aria-selected="true">
+
+                            <strong>Sign In</strong>
+                        </a>
+                        <a class="w-50 nav-item nav-link" 
+                           id="nav-profile-tab" 
+                           data-toggle="tab" 
+                           href="#nav-profile" 
+                           role="tab" 
+                           aria-controls="nav-profile" 
+                           aria-selected="false">
+
+                            <strong>Sign Up</strong>
+                        </a>
+                    </div>
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade" 
+                         id="nav-home" 
+                         role="tabpanel" 
+                         aria-labelledby="nav-home-tab">
+
+                        <app-login-form></app-login-form>
+                    </div>
+                    <div class="tab-pane fade" 
+                         id="nav-profile" 
+                         role="tabpanel" 
+                         aria-labelledby="nav-profile-tab">
+
+                        <app-registration-form></app-registration-form>
+                    </div>
+                </div>
+                <!--<mat-tab-group class="col-ls-12 col-md-12 col-sm-12 col-xs-12" animationDuration="0ms">
+                    <mat-tab label="Sign In">
+                        <app-login-form></app-login-form>
+                    </mat-tab>
+                    <mat-tab label="Sign Up">
+                        <app-registration-form></app-registration-form>
+                    </mat-tab>
+                </mat-tab-group>-->
+            </div>
+        </div>
+    </div>
+</div>

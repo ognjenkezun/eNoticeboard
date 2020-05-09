@@ -1,0 +1,34 @@
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.deps.json
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.runtimeconfig.json
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.runtimeconfig.dev.json
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.dll
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.pdb
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.csproj.CoreCompileInputs.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.RazorAssemblyInfo.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.RazorAssemblyInfo.cs
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.AssemblyInfoInputs.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.AssemblyInfo.cs
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.RazorTargetAssemblyInfo.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.dll
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.pdb
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.csprojAssemblyReference.cache
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Domain.dll
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Domain.pdb
+C:\Users\Ognjen\source\repos\ElektronskaOglasnaTabla\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.csproj.CopyComplete
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.deps.json
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.runtimeconfig.json
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.runtimeconfig.dev.json
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.dll
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.pdb
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Domain.dll
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\bin\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Domain.pdb
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.csprojAssemblyReference.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.csproj.CoreCompileInputs.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.AssemblyInfoInputs.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.AssemblyInfo.cs
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.RazorTargetAssemblyInfo.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.csproj.CopyComplete
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.dll
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.pdb
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.RazorAssemblyInfo.cache
+C:\Users\Ognjen\Desktop\Aplikacija Elektronska oglasna tabla\ElektronskaOglasnaTabla\Aplikacija\ElektronskaOglasnaTabla.Api\obj\Debug\netcoreapp2.2\ElektronskaOglasnaTabla.Api.RazorAssemblyInfo.cs
