@@ -1,34 +1,41 @@
 <div class="card mx-1 border-primary custom-card-style shadow">
-    <img class="card-img-top" 
-         *ngIf="false" 
-         src="http://placehold.it/750x300" 
-         alt="Card image cap">
-    <div class="card-header badge-danger" 
-         *ngIf="false">
-         <!--*ngIf="announcementInput.announcementImportantIndicator">-->
-        <h5 class="text-center"><strong>!!! (VAŽNO)</strong></h5>
-    </div>
-    <div class="card-body">
-        <h5 class="card-title mw-100 text-truncate">
-            <span class="badge badge-success"> Novo </span>
-            <a href="#">
-                <strong> {{ announcementInput.announcementTitle }} </strong>
-            </a>
-        </h5>
-        <span [className]="announcementInput.announcementImportantIndicator ? 'badge-danger' : 'badge-primary'" 
-              class="badge mb-2">
-            Kategorija 
-        </span>
-        <div class="card-text text-justify custom-ann-description-style" 
-             [innerHTML]="announcementInput.announcementDescription">
+    <div class="card-header container py-1">
+        <div class="row">
+            <div class="col-6 text-left align-middle">
+                <span class="text-muted h6 elipsis">
+                    <strong> {{ announcementInput.announcementTitle }} </strong>
+                </span>
+            </div>
+            <div class="col-6 text-right">
+                <span class="small text-muted">
+                    Crna hronika
+                </span>
+            </div>
         </div>
     </div>
-    <div class="card-footer">
-        <p class="card-text">
-            <small class="text-muted">
-                Objavljeno {{ announcementInput.announcementDateCreated | date: 'dd.MM.yyyy.' }} od
-                <a href="#"> Rada Šućur </a>
-            </small>
-        </p>
+    <div class="card-body container">
+        <div class="row">
+            <div class="col-5">
+                <img src="https://via.placeholder.com/100" />
+            </div>
+            <div class="col-7 text-justify">
+                <span class="text-muted small" [innerHTML]="announcementInput.announcementDescription">
+                </span>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-footer container py-1">
+        <div class="row">
+            <p class="card-text col-9 mb-0">
+                <small class="text-muted">
+                    Objavljeno {{ announcementInput.announcementDateCreated | date: 'dd.MM.yyyy.' }} od
+                    <a href="#"> Rada Šućur </a>
+                </small>
+            </p>
+            <div class="col-3 text-right">
+                <span class="badge badge-danger"> Važno! </span>
+            </div>
+        </div>
     </div>
 </div>

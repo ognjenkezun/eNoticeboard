@@ -40,3 +40,9 @@
 h5 :hover {
     text-decoration: none;
 }
+
+.elipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

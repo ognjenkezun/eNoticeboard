@@ -81,16 +81,16 @@
     <div *ngIf="!listOfAnnouncements">
         <h1>Trenutno nema obavještenja</h1>
     </div>
-    <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12">
+    <div class="col-lg-12 col-md-7 col-sm-12 col-xs-12">
         <div class="card-deck">
             <div *ngFor="let ann of listOfAnnouncements | filter : search" 
-                 class="col-lg-6 col-md-12 col-sm-12 col-xs-12 p-0 my-4 d-inline-block">
+                 class="col-lg-3 col-md-12 col-sm-12 col-xs-12 p-0 my-4 d-inline-block">
 
                 <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)"></app-announcement>
             </div>
         </div>
     </div>
-    <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
+    <!-- <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
         <div class="card my-4 bg-light shadow">
             <h5 class="card-header">Pretraga</h5>
             <div class="card-body">
@@ -140,5 +140,5 @@
                 <a class="d-block" href="#">JavaScript</a>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
