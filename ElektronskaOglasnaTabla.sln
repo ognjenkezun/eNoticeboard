@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29001.49
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElektronskaOglasnaTabla.Api", "ElektronskaOglasnaTabla.Api\ElektronskaOglasnaTabla.Api.csproj", "{47848B35-FBDB-4D8F-9064-BB974E95BDF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElektronskaOglasnaTabla.Api", "ElektronskaOglasnaTabla.Api\ElektronskaOglasnaTabla.Api.csproj", "{47848B35-FBDB-4D8F-9064-BB974E95BDF4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElektronskaOglasnaTabla.Domain", "ElektronskaOglasnaTabla.Domain\ElektronskaOglasnaTabla.Domain.csproj", "{38E75F0C-28AE-4EE2-B4EE-5F16C3FBFE5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElektronskaOglasnaTabla.Domain", "ElektronskaOglasnaTabla.Domain\ElektronskaOglasnaTabla.Domain.csproj", "{38E75F0C-28AE-4EE2-B4EE-5F16C3FBFE5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

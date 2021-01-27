@@ -1,61 +1,88 @@
-<app-announcement-legend></app-announcement-legend>
-<div class="container">
-    <div class="row" *ngIf="!listCategory && !listAnnouncements">
+<div class="container-fluid p-0">
+    <!-- <div class="row" *ngIf="!listCategory && !listAnnouncements">
         <h1>Nema unesenih podataka o kategorijama i obvještenjima</h1>
-    </div>
-    <div class="row" *ngIf="listCategory">
-        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12"></div>
-        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
-            <h3 class="text-center mb-4">Kategorija (Interpolacija na izbor iz card-a da se ipisu sa paginacijom)</h3>
-        </div>
     </div>
     <div class="row" *ngIf="!listCategory">
         <h1>Nema unesenih kategorija</h1>
-    </div>
-    <div class="row" *ngIf="listCategory">
-        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 mb-4">
-            <div class="card border-dark">
-                <h3 class="card-header">Kategorije</h3>
-                <div class="card-body">
-                    <a class="d-block" href="#" *ngFor="let cat of listCategory">{{ cat.categoryName }}</a>
-                </div>
-            </div>
+    </div> -->
+    <div class="row" *ngIf="listAnnouncements">
+        <div>
+            <h4 class="text-center text-muted" *ngIf="!listAnnouncements">Trenutno nema obavještenja iz ove kategorije</h4>
         </div>
-        <div class="col-lg-9 col-md-8 col-sm-12 col-xs-12">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" *ngIf="listAnnouncements">
 
             <!-- <router-outlet></router-outlet> -->
-
             <!-- OVDJE POZVATI JOS JEDNU LISTU FILTRIRANU PO KATEGORIJAMA 
-                 I STAVITI JE U *ngIf (*ngIg="listAnnouncementInCategory") -->
-            <div class="d-block mb-2" *ngIf="!listAnnouncements">
-                <h1>Trenutno nema obavještenja iz ove kategorije</h1>
+                 I STAVITI JE U *ngIf (*ngIf="listAnnouncementInCategory") -->
+            <div class="form-group">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="input-group">
+                            <div class="col-lg-4 col-sm-12 p-0">
+                                <h4 class="text-muted">Izaberi kategoriju</h4>
+                            </div>
+                            <div class="col-lg-8 col-sm-12 p-0">
+                                <select class="form-control d-inline-block"
+                                        id="selCateg"
+                                        name="categoryId"
+                                        [(ngModel)]="selectedCategory.categoryId"
+                                        (change)="onCategoryChange()">
+
+                                    <option selected value="0">---</option>
+                                    <option *ngFor="let cat of listCategory" 
+                                            [value]="cat.categoryId"> 
+                                            
+                                        {{ cat.categoryName }} 
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <hr class="col-12 px-0" *ngIf="selectedCategory.categoryId">
             <div class="d-block mb-2" *ngIf="listAnnouncements">
-                <input class="form-control col-lg-12 col-md-12 col-sm-12 col-xs-12 mb-3" 
-                        type="text" 
-                        name="searchByCategory" 
-                        placeholder="Unesite pojam za pretragu" 
-                        [(ngModel)]="searchByCategory">
-    
-                <div class="d-inline-block col-lg-6 col-md-12 col-sm-12 col-xs-12" 
-                        *ngFor="let ann of listAnnouncements | filter : searchByCategory
-                                | paginate: { itemsPerPage: itmsPerPage, currentPage: p };">
-                    <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)"></app-announcement>
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <div class="spinner-border text-primary" role="status" *ngIf="spinnerCategories">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 my-3 px-2" 
+                                *ngFor="let ann of listAnnouncements | paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems };">
+                            <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)"></app-announcement>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <pagination-controls *ngIf="listAnnouncements" (pageChange)="p = $event"></pagination-controls>            
-            <div class="input-group" *ngIf="listAnnouncements">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">
-                        Prikaza po stranici
-                    </span>
+            <hr class="col-12 px-0" *ngIf="selectedCategory.categoryId">
+            <div class="col-12 px-0" *ngIf="selectedCategory.categoryId">
+                <div class="container-fluid">
+                    <div class="row d-flex justify-content-between">
+                        <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 col-xs-12 px-0"
+                                        [collectionSize]="totalAnnItems" 
+                                        [(page)]="selectedPage" 
+                                        aria-label="Default pagination"
+                                        [boundaryLinks]="true"
+                                        [maxSize]="7"
+                                        [rotate]="true"
+                                        [pageSize]="itmsPerPage"
+                                        (pageChange)="selectPage($event)">
+                        </ngb-pagination>
+                        <select class="custom-select col-lg-4 col-md-5 col-sm-12 col-xs-12"
+                                name="pageSize" 
+                                [(ngModel)]="itmsPerPage"
+                                (change)="onItemsPerPageChange()">
+                            <option [ngValue]="6">6 objave po strani</option>
+                            <option [ngValue]="12">12 objava po strani</option>
+                            <option [ngValue]="18">18 objava po strani</option>
+                            <option [ngValue]="24">24 objava po strani</option>
+                            <option [ngValue]="30">30 objava po strani</option>
+                        </select>
+                    </div>
                 </div>
-                <select class="form-control d-inline-block" 
-                        [(ngModel)]="itmsPerPage">
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                </select>
             </div>
         </div>
     </div>

@@ -2,12 +2,12 @@ import { UserTypes } from './UserTypes';
 import { Announcements } from './Announcements';
 
 export class Users {
-    userId: number;
-    userFirstName: string;
-    userLastName: string;
-    userPassword: string;
-    userEmail: string;
-    userTypeId: number;
+    id: string;
+    firstName: string;
+    lastName: string;
+    password: string;
+    email: string;
+    role: string;
 
     userType = {} as UserTypes;
     announcements: Announcements[];

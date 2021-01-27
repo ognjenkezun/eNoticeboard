@@ -64,6 +64,10 @@
               "target": "Package",
               "version": "[2.2.0, )"
             },
+            "Microsoft.AspNetCore.SignalR": {
+              "target": "Package",
+              "version": "[1.1.0, )"
+            },
             "Microsoft.CodeAnalysis": {
               "target": "Package",
               "version": "[3.4.0, )"
@@ -101,6 +105,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[2.2.4, )"
+            },
+            "NETCore.MailKit": {
+              "target": "Package",
+              "version": "[2.0.0, )"
             }
           },
           "imports": [
@@ -148,6 +156,10 @@
       "frameworks": {
         "netstandard2.0": {
           "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
             "Microsoft.AspNetCore": {
               "target": "Package",
               "version": "[2.2.0, )"

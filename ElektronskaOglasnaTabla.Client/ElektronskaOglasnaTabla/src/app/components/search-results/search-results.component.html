@@ -1,1 +1,284 @@
-<p>search-results works!</p>
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Panel for search by parameters -->
+        <button type="button" class="btn btn-primary mb-2" 
+                              data-toggle="collapse" 
+                              data-target="#filter-panel">
+                
+                              Pretraga po parametrima
+        </button>
+        <div id="filter-panel" class="collapse card mb-2 col-12">
+            <!-- <div class="card card-default scroll"> -->
+            <div class="card-body px-0">
+                
+                    <div class="container-fluid">
+                        <div class="row">
+                            <form [formGroup]="_announcementService.announcementSearchForm" (submit)="onSearchSubmit()" autocomplete="off" class="col-12 px-0" style="display: contents;">
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="pref-title">Naslov</label>
+                                    <input type="text" class="form-control form-control-sm" id="pref-title" formControlName="announcementTitle" name="title">                                
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="pref-description">Opis</label>
+                                    <input type="text" class="form-control form-control-sm" id="pref-description" formControlName="announcementDescription" name="description">                                
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="pref-category">Kategorija</label>
+                                    <select id="pref-category" class="form-control form-control-sm" formControlName="announcementCategory" name="categoryId">
+                                        <option selected value="0">---</option>
+                                        <option *ngFor="let cat of listOfCategories" 
+                                                [value]="cat.categoryId"> 
+                                                
+                                            {{ cat.categoryName }} 
+                                        </option>
+                                    </select>                                 
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label for="datePickerDateCreated" class="pl-0 mb-1">Datum objave</label>
+                                    <input id="datePickerDateCreated" 
+                                            bsDatepicker 
+                                            placeholder="Izaberi datum objave"
+                                            type="text" 
+                                            class="form-control form-control-sm"
+                                            formControlName="announcementDateCreated"
+                                            [bsConfig]="{ isAnimated: true,
+                                                            adaptivePosition: true,
+                                                            containerClass: 'theme-dark-blue',
+                                                            dateInputFormat: 'DD. MM. YYYY.' }">                          
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="datePickerDateModified">Datum izmjene</label>
+                                    <input id="datePickerDateModified"
+                                            bsDatepicker 
+                                            placeholder="Izaberi datum izmjene"
+                                            type="text" 
+                                            class="form-control form-control-sm"
+                                            formControlName="announcementDateModified"
+                                            [bsConfig]="{ isAnimated: true,
+                                                            adaptivePosition: true,
+                                                            containerClass: 'theme-dark-blue',
+                                                            dateInputFormat: 'DD. MM. YYYY.' }">                          
+                                </div>
+                                <!-- <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="datePickerDateRange">Vremenski period</label>
+                                    <input id="datePickerDateRange"
+                                            bsDaterangepicker
+                                            placeholder="Izaberi vremenski raspon"
+                                            type="text"
+                                            class="form-control form-control-sm"
+                                            [bsConfig]="{ isAnimated: true,
+                                                adaptivePosition: true,
+                                                containerClass: 'theme-dark-blue',
+                                                dateInputFormat: 'DD. MM. YYYY.' }">
+                                </div> -->
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="pref-created-by">Objavio korisnik</label>
+                                    <select id="pref-created-by" class="form-control form-control-sm" formControlName="announcementUserCreated" name="userCreatedId">
+                                        <option selected value="">---</option>
+                                        <option *ngFor="let user of listOfUsers; let i = index" 
+                                                [value]="user.id">
+
+                                                {{ user.firstName }} {{ user.lastName }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="pref-modified-by">Izmijenio korisnik</label>
+                                    <select id="pref-modified-by" class="form-control form-control-sm" formControlName="announcementUserModified" name="userModifiedId">
+                                        <option selected value="">---</option>
+                                        <option *ngFor="let user of listOfUsers; let i = index" 
+                                                [value]="user.id">
+
+                                                {{ user.firstName }} {{ user.lastName }}
+                                        </option>
+                                    </select>                                   
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="important-flag" type="checkbox" formControlName="announcementImportant" name="importantFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="important-flag">Važna obavještenja</label>
+                                </div>
+                                <!-- <div class="form-group mb-2 mx-0 col-lg-3 col-md-6">
+                                    <label class="pl-0 mb-1" for="pref-imp">Izaberi važnost</label>
+                                    <select id="pref-imp" class="form-control form-control-sm">
+                                        <option selected value="">---</option>
+                                        <option value="important">Važno</option>
+                                        <option value="not important">Nevažno</option>
+                                    </select>                                   
+                                </div> -->
+                                <div class="col-12">
+                                    <div class="container-fluid">
+                                        <div class="row mt-2">
+                                            <div class="form-group mb-2 col-6">    
+                                                <button class="btn btn-danger form-control"
+                                                        type="button"
+                                                        (click)="onDeleteSearchFields()">
+                                                        Obriši polja
+                                                </button>  
+                                            </div>
+                                            <div class="form-group mb-2 col-6">    
+                                                <button type="submit" 
+                                                        class="btn btn-primary form-control"
+                                                        aria-label="Close"
+                                                        data-toggle="collapse" 
+                                                        data-target="#filter-panel">
+
+                                                        Pretraži
+                                                </button>  
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+            <!-- </div> -->
+            </div>
+        </div>
+
+        <!-- Panel for sorting by parameters -->
+        <!-- <button type="button" class="btn btn-primary mb-2" 
+                              data-toggle="collapse" 
+                              data-target="#sort-panel">
+                
+                              Sortiranje po parametrima
+        </button> -->
+        <!-- <div id="sort-panel" class="collapse card mb-2 col-12"> -->
+            <!-- <div class="card card-default scroll"> -->
+            <!-- <div class="card-body px-0">
+                
+                    <div class="container-fluid">
+                        <div class="row">
+                            <form [formGroup]="_announcementService.announcementSortForm" (submit)="onSortSubmit()" autocomplete="off" class="col-12 px-0">
+                                <label class="pl-0 mb-1 ml-2">Redoslijed</label>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto"> -->
+                                    <!-- <input id="important-flag" type="checkbox" formControlName="announcementImportant" name="importantFlag"> -->
+                                    <!-- <input id="sort-asc-flag" type="checkbox" formControlName="ascendingSortDirectionFlag" name="ascendingSortDirectionFlag">
+                                    <label class="pl-0 mb-1 ml-2" for="sort-asc-flag">Rastući</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="sort-desc-flag" type="checkbox" formControlName="descendingSortDirectionFlag" name="descendingSortDirectionFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="sort-desc-flag">Opadajući</label>
+                                </div>
+                                <label class="pl-0 mb-1 ml-2">Po parametrima</label>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="title-flag" type="checkbox" formControlName="titleFlag" name="titleFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="title-flag">Naslov</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="description-flag" type="checkbox" formControlName="descriptionFlag" name="descriptionFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="description-flag">Sadržaj</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="category-flag" type="checkbox" formControlName="categoryFlag" name="categoryFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="category-flag">Kategorija</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="important-announcement-flag" type="checkbox" formControlName="importantFlag" name="importantFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="important-announcement-flag">Važna obavještenja</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="date-created-flag" type="checkbox" formControlName="dateCreatedFlag" name="dateCreatedFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="date-created-flag">Datum objave</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="date-modified-flag" type="checkbox" formControlName="dateModifiedFlag" name="dateModifiedFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="date-modified-flag">Datum izmjene</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="author-flag" type="checkbox" formControlName="authorFlag" name="authorFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="author-flag">Autor</label>
+                                </div>
+                                <div class="form-group mb-2 mx-0 col-lg-3 col-md-6 my-auto">
+                                    <input id="modifier-flag" type="checkbox" formControlName="modifierFlag" name="modifierFlag">                            
+                                    <label class="pl-0 mb-1 ml-2" for="modifier-flag">Modifikator</label>
+                                </div>
+                                <div class="col-12">
+                                    <div class="container-fluid">
+                                        <div class="row mt-2">
+                                            <div class="form-group mb-2 col-6">    
+                                                <button class="btn btn-danger form-control"
+                                                        (click)="onDeleteSortFields()">
+                                                        Obriši polja
+                                                </button>  
+                                            </div>
+                                            <div class="form-group mb-2 col-6">    
+                                                <button type="submit" 
+                                                        class="btn btn-primary form-control"
+                                                        aria-label="Close"
+                                                        data-toggle="collapse" 
+                                                        data-target="#sort-panel"
+                                                        [routerLink]="'/search-result'"
+                                                        routerLinkActive="active">
+
+                                                        Sortiraj
+                                                </button>  
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div> -->
+            <!-- </div> -->
+            <!-- </div> -->
+        <!-- </div> -->
+
+        <h4 class="text-muted col-12 px-0">Rezultati pretrage</h4>
+
+        <hr class="col-12 px-0">
+        
+        <div class="col-12 text-center" *ngIf="spinnerAnnouncements">
+            <div class="spinner-border text-primary"></div>
+        </div>
+
+        <div class="col-12" *ngIf="announcementsNotExist">
+            <h4 class="text-muted">Trenutno nema obavještenja</h4>
+        </div>
+
+        <!-- <div class="col-12" *ngIf="listAnnouncements.length == 0">
+            <h4 class="text-muted">Nema rezultata koji zadovoljavaju pretragu</h4>
+        </div> -->
+
+        <!-- Search result -->
+        <div *ngFor="let ann of listAnnouncements | 
+                    paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }"
+                    class="col-lg-4 col-md-6 col-sm-12 my-3 px-2">
+            <app-announcement [announcementInput]="ann" 
+                              (click)="onClick(ann.announcementId)">
+            </app-announcement>
+        </div>
+        <hr class="col-12 px-0">
+
+        <!-- Pagination -->
+        <div class="col-12 px-0">
+            <div class="container-fluid">
+                <div class="row d-flex justify-content-between">
+                    <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 px-0"
+                                    [collectionSize]="totalAnnItems" 
+                                    [(page)]="selectedPage" 
+                                    aria-label="Default pagination"
+                                    [boundaryLinks]="true"
+                                    [maxSize]="7"
+                                    [rotate]="true"
+                                    [pageSize]="itmsPerPage"
+                                    (pageChange)="selectPage($event)">
+                    </ngb-pagination>
+                    <select class="custom-select col-lg-4 col-md-5 col-sm-12"
+                            name="pageSize" 
+                            [(ngModel)]="itmsPerPage"
+                            (change)="onItemsPerPageChange()">
+                        <option [ngValue]="6">6 objave po strani</option>
+                        <option [ngValue]="12">12 objava po strani</option>
+                        <option [ngValue]="18">18 objava po strani</option>
+                        <option [ngValue]="24">24 objava po strani</option>
+                        <option [ngValue]="30">30 objava po strani</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

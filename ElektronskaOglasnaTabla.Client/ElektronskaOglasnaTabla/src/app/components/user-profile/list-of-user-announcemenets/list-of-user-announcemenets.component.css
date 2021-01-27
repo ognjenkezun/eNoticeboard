@@ -4,19 +4,12 @@ button.calendar, button.calendar:active {
     background-repeat: no-repeat;
     background-size: 23px;
     background-position: center;
-  }
-
-.text-visible-column-ann-title {
-    max-width: 300px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
 }
 
-.text-visible-column-ann-title :hover {
+/* .text-visible-column-ann-title :hover {
     overflow: visible;
     white-space: normal;
-}
+} */
   
   /* Sortable table demo */
   
@@ -64,4 +57,15 @@ ngb-carousel .picsum-img-wrapper>img {
     left: 0;
     bottom: 0;
     right: 0;
+}
+
+.custom-modal-body {
+    max-height: 70vh;
+}
+
+p {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    padding-top: 4px !important;
+    padding-bottom: 4px !important;
 }

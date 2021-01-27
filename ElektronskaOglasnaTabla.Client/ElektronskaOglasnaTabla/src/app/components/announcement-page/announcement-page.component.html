@@ -1,153 +1,147 @@
-<app-announcement-legend></app-announcement-legend>
-<div class="row">
-    <div class="col-lg-9 col-md-9 col-xs-12">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-8 col-md-7 col-sm-12" [ngClass]="annFromSameCategory.length > 0 ? ['col-lg-8', 'col-md-7'] : ['col-lg-12', 'col-md-12']">
 
-        <!-- Title -->
-        <h1 class="mt-4">
-            <span class="badge badge-success"> Novo </span> 
-            {{ announcement.announcementTitle }} 
-        </h1>
-        
-        <!-- Category -->
-        <h4>
-            <span [className]="announcement.announcementImportantIndicator ? 'badge-danger' : 'badge-primary'"
-                  class="badge badge-primary">
+            <!-- Title -->
+            <h4 class="mt-4 text-muted">
+                {{ announcement.announcementTitle }}
+            </h4>
 
-                <a class="custom-link-style" href="#"> {{ announcement.categoryId }} </a>
-            </span>
-        </h4>
-        <hr>
+            <!-- Important indicator -->
+            <h4>
+                <!-- Provjeriti za posljednja 24 sata (trenutno vrijeme - vrijeme postavljanja < 24 h) !!!!!!!! -->
+                <span *ngIf="announcement.isNew" class="badge badge-primary mr-1">
+                    Novo
+                </span>
+                <span *ngIf="announcement.importantIndicator" class="badge badge-danger">
+                    Važno
+                </span>
+            </h4>
 
-        <!-- Data/Time and Author -->
-        <p class="lead">
-            Obajvljeno {{ announcement.announcementDateCreated }} od 
-            <a href="#"> {{ announcement.userId }} </a>
-        </p>
-        <hr>
+            <!-- Category -->
+            <p class="text-muted cursor-pointer" (click)="onCategoryClick(announcement.categoryId)">
+                Kategorija: {{ announcement.categoryName }} 
+            </p>
+            <hr>
 
-        <!-- Preview Image -->
-        <img *ngIf="false" class="img-fluid rounded" src="http://placehold.it/1200x300" alt="Slika vijesti">
-        <hr *ngIf="false">
+            <!-- Data/Time and Author -->
+            <p class="text-muted">
+                Objavljeno {{ announcement.announcementDateCreated | date: "dd.MM.yyyy. u HH:mm"}}, 
+                {{ announcement.userCreatedFirstName }} {{ announcement.userCreatedLastName }}
+            </p>
+            <p class="text-muted" *ngIf="announcement.announcementDateModified && announcement.userModifiedFirstName && announcement.userModifiedLastName">
+                Modifikovano {{ announcement.announcementDateModified | date: "dd.MM.yyyy. u HH:mm"}}, 
+                {{ announcement.userModifiedFirstName }} {{ announcement.userModifiedLastName }}
+            </p>
+            <hr>
 
-        <!-- Post Content -->
-        <p [innerHTML]="announcement.announcementDescription"></p>
-        <hr>
-        <div class="w-100 mb-2" style="border: 1px solid red;">
-            <h1>Iz iste kategorije (postaviti 3 obavještenja)</h1>
-            <div class="bg-primary card col-lg-4 p-0 d-inline-block">
-                <div class="card-header">
-                    <h5>Naslov</h5>
-                </div>
-                <div class="card-body">
-                    <p>Text</p>
-                    <br>
-                    <br>
-                </div>
+            <!-- Data/Time and Author modified if Modified  -->
+            <div *ngIf="false"></div>
+
+            <!-- Preview Image -->
+            <!-- <img *ngIf="true" class="img-fluid rounded" src="http://placehold.it/1200x300" alt="Slika vijesti" width="100%">
+            <hr *ngIf="true"> -->
+            
+            <!-- Description -->
+            <p class="text-muted" [innerHTML]="announcement.announcementDescription"></p>
+            <hr>
+            <!-- <p>Priloženi fajovi</p>
+            <app-file-manager></app-file-manager> -->
+            
+            <div *ngFor="let item of filterFiles">
+                <video class="col-12" controls>
+                    <source [src]="item.filePath" type="video/mp4">
+                    <source [src]="item.filePath" type="video/ogg">
+                    <source [src]="item.filePath" type="video/webm">
+                </video>
             </div>
-            <div class="bg-danger card col-lg-4 p-0 d-inline-block">
-                <div class="card-header">
-                    <h5>Naslov</h5>
-                </div>
-                <div class="card-body">
-                    <p>Text</p>
-                    <br>
-                    <br>
-                </div>
+            <br>
+            <div class="col-12">
+                <carousel [isAnimated]="true"
+                          [showIndicators]="true"
+                          [pauseOnFocus]="true"
+                          [noPause]="true">
+    
+                    <slide *ngFor="let item of filterImages">
+                        <img [src]="item.filePath"
+                             class="mb-2 col-12">
+                    </slide>
+                </carousel>
             </div>
-            <div class="bg-success card col-lg-4 p-0 d-inline-block">
-                <div class="card-header">
-                    <h5>Naslov</h5>
-                </div>
-                <div class="card-body">
-                    <p>Text</p>
-                    <br>
-                    <br>
-                </div>
-            </div>
+                    <!-- class="mb-2 p-2 col-lg-4 col-md-6 col-sm-12"> -->
+            <!-- <div *ngFor="let item of filterDocuments">
+                <p>{{item?.filePath}}, </p>
+            </div> -->
+
+            <!-- PDF viewer -->
+            <!-- <pdf-viewer *ngFor="let item of filterDocuments"
+                        [src]="item.filePath"
+                        [render-text]="true"
+                        [show-all]="true"
+                        [original-size]="false"
+                        [zoom]="0.9"
+                        [show-borders]="true"
+                        class="col-12"
+                        style="display: block;">
+            </pdf-viewer> -->
+
+            <!-- <video class="col-12" controls>
+                <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                <source src=".ogg" type="video/ogg">
+                <source src=".webm" type="video/webm">
+            </video>
+            <img *ngFor="let path of listOfImagesPaths" 
+                    [src]="path" 
+                    class="mb-2 p-2 col-lg-4 col-md-6 col-sm-12">
+            <hr> -->
+            <!-- <pdf-viewer *ngFor="let path of listOfFilesPaths"
+                        [src]="path" 
+                        [render-text]="true"
+                        [show-all]="true"
+                        style="display: block; padding: 0;">
+            </pdf-viewer> -->
+            <!-- <pdf-viewer [src]="pdfSrc"
+                        [render-text]="true"
+                        [show-all]="true"
+                        [original-size]="false"
+                        [zoom]="0.9"
+                        [show-borders]="true"
+                        class="col-12"
+                        style="display: block;">
+            </pdf-viewer>
+            <hr> -->
+            <p *ngIf="listOfFiles.length > 0" class="text-muted">Priloženi fajovi</p>
+            <!-- UZETI PUTANJE ZA DOWNLOAD!!!! ################################ -->
+            <app-file-manager *ngIf="listOfFiles.length > 0" [listOfFiles]="listOfFiles" class="text-muted"></app-file-manager>
         </div>
-        <div class="border-secondary w-100" style="height: 250px; border: 1px solid;">
-            <h1>Slideshow</h1>
-            <div class="bg-primary card col-lg-4 p-0 d-inline-block">
-                <div class="card-header">
-                    <h5>Naslov</h5>
-                </div>
-                <div class="card-body">
-                    <p>Text</p>
-                    <br>
-                    <br>
-                </div>
+
+        <div class="col-lg-4 col-md-5 col-sm-12" [ngClass]="annFromSameCategory.length > 0 ? ['col-lg-4', 'col-md-5'] : ['col-lg-12', 'col-md-12']"
+                                                 *ngIf="annFromSameCategory.length > 0">
+            <br>
+            <!-- Carousel with new announcements -->
+            <!-- <h4 class="text-muted pb-2">Najnovije</h4>
+            <div class="shadow">
+                <carousel [isAnimated]="true" 
+                        [showIndicators]="false"
+                        [pauseOnFocus]="false">
+
+                    <slide *ngFor="let ann of listAnnouncements; let i = index">
+                        <app-announcement [announcementInput]="ann"
+                                            (click)="onClick(ann.announcementId)">
+                        </app-announcement>
+                    </slide>
+                </carousel>
             </div>
-            <div class="bg-danger card col-lg-4 p-0 d-inline-block">
-                <div class="card-header">
-                    <h5>Naslov</h5>
-                </div>
-                <div class="card-body">
-                    <p>Text</p>
-                    <br>
-                    <br>
-                </div>
-            </div>
-            <div class="bg-success card col-lg-4 p-0 d-inline-block">
-                <div class="card-header">
-                    <h5>Naslov</h5>
-                </div>
-                <div class="card-body">
-                    <p>Text</p>
-                    <br>
-                    <br>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-3 col-xs-12">
-        <div class="card shadow" style="margin-top: 130px;">
-            <div class="card-header">
-                <h5>Iz iste kategorija</h5>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <ul class="list-unstyled mb-0 text-truncate">
-                        <strong>INTERPOLACIJOM</strong>
-                        <li class="text-overflow-ellipsis">
-                            <a href="#" >Naslov 1 dsadasdadlkasjdklajsjadjjkdlajdkljaskljalks</a>
-                        </li>
-                        <li>
-                            <a href="#">Naslov 2</a>
-                        </li>
-                        <li>
-                            <a href="#">Naslov 3</a>
-                        </li>
-                        <li>
-                            <a href="#">Naslov 4</a>
-                        </li>
-                        <li>
-                            <a href="#">Naslov 5</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="card-footer">
-                <a href="">Prikaži sve kategorije</a>
-            </div>
-        </div>
-        <div class="card shadow my-4 bg-light">
-            <h5 class="card-header">Sve kategorije</h5>
-            <div class="card-body">
-                <div class="row">
-                    <ul class="list-unstyled mb-0">
-                        <li>
-                            <strong>INTERPOLACIJOM</strong>
-                        </li>
-                        <li>
-                            <a href="#">HTML</a>
-                        </li>
-                        <li>
-                            <a href="#">CSS</a>
-                        </li>
-                        <li>
-                            <a href="#">JavaScript</a>
-                        </li>
-                    </ul>
+            <hr class="col-12 px-0"> -->
+            <!-- Announcement from same category -->
+            <h4 class="text-muted">Iz iste kategorije</h4>
+            <hr class="col-12 px-0">
+            <div class="row">
+                <div *ngFor="let ann of annFromSameCategory"
+                        class="col-12 my-2">
+
+                    <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)">
+                    </app-announcement>
                 </div>
             </div>
         </div>

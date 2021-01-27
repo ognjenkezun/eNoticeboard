@@ -21,7 +21,7 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Administrator, Radnik")]
         //GET : /api/UserProfile
         public async Task<Object> GetUserProfile()
         {
@@ -34,6 +34,30 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
                 user.Email,
                 user.UserName
             };
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator")]
+        [Route("ForAdmin")]
+        public string getForAdmin()
+        {
+            return "Web method for Administrator";
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Employee")]
+        [Route("ForEmployee")]
+        public string getForEmployee()
+        {
+            return "Web method for Employee";
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Administrator, Radnik")]
+        [Route("ForAdminOrEmployee")]
+        public string getForAdminOrEmployee()
+        {
+            return "Web method for Admin or Employee";
         }
     }
 }

@@ -5,16 +5,14 @@ export class Announcements {
     announcementId?: number;
     announcementTitle: string;
     announcementDescription: string;
-    announcementDateCreated: Date;
+    announcementDateCreated?: Date;
     announcementDateModified?: Date;
     announcementUserModified?: number;
-    announcementExpiryDate?: Date;
+    announcementExpiryDate: Date;
     announcementImportantIndicator: number;
-    userId: number;
+    userCreatedId?: string;
+    userModifiedId?: string;
     categoryId: number;
-    isDeleted: boolean;
-
-    /*categories: Categories;
-    users: Users;
-    announcementImageId: number[];*/
+    announcementShow?: boolean;
+    isNew?: boolean;
 }

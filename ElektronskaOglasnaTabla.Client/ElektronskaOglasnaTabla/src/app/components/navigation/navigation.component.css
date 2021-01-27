@@ -1,10 +1,18 @@
-@media (min-width: 1000px) {
-    /*prikazati navbar*/
+/* @media (min-width: 993px) {
+    #navbar-md{
+        display: none;
+    }
 }
 
-@media (max-width: 999px) {
-    /*sakriti navbar*/
-}
+@media (max-width: 993px) {
+    #navbar-lg{
+        display: none;
+    }
+
+    .custom-input-text-expand {
+        width: 100%;
+    }
+} */
 
 .custom-sticky-navbar {
     position: sticky;
@@ -31,3 +39,76 @@
         display: none !important;
     }
  }*/
+
+ .wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column; 
+    justify-content: center;
+    width: 100%;
+    padding: 20px;
+}
+
+.wrapped-div {
+    -webkit-border-radius: 10px 10px 10px 10px;
+    border-radius: 10px 10px 10px 10px;
+    /*background: #2e3137;*/
+    padding: 30px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    padding: 0px;
+    -webkit-box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+    min-height: 450px;
+}
+
+  /* Tabs */
+.tab-header{
+    text-align: center;
+}
+
+.tab-header h2.active {
+    color: #2e3137;;
+    border-bottom: 2px solid #5fbae9;
+}
+
+.tab-header h2 {
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    display:inline-block;
+    padding: 30px 40px 10px 40px;
+    cursor: pointer;
+    color: #545d6a;
+}
+
+.tab-header h2:focus {
+    outline: none;
+}
+
+.container{
+    margin-top:30px;
+}
+
+.filter-col{
+    padding-left:10px;
+    padding-right:10px;
+}
+
+.scroll {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.custom-link-hover :hover{
+    text-decoration: wavy;
+}
+
+.custom-modal-body {
+    max-height: 70vh;
+}
+
+.drop-down-hover :hover {
+    background-color: #343a40;
+}

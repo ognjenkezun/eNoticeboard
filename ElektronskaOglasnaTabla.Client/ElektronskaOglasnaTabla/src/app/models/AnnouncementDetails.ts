@@ -1,3 +1,5 @@
+import { Files } from "./Files";
+
 export class AnnouncementDetails {
       announcementId: number;
       announcementTitle: string;
@@ -5,14 +7,14 @@ export class AnnouncementDetails {
       announcementDateCreated: Date;
       announcementDateModified: Date;
       announcementExpiryDate: Date;
-      ImportantIndicator: number;
-      userId: number;
-      userFirstName: string;
-      userLastName: string;
-      userEmail: string;
-      userTypeId: number;
-      userTypeName: string;
-      userIdModified: number;
+      importantIndicator: number;
+      userCreatedId: string;
+      userCreatedFirstName: string;
+      userCreatedLastName: string;
+      userCreatedEmail: string;
+      userCreatedTypeId: number;
+      userCreatedTypeName: string;
+      userModifiedId?: string;
       userModifiedFirstName: string;
       userModifiedLastName: string;
       userModifiedEmail: string;
@@ -22,4 +24,8 @@ export class AnnouncementDetails {
       categoryName: string;
       priorityId: number;
       priorityValue: string;
+      announcementShow: boolean;
+      isNew?: boolean;
+
+      files: Files[];
 }

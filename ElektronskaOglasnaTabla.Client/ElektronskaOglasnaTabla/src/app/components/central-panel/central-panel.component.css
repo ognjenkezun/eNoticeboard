@@ -1,8 +1,3 @@
-.zoomElement:hover{
-    transition-duration: 0.5s;
-    transform: scale(1.02);
-}
-
 .myShadow:hover{
     transition-duration: 0.3s;
     box-shadow: 2px 4px rgb(139, 139, 139); 
@@ -27,4 +22,29 @@
     .ann-info{
         width: 100%;
     }
+}
+
+.carousel-inner .carousel-item-right.active,
+.carousel-inner .carousel-item-next {
+  transform: translateX(33.33%);
+}
+
+.carousel-inner .carousel-item-left.active, 
+.carousel-inner .carousel-item-prev {
+  transform: translateX(-33.33%)
+}
+
+.carousel-inner .carousel-item-right,
+.carousel-inner .carousel-item-left{ 
+  transform: translateX(0);
+}
+
+.cusom-hover:hover {
+    background-color: darkblue;
+}
+
+.custom-fixed-bottom{
+    bottom: 15px;
+    right: 15px;
+    position: fixed;
 }

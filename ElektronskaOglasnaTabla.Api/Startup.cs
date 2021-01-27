@@ -11,6 +11,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using ElektronskaOglasnaTabla.Api.Hubs;
+using ElektronskaOglasnaTabla.Api.Services;
+using ElektronskaOglasnaTabla.Api.Controllers;
+using Microsoft.Extensions.Hosting;
+using ElektronskaOglasnaTabla.Api.Interfaces;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace ElektronskaOglasnaTabla.Api
 {
@@ -29,6 +38,9 @@ namespace ElektronskaOglasnaTabla.Api
         {
             //Inject AppSettings
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
+            var emailConfig = Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>();
+            services.AddSingleton(emailConfig);
+            services.AddScoped<IEmailSender, EmailSender>();
 
             services.AddCors(options =>
             {
@@ -37,21 +49,26 @@ namespace ElektronskaOglasnaTabla.Api
                 {
                     builder.WithOrigins(Configuration["ApplicationSettings:Client_URL"].ToString())
                         .AllowAnyHeader()
-                        .AllowAnyMethod();
+                        .AllowAnyMethod()
+                        .AllowCredentials();
                 });
             });
 
-            services.AddDbContext<ElektronskaOglasnaTablaContext>();
-            //services.AddDbContext<ElektronskaOglasnaTablaContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
+            //services.AddDbContext<ElektronskaOglasnaTablaContext>();
+            services.AddDbContext<ElektronskaOglasnaTablaContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
 
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<ElektronskaOglasnaTablaContext>();
-                //.AddDefaultTokenProviders();
+            //services.AddDefaultIdentity<ApplicationUser>()
+            //    .AddRoles<IdentityRole>()
+            //    .AddEntityFrameworkStores<ElektronskaOglasnaTablaContext>()
+            //    .AddDefaultTokenProviders();
 
-            /*services.AddIdentity<IdentityUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ElektronskaOglasnaTablaContext>()
-                .AddDefaultTokenProviders();*/
+                .AddDefaultTokenProviders();
+
+
+            services.AddSignalR();
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -69,6 +86,16 @@ namespace ElektronskaOglasnaTabla.Api
                 options.User.RequireUniqueEmail = true;
             });
 
+            services.Configure<DataProtectionTokenProviderOptions>(options =>
+                options.TokenLifespan = TimeSpan.FromMinutes(20)
+            );
+
+            services.Configure<FormOptions>(o => {
+                o.ValueLengthLimit = int.MaxValue;
+                o.MultipartBodyLengthLimit = int.MaxValue;
+                o.MemoryBufferThreshold = int.MaxValue;
+            });
+
             /*services.ConfigureApplicationCookie(options => {
                 options.Cookie.HttpOnly = true;
                 options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
@@ -79,6 +106,8 @@ namespace ElektronskaOglasnaTabla.Api
             });*/
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddHostedService<AutomaticallyCheckingDateExpiry>();
 
             //services.AddDbContext<ElektronskaOglasnaTablaContext>(options =>
             //    options.UseSqlServer(Configuration.GetConnectionString("DataBase")));
@@ -106,11 +135,11 @@ namespace ElektronskaOglasnaTabla.Api
                     ValidateAudience = false,
                     ClockSkew = TimeSpan.Zero
                 };
-            }); 
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, Microsoft.Extensions.Hosting.IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -118,6 +147,17 @@ namespace ElektronskaOglasnaTabla.Api
             }
 
             app.UseCors("ElektronskaOglasnaTabla");
+            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+                RequestPath = new PathString("/Resources")
+            });
+
+            app.UseSignalR(options =>
+            {
+                options.MapHub<MessageHub>("/MessageHub");
+            });
 
             //app.UseCookiePolicy();
             app.UseAuthentication();

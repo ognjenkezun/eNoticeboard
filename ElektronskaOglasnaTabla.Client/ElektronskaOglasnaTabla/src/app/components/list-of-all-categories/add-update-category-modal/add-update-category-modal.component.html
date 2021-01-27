@@ -1,0 +1,29 @@
+<form [formGroup]="_categoryService.formModel" autocomplete="off" (submit)="onSubmit()">
+    <div class="form-group">
+        <label for="category-input" class="col-form-label">Kategorija</label>
+        <input type="text" 
+                class="form-control"
+                formControlName="CategoryName"
+                required>
+    </div>
+    <div class="form-group">
+        <label for="categorySelect" class="col-form-label">Kategorija</label>
+        <select class="form-control"
+                [(ngModel)]="selectedPriorityId"
+                formControlName="PriorityName"
+                required>
+
+            <option *ngFor="let prior of listOfAllPriorities" 
+                    [value]="prior.priorityId">
+            
+                {{ prior.priorityValue }}
+            </option>
+        </select>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <button type="button" class="btn btn-secondary col-6" data-dismiss="modal" (click)="clearFormValue()">Odbaci</button>
+            <button type="submit" class="btn btn-primary col-6" [disabled]="!_categoryService.formModel.valid">Dodaj</button>
+        </div>
+    </div>
+</form>

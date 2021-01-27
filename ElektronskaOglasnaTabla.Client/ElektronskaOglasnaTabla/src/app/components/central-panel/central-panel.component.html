@@ -1,144 +1,209 @@
-<div class="jumbotron jumbotron-fluid rounded py-4 shadow">
-    <div class="container">
-        <h1 class="display-4 text-center">
-            Dobro došli na 
-            <strong>
-                eOglasnu Tablu
-            </strong>
-        </h1>
-        <div class="row">
-            <div class="col-lg-12 col-md-12 col-xs-12">
-                <h5 class="text-center">Saznajte sve novosti na vrijeme</h5>
+<div class="container-fluid">
+    <!-- Jumbotron with page title -->
+    <!-- <div class="row">
+        <div class="jumbotron rounded py-4 shadow col">
+            <div class="container">
+                <h1 class="display-4 text-center">
+                    Dobro došli na
+                    <strong>
+                        eOglasnu Tablu
+                    </strong>
+                </h1>
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h5 class="text-center">Saznajte sve novosti na vrijeme</h5>
+                        </div>
+                    </div>
+                </div>
+                <br>
             </div>
-            <div class="m-auto" style="border: 2px solid red; border-radius: 10px; padding: 5px">
-                <div>
-                    <span class="badge badge-success mx-1"> Novo </span>
-                    <p class="d-inline-block mx-1">Obavještenje u posljednja 24 sata</p>
-                </div>
-                <div>
-                    <span class="badge badge-primary mx-1"> Kategorija </span>
-                    <p class="d-inline-block mx-1">Niži nivo vaznosti</p>
-                </div>
-                <div>
-                    <span class="badge badge-danger mx-1"> Kategorija </span>
-                    <p class="d-inline-block mx-1 mb-0">Viši nivo vaznosti</p>
-                </div>
+        </div>
+    </div> -->
+
+    <!-- Carousels -->
+    <!-- <div class="row">
+        <div class="col-lg-6 col-sm-12 text-center" *ngIf="spinnerTheLatest">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12" *ngIf="listOfTheLatestAnnouncements.length">
+            <h4 class="text-muted text-center m-3 m-md-3"> Najnovije </h4>
+            <div class="shadow">
+                <carousel [isAnimated]="true" 
+                        [showIndicators]="false"
+                        [pauseOnFocus]="false">
+
+                    <slide *ngFor="let ann of listOfTheLatestAnnouncements; let i = index">
+                        <app-announcement [announcementInput]="ann"
+                                            (click)="onClick(ann.announcementId)">
+                        </app-announcement>
+                    </slide>
+                </carousel>
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12 text-center" *ngIf="spinnerTheMostImportant">
+            <div class="spinner-border text-primary" role="status">
+            </div>
+        </div>
+        <div class="col-lg-6 col-sm-12" *ngIf="listOfTheMostImportantAnnouncements.length">
+            <h4 class="text-muted text-center m-3 m-md-3"> Najvažnije </h4>
+            <div class="shadow">
+                <carousel [isAnimated]="true" 
+                        [showIndicators]="false"
+                        [pauseOnFocus]="false">
+
+                    <slide *ngFor="let ann of listOfTheMostImportantAnnouncements; let i = index">
+                        <app-announcement [announcementInput]="ann"
+                                            (click)="onClick(ann.announcementId)">
+                        </app-announcement>
+                    </slide>
+                </carousel>
+            </div>
+        </div>
+    </div> -->
+    <div class="row">
+        <div *ngIf="categoriesNotExist">
+            <h1> Trenutno nema obavještenja </h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status" *ngIf="spinnerCategories">
             </div>
         </div>
     </div>
-</div>
-<!--
-<h2 style="text-align: center; margin-top: 30px;">Istaknute vijesti</h2>
-<div class="row" style="padding-bottom: 10px; background-color: white;">
-    <div id="sada" class="jumbotron" style="box-shadow: 2px 4px rgb(139, 139, 139); border-radius: 5px; padding: 0; border: 2px solid lightgray; margin: 5px; width: 100%; overflow: hidden;">
-        <div id="carouselExampleCaptions" class="carousel slide" data-ride="carousel">
-            <ol class="carousel-indicators">
-                <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
-                <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
-                <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
-            </ol>
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img src="https://www.info57.com/wp-content/uploads/2019/12/Happy-New-Year-Picture-2020.jpg" class="d-block w-100" alt="..." height="400px">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>First slide label</h5>
-                        <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <img src="https://cdn.pixabay.com/photo/2015/12/01/20/28/fall-1072821_960_720.jpg" class="d-block w-100" alt="..." height="400px">
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Second slide label</h5>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                    </div>
-                </div>
-                <div class="carousel-item">
-                    <div style="width: 100%; height: 400px; background-color: white;">
-                        <p>dsadad</p>
-                        <p>Tekst</p>
-                    </div>
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5>Third slide label</h5>
-                        <p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-                    </div>
-                </div>
-            </div>
-            <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="sr-only">Previous</span>
-            </a>ddd
-    </div>
-</div>
--->
-<h1 class="d-inline-block">Najnovije</h1>
-<a href="#" class="d-inline-block">(prikaži sve)</a>
-<input type="text" 
-       class="form-control col-lg-12 col-md-12 col-sm-12 col-xs-12" 
-       placeholder="Unesite pojam za pretragu" 
-       [(ngModel)]="search">
 
-<div class="row">
-    <div *ngIf="!listOfAnnouncements">
-        <h1>Trenutno nema obavještenja</h1>
-    </div>
-    <div class="col-lg-12 col-md-7 col-sm-12 col-xs-12">
-        <div class="card-deck">
-            <div *ngFor="let ann of listOfAnnouncements | filter : search" 
-                 class="col-lg-3 col-md-12 col-sm-12 col-xs-12 p-0 my-4 d-inline-block">
+    <!-- ////////////////////////////////// -->
+    <div class="row">
+        <h4 class="text-muted mt-0 mb-1 pointerCursor" *ngIf="listOfTheLatestAnnouncements.length" (click)="onTheLatestClick()"> Najnovije </h4>
+        <hr class="my-1 w-100" *ngIf="listOfTheLatestAnnouncements.length">
+        <div *ngFor="let ann of listOfTheLatestAnnouncements"
+            class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
-                <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)"></app-announcement>
-            </div>
+                <app-announcement [announcementInput]="ann" 
+                                    (click)="onClick(ann.announcementId)">
+                </app-announcement>
         </div>
     </div>
-    <!-- <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12">
-        <div class="card my-4 bg-light shadow">
-            <h5 class="card-header">Pretraga</h5>
-            <div class="card-body">
-                <div class="input-group">
-                    <input type="text" 
-                           class="form-control" 
-                           placeholder="Unesite pojam" 
-                           [(ngModel)]="search">
+    <div class="row">
+        <h4 class="text-muted mt-0 mb-1 pointerCursor" *ngIf="listOfTheMostImportantAnnouncements.length" (click)="onTheMostImportantClick()"> Najvažnije </h4>
+        <hr class="my-1 w-100" *ngIf="listOfTheMostImportantAnnouncements.length">
+        <div *ngFor="let ann of listOfTheMostImportantAnnouncements"
+            class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
-                    <span class="input-group-btn">
-                        <button class="btn btn-outline-primary" 
-                                type="button"
-                                title="Traži">
-                            
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                        </button>
-                    </span>
-                </div>
-                <label class="d-block mt-2">Parametri pretrage</label>
-                <div class="d-block">
-                    <input id="chckbxTitle" type="checkbox">
-                    <label class="ml-2" for="chckbxTitle">Naslov</label>
-                </div>
-                <div class="d-block">
-                    <input id="chckbxDescription" type="checkbox">
-                    <label class="ml-2" for="chckbxDescription">Opis</label>
-                </div>
-                <div class="d-block">
-                    <input id="chckbxCategory" type="checkbox">
-                    <label class="ml-2" for="chckbxCategory">Kategorija</label>
-                </div>
-                <div class="d-block">
-                    <input id="chckbxUser" type="checkbox">
-                    <label class="ml-2" for="chckbxUser">Korisnik</label>
-                </div>
-                <div class="d-block">
-                    <input id="chckbxTime" type="checkbox">
-                    <label class="ml-2" for="chckbxTime">Vremenski period (dd-mm-yyyy)</label>
+                <app-announcement [announcementInput]="ann" 
+                                    (click)="onClick(ann.announcementId)">
+                </app-announcement>
+        </div>
+    </div>
+    <!-- ////////////////////////////////// -->
+
+    <!-- /////////////////////////////// -->
+    <div class="row" *ngFor="let cat of listOfCategory">
+        <h4 *ngIf="cat.announcements[0]" class="text-muted mt-0 mb-1 pointerCursor" (click)="onCategoryClick(cat.categoryId)"> {{ cat.categoryName }} </h4>
+        <hr *ngIf="cat.announcements[0]" class="my-1 w-100">
+        <div *ngFor="let ann of filterAnnPerCat(cat.categoryId)"
+            class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
+
+                <app-announcement [announcementInput]="ann" 
+                                    (click)="onClick(ann.announcementId)">
+                </app-announcement>
+        </div>
+    </div>
+
+    <!-- Row with new announcements -->
+    <!-- <div class="row"
+         *ngIf="listOfAnnouncements">
+        <h4 class="text-muted"> Najnovije </h4>
+    </div>
+    <div class="row">
+        <div class="col-12 p-0">
+            <hr class="my-1">
+        </div>
+    </div>
+    <div class="row"
+         *ngIf="listOfAnnouncements">
+        <div class="col p-0">
+            <div class="container-fluid">
+                <div class="row">
+                    <div *ngFor="let ann of listOfAnnouncements"
+                        class="col-lg-4 col-md-6 col-sm-12 my-3 px-2">
+
+                        <app-announcement [announcementInput]="ann" 
+                                            (click)="onClick(ann.announcementId)">
+                        </app-announcement>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card my-4 bg-light shadow">
-            <h5 class="card-header">Kategorije</h5>
-            <div class="card-body">
-                <a class="d-block" href="#">HTML</a>
-                <a class="d-block" href="#">CSS</a>
-                <a class="d-block" href="#">JavaScript</a>
+    </div> -->
+    
+    <!-- Row with important annoucements -->
+    <!-- <div class="row"
+         *ngIf="listOfAnnouncements">
+        <h4 class="text-muted"> Najvažnije </h4>
+    </div>
+    <div class="row">
+        <div class="col-12 p-0">
+            <hr class="my-1">
+        </div>
+    </div>
+    <div class="row"
+         *ngIf="listOfAnnouncements">
+        <div class="col p-0">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div *ngFor="let ann of listOfAnnouncementsPage | filter : search | 
+                                    paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }"
+                                    class="col-lg-4 col-md-6 col-sm-12 my-3 px-2">
+    
+                                <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)">
+                                </app-announcement>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 px-0">
+                        <hr>
+                    </div>
+                    <div class="col-12 px-0">
+                        <div class="container-fluid">
+                            <div class="row d-flex justify-content-between">
+                                <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 p-0"
+                                                [collectionSize]="totalAnnItems" 
+                                                [(page)]="selectedPage" 
+                                                aria-label="Default pagination"
+                                                [boundaryLinks]="true"
+                                                [maxSize]="7"
+                                                [rotate]="true"
+                                                [pageSize]="itmsPerPage"
+                                                (pageChange)="selectPage($event)">
+                                </ngb-pagination>
+                                <select class="custom-select col-lg-4 col-md-5 col-sm-12 mb-3"
+                                        name="pageSize" 
+                                        [(ngModel)]="itmsPerPage"
+                                        (change)="onItemsPerPageChange()">
+                                    <option [ngValue]="2">2 objave po strani</option>
+                                    <option [ngValue]="5">5 objava po strani</option>
+                                    <option [ngValue]="10">10 objava po strani</option>
+                                    <option [ngValue]="20">20 objava po strani</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+    </div>  -->
+    <!-- <div class="row">
+        <div class="col-12">
+            <i class="fa fa-arrow-circle-up d-block d-sm-none fa-4x custom-fixed-bottom custom-hover" 
+                title="Idi na vrh" 
+                aria-hidden="true" 
+                (click)="onClickTopPage()">
+            </i>
         </div>
     </div> -->
 </div>

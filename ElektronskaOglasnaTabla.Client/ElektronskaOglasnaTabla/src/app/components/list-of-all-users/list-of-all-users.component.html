@@ -1,61 +1,391 @@
-<h1>Lista korisnika</h1>
-<button class="btn btn-primary mb-3" 
-        type="button">
+<div class="container-fluid">
+    <div class="row">
+        <h4 class="text-muted col-12 px-0">Prikaz korisnika</h4>
+        <hr class="col-12 px-0">
+        <div class="col-lg-3 col-sm-12 px-1">
+            <button class="btn btn-primary w-100 mb-3" 
+                    type="button" 
+                    (click)="openModalAdd(templateAdd)">
 
-    <i class="fa fa-plus mr-1" aria-hidden="true"></i> 
-    Novi korisnik
-</button>
-<div class="d-block mb-2">
-    <input class="form-control" 
-            type="text" 
-            name="search" 
-            placeholder="Unesite pojam za pretragu" 
-            [(ngModel)]="searchText">
-</div>
-<div class="table-responsive">
-    <table class="table table-hover shadow">
-        <caption class="top">Lista korisnika</caption>
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>Ime</th>
-                <th>Prezime</th>
-                <th>Email</th>
-                <th>Izmjena/Brisanje</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let user of listOfAllUsers | filter : searchText | 
-                        paginate: { itemsPerPage: itmsPerPage, currentPage: p }; let i=index">
-                <td> {{ i+1 }} </td>
-                <td> <a href="#"> {{ user.userFirstName }} </a></td>
-                <td> <a href="#"> {{ user.userLastName }} </a></td>
-                <td> <a href="#"> {{ user.userEmail }} </a></td>
-                <td class="d-inline-block">
-                    <button class="btn btn-primary btn-sm mr-2 d-inline-block" 
-                            title="Izmjena">
-                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                <i class="fa fa-plus mr-1" aria-hidden="true"></i> 
+                Novi korisnik
+            </button>
+
+            <!-- Modal add announcement -->
+            <ng-template #templateAdd>
+                <div class="modal-header">
+                    <h5 class="modal-title pull-left">Novi korisnik</h5>
+                    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRefAdd.hide()">
+                        <span aria-hidden="true">&times;</span>
                     </button>
-                    <button class="btn btn-danger btn-sm d-inline-block"
-                            title="Brisanje">
-                        <i class="fa fa-trash-o" aria-hidden="true"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <pagination-controls (pageChange)="p = $event"></pagination-controls>
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text">
-                Prikaza po stranici
-            </span>
+                </div>
+                <form [formGroup]="addUserForm" (ngSubmit)="onAddUserSubmit()">
+                    <div class="modal-body custom-modal-body">
+                        <div class="form-group">
+                            <input type="text" 
+                                    class="form-control"
+                                    formControlName="firstName"
+                                    placeholder="Unesite ime">
+                            <!-- <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
+                                    class="alert alert-danger">
+            
+                                <div *ngIf="firstName.errors.required">
+                                    Potrebno je unijeti ime.
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="form-group">
+                            <input type="text" 
+                                    class="form-control"
+                                    formControlName="lastName"
+                                    placeholder="Unesite prezime">
+                            <!-- <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)"
+                                    class="alert alert-danger">
+            
+                                <div *ngIf="lastName.errors.required">
+                                    Potrebno je unijeti prezime.
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">
+                                        <i class="fa fa-envelope" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                                <input type="email" 
+                                        class="form-control"
+                                        formControlName="email"
+                                        placeholder="example@email.com">
+                            </div>
+                            <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)"
+                                    class="alert alert-danger">
+            
+                                <div *ngIf="email.errors.required">
+                                    Potrebno je unijeti e-mail.
+                                </div>
+                                <div *ngIf="email.errors.email">
+                                    Ovo polje mora da sadrži e-mail.
+                                </div>
+                            </div> -->
+                        </div>
+                        <div class="form-group">
+                            <label for="addUserRole">Izaberi tip korisnika</label>
+                            <select class="form-control d-inline-block"
+                                    id="addUserRole"
+                                    formControlName="role">
+                                <option value="Radnik">Radnik</option>
+                                <option value="Administrator">Administrator</option>
+                            </select>
+                        </div>
+                        <div formGroupName="passwords">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-lock" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                    <input [type]="fieldTextType ? 'text' : 'password'"
+                                            class="form-control"
+                                            formControlName="password"
+                                            placeholder="Unesite lozinku" 
+                                            autocomplete="on">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa"
+                                                [ngClass]="{
+                                                    'fa-eye-slash': !fieldTextType,
+                                                    'fa-eye': fieldTextType
+                                                }"
+                                                (click)="toggleFieldTextType()">
+                                            </i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- <div *ngIf="password.invalid && (password.dirty || password.touched)"
+                                        class="alert alert-danger">
+            
+                                    <div *ngIf="password.errors.required">
+                                        Lozinka je obavezna.
+                                    </div>
+                                    <div *ngIf="password.errors.minlength">
+                                        <p>Dužina lozinke mora biti najmanje 8 karaktera.</p>
+                                    </div>
+                                </div> -->
+                            </div>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">
+                                            <i class="fa fa-lock" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                    <input [type]="fieldTextType ? 'text' : 'password'" 
+                                            class="form-control" 
+                                            formControlName="confirmPassword"
+                                            placeholder="Potvrdite lozinku" 
+                                            autocomplete="on">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fa"
+                                                [ngClass]="{
+                                                    'fa-eye-slash': !fieldTextType,
+                                                    'fa-eye': fieldTextType
+                                                }"
+                                                (click)="toggleFieldTextType()">
+                                            </i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <!-- <div *ngIf="confirmPassword.invalid && (confirmPassword.dirty || confirmPassword.touched)"
+                                        class="alert alert-danger">
+            
+                                    <div *ngIf="confirmPassword.errors.required">
+                                        Potvrdna lozinka je obavezna.
+                                    </div>
+                                    <div *ngIf="confirmPassword.errors?.passwordMismatch">
+                                        Potvrdna lozinka se ne poklapa.
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <button type="submit" class="btn btn-primary col-12" [disabled]="!addUserForm.valid">Dodaj</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </ng-template>
         </div>
-        <select class="form-control d-inline-block" 
-                [(ngModel)]="itmsPerPage">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-        </select>
+        <div class="col-lg-9 col-sm-12 mb-3 px-1">
+            <input class="form-control"
+                    type="text"
+                    name="search"
+                    placeholder="Unesite pojam za pretragu"
+                    [(ngModel)]="searchText"
+                    autocomplete="off">
+        </div>
+        <div class="table-responsive px-1" *ngIf="listOfAllUsers">
+            <table class="table table-hover shadow d-none d-md-block">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="py-1" style="width: 5%; max-width: 5%;">#</th>
+                        <th class="py-1" style="width: 10%; max-width: 10%;">Ime</th>
+                        <th class="py-1" style="width: 15%; max-width: 15%;">Prezime</th>
+                        <th class="py-1" style="width: 30%; max-width: 30%;">Email</th>
+                        <th class="py-1" style="width: 10%; max-width: 10%;">Tip</th>
+                        <th class="py-1" style="width: 25%; max-width: 25%;">Izmjena/Brisanje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of listOfAllUsers | filter : searchText | 
+                                paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalUserItems }; let i=index">
+                        <td class="py-1" style="vertical-align: middle;"> {{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage }} </td>
+                        <td class="py-1" style="vertical-align: middle;"> <span class="my-auto"> {{ user.firstName }} </span></td>
+                        <td class="py-1" style="vertical-align: middle;"> <span class="my-auto"> {{ user.lastName }} </span></td>
+                        <td class="py-1" style="vertical-align: middle;"> <span class="my-auto"> {{ user.email }} </span></td>
+                        <td class="py-1" style="vertical-align: middle;"> <span class="my-auto"> {{ user.role }} </span></td>
+                        <td class="d-inline-block float-right w-100 py-1">
+                            <button class="btn btn-primary btn-sm mr-2 d-inline-block my-1" 
+                                    title="Izmjena"
+                                    (click)="openModalUpdate(templateUpdate, user)">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm mr-2 d-inline-block my-1"
+                                    title="Brisanje"
+                                    data-toggle="modal"
+                                    data-target="#deleteConfirmationModal"
+                                    (click)="retrunSelectedUser(user)">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" 
+                                    title="Resetuj lozinku"
+                                    class="btn btn-primary btn-sm d-inline-block my-1"
+                                    (click)="resetPassword(user)">
+                                    Resetuj lozinku
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngFor="let user of listOfAllUsers | filter : searchText | 
+                    paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalUserItems }; let i=index"
+                    class="col-lg-4 col-md-6 col-sm-12 col-xs-12 d-md-none d-xs-block mb-2 px-0">
+        
+                <!-- <app-announcement [announcementInput]="ann">
+                </app-announcement> -->
+    
+                <div class="card mb-3 border-primary">
+                    <div class="card-body text-overflow-ellipsis">
+                        <p class="mb-2"><strong>#{{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage }}</strong></p>
+                        <span><strong>Ime: </strong></span><span>{{user.firstName}}</span>
+                        <br>
+                        <span><strong>Prezime: </strong></span><span> {{user.lastName}} </span>
+                        <br>
+                        <span><strong>Email: </strong></span><span>{{user.email}}</span>
+                        <br>
+                        <span><strong>Tip korisnika: </strong></span><span>{{user.role}}</span>
+                    </div>
+                    <div class="card-footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-4">
+                                    <button type="button" 
+                                            class="btn btn-primary btn-sm w-100"
+                                            (click)="openModalUpdate(templateUpdate, user)">
+                                            Izmijeni
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm w-100"
+                                            data-toggle="modal"
+                                            data-target="#deleteConfirmationModal"
+                                            (click)="retrunSelectedUser(user)">
+                                            Obriši
+                                    </button>
+                                </div>
+                                <div class="col-4">
+                                    <button type="button" 
+                                            class="btn btn-primary btn-sm w-100"
+                                            (click)="resetPassword(user)">
+                                            Resetuj lozinku
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="col-12 px-0">
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-between">
+                <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 col-xs-12 px-0"
+                                [collectionSize]="totalUserItems" 
+                                [(page)]="selectedPage" 
+                                aria-label="Default pagination"
+                                [boundaryLinks]="true"
+                                [maxSize]="7"
+                                [rotate]="true"
+                                [pageSize]="itmsPerPage"
+                                (pageChange)="selectPage($event)">
+                </ngb-pagination>
+                <select class="custom-select col-lg-4 col-md-5 col-sm-12 col-xs-12"
+                        name="pageSize" 
+                        [(ngModel)]="itmsPerPage"
+                        (change)="onItemsPerPageChange()">
+                    <option [ngValue]="5">5 objava po strani</option>
+                    <option [ngValue]="10">10 objava po strani</option>
+                    <option [ngValue]="20">20 objava po strani</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<ng-template #templateUpdate>
+    <div class="modal-header">
+        <h5 class="modal-title pull-left">Izmjena korisnika</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRefUpdate.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="editUserForm" (ngSubmit)="onEditUserSubmit()">
+        <div class="modal-body">
+            <div class="form-group">
+                <input type="text" 
+                        class="form-control"
+                        formControlName="firstName"
+                        placeholder="Unesite ime">
+                <!-- <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
+                        class="alert alert-danger">
+
+                    <div *ngIf="firstName.errors.required">
+                        Potrebno je unijeti ime.
+                    </div>
+                </div> -->
+            </div>
+            <div class="form-group">
+                <input type="text" 
+                        class="form-control"
+                        formControlName="lastName"
+                        placeholder="Unesite prezime">
+                <!-- <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)"
+                        class="alert alert-danger">
+
+                    <div *ngIf="lastName.errors.required">
+                        Potrebno je unijeti prezime.
+                    </div>
+                </div> -->
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <input type="email" 
+                            class="form-control"
+                            formControlName="email"
+                            placeholder="example@email.com">
+                </div>
+                <!-- <div *ngIf="email.invalid && (email.dirty || email.touched)"
+                        class="alert alert-danger">
+
+                    <div *ngIf="email.errors.required">
+                        Potrebno je unijeti e-mail.
+                    </div>
+                    <div *ngIf="email.errors.email">
+                        Ovo polje mora da sadrži e-mail.
+                    </div>
+                </div> -->
+            </div>
+            <div class="form-group">
+                <label for="editUserRole">Izaberi tip korisnika</label>
+                <select class="form-control d-inline-block"
+                        id="editUserRole"
+                        formControlName="role">
+                    <option value="Radnik">Radnik</option>
+                    <option value="Administrator">Administrator</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="container-fluid">
+                <div class="row">
+                    <button type="submit" class="btn btn-primary col-12" [disabled]="!editUserForm.valid">Potvrdi</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</ng-template>
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModal">Potvrdi brisanje</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">Odbij</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary w-100" (click)="deleteUser()" data-dismiss="modal">Potvrdi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

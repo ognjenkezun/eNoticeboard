@@ -1,11 +1,11 @@
-<div class="col-lg-12 col-sm-12 col-12 main-section mt-4">
+<div class="col-lg-12 col-sm-12 col-12 main-section mt-4 bg-dark">
     <div class="form-input">
         <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
                 <input type="text" 
                        formControlName="firstName" 
                        class="form-control" 
-                       placeholder="Unesite ime">
+                       placeholder="Unesi ime">
                 <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
                         class="alert alert-danger">
 
@@ -18,7 +18,7 @@
                 <input type="text" 
                         formControlName="lastName" 
                         class="form-control" 
-                        placeholder="Unesite prezime">
+                        placeholder="Unesi prezime">
                 <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)"
                         class="alert alert-danger">
 
@@ -61,7 +61,7 @@
                         <input [type]="fieldTextType ? 'text' : 'password'"
                                 formControlName="password" 
                                 class="form-control" 
-                                placeholder="Unesite lozinku" 
+                                placeholder="Unesi lozinku" 
                                 autocomplete="on">
                         <div class="input-group-append">
                             <span class="input-group-text">
@@ -96,7 +96,7 @@
                         <input [type]="fieldTextType ? 'text' : 'password'" 
                                 formControlName="confirmPassword" 
                                 class="form-control" 
-                                placeholder="Potvrdite lozinku" 
+                                placeholder="Potvrdi lozinku" 
                                 autocomplete="on">
                         <div class="input-group-append">
                             <span class="input-group-text">
@@ -116,6 +116,9 @@
                         <div *ngIf="confirmPassword.errors.required">
                             Potvrdna lozinka je obavezna.
                         </div>
+                        <div *ngIf="password.errors.minlength">
+                            <p>Dužina lozinke mora biti najmanje 8 karaktera.</p>
+                        </div>
                         <div *ngIf="confirmPassword.errors?.passwordMismatch">
                             Potvrdna lozinka se ne poklapa.
                         </div>
@@ -124,7 +127,7 @@
             </div>
             <div class="form-group">
                 <button type="submit" 
-                        class="btn btn-primary" 
+                        class="btn btn-primary text-white" 
                         [disabled]="!registrationForm.valid">
                     
                     Registruj se

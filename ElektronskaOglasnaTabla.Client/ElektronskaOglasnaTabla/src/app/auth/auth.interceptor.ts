@@ -9,18 +9,21 @@ export class AuthInterceptor implements HttpInterceptor {
     
     constructor(private router: Router) {}
 
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {/*
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         if(localStorage.getItem('token') != null) {
             const clonedReq = req.clone({
-                headers: req.headers.set('Authorization', 'Bearer' + localStorage.getItem('token'))
+                headers: req.headers.set('Authorization', 'Bearer ' + localStorage.getItem('token'))
             });
             return next.handle(clonedReq).pipe(
                 tap(
                     succ => {},
                     err => {
+                        // if(err.status == 404) {
+                        //     this.router.navigateByUrl('/access-denied');
+                        // }
                         if(err.status == 401) {
                             localStorage.removeItem('token');
-                            this.router.navigateByUrl('/pocetnaaaa')
+                            this.router.navigateByUrl('/home');
                         }
                     }
                 )
@@ -28,7 +31,7 @@ export class AuthInterceptor implements HttpInterceptor {
         }
         else {
             return next.handle(req.clone());
-        }*/
-        return;//IZBRISATI
+        }
+        //return;//IZBRISATI
     }
 }

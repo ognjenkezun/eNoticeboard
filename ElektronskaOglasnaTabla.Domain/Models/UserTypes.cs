@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ElektronskaOglasnaTabla.Domain.Models
 {
@@ -9,7 +10,7 @@ namespace ElektronskaOglasnaTabla.Domain.Models
         {
             Users = new HashSet<Users>();
         }
-
+        [Key]
         public int UserTypeId { get; set; }
         public string UserTypeName { get; set; }
 

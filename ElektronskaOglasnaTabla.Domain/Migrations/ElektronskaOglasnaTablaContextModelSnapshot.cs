@@ -19,127 +19,62 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.AnnouncementImageId", b =>
-                {
-                    b.Property<int>("AnnouncementImageIds")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AnnouncementId");
-
-                    b.Property<int>("ImageId");
-
-                    b.HasKey("AnnouncementImageIds")
-                        .HasName("PK_AnnouncementImage");
-
-                    b.HasIndex("AnnouncementId");
-
-                    b.ToTable("AnnouncementImageId");
-                });
-
             modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Announcements", b =>
                 {
                     b.Property<int>("AnnouncementId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("AnnouncementDateCreated")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime>("AnnouncementDateCreated");
 
-                    b.Property<DateTime?>("AnnouncementDateModified")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime?>("AnnouncementDateModified");
 
-                    b.Property<string>("AnnouncementDescription")
-                        .IsRequired()
-                        .HasMaxLength(1600)
-                        .IsUnicode(false);
+                    b.Property<string>("AnnouncementDescription");
 
-                    b.Property<DateTime?>("AnnouncementExpiryDate")
-                        .HasColumnType("datetime");
+                    b.Property<DateTime>("AnnouncementExpiryDate");
 
                     b.Property<int>("AnnouncementImportantIndicator");
 
-                    b.Property<string>("AnnouncementTitle")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .IsUnicode(false);
+                    b.Property<bool>("AnnouncementShow");
 
-                    b.Property<int?>("AnnouncementUserModified");
+                    b.Property<string>("AnnouncementTitle");
 
                     b.Property<int>("CategoryId");
 
-                    b.Property<bool>("IsDeleted");
+                    b.Property<string>("UserCreatedId")
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("UserId");
+                    b.Property<string>("UserModifiedId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("AnnouncementId");
 
-                    b.HasIndex("AnnouncementUserModified");
-
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserCreatedId");
+
+                    b.HasIndex("UserModifiedId");
 
                     b.ToTable("Announcements");
                 });
 
-            modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser", b =>
+            modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.AppConfig", b =>
                 {
-                    b.Property<string>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccessFailedCount");
+                    b.Property<int>("AnnouncementExpiry");
 
-                    b.Property<int>("AppUserId");
+                    b.Property<int>("AutomaticallyUpdate");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                    b.Property<int>("NumberOfLastAnnPerCategory");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256);
-
-                    b.Property<bool>("EmailConfirmed");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(150)");
-
-                    b.Property<bool>("LockoutEnabled");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256);
-
-                    b.Property<string>("PasswordHash");
-
-                    b.Property<string>("PhoneNumber");
-
-                    b.Property<bool>("PhoneNumberConfirmed");
-
-                    b.Property<string>("SecurityStamp");
-
-                    b.Property<bool>("TwoFactorEnabled");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256);
+                    b.Property<int>("SlideDurationOnTv");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers");
+                    b.ToTable("AppConfig");
                 });
 
             modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Categories", b =>
@@ -148,10 +83,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .IsUnicode(false);
+                    b.Property<string>("CategoryName");
 
                     b.Property<int>("PriorityId");
 
@@ -162,16 +94,32 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                     b.ToTable("Categories");
                 });
 
+            modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Files", b =>
+                {
+                    b.Property<int>("FileId")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AnnouncementId");
+
+                    b.Property<string>("FilePath");
+
+                    b.Property<string>("Type");
+
+                    b.HasKey("FileId");
+
+                    b.HasIndex("AnnouncementId");
+
+                    b.ToTable("Files");
+                });
+
             modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Images", b =>
                 {
                     b.Property<int>("ImageId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ImagePath")
-                        .IsRequired()
-                        .HasMaxLength(400)
-                        .IsUnicode(false);
+                    b.Property<string>("ImagePath");
 
                     b.HasKey("ImageId");
 
@@ -184,10 +132,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("PriorityValue")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                    b.Property<string>("PriorityValue");
 
                     b.HasKey("PriorityId");
 
@@ -200,10 +145,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("UserTypeName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                    b.Property<string>("UserTypeName");
 
                     b.HasKey("UserTypeId");
 
@@ -216,29 +158,15 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("UserEmail")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                    b.Property<string>("UserEmail");
 
-                    b.Property<string>("UserFirstName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                    b.Property<string>("UserFirstName");
 
-                    b.Property<string>("UserLastName")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                    b.Property<string>("UserLastName");
 
-                    b.Property<string>("UserPassword")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .IsUnicode(false);
+                    b.Property<string>("UserPassword");
 
-                    b.Property<int>("UserTypeId")
-                        .ValueGeneratedOnAdd()
-                        .HasDefaultValueSql("((2))");
+                    b.Property<int>("UserTypeId");
 
                     b.HasKey("UserId");
 
@@ -291,6 +219,62 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                     b.ToTable("AspNetRoleClaims");
                 });
 
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<int>("AccessFailedCount");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken();
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired();
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256);
+
+                    b.Property<bool>("EmailConfirmed");
+
+                    b.Property<bool>("LockoutEnabled");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256);
+
+                    b.Property<string>("PasswordHash");
+
+                    b.Property<string>("PhoneNumber");
+
+                    b.Property<bool>("PhoneNumberConfirmed");
+
+                    b.Property<string>("SecurityStamp");
+
+                    b.Property<bool>("TwoFactorEnabled");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("IdentityUser");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
                     b.Property<int>("Id")
@@ -313,11 +297,9 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128);
+                    b.Property<string>("ProviderKey");
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -348,11 +330,9 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                 {
                     b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
+                    b.Property<string>("Name");
 
                     b.Property<string>("Value");
 
@@ -361,30 +341,33 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.AnnouncementImageId", b =>
+            modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser", b =>
                 {
-                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.Announcements", "Announcement")
-                        .WithMany("AnnouncementImageId")
-                        .HasForeignKey("AnnouncementId")
-                        .HasConstraintName("FK_AnnouncementImageId_Images");
+                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(150)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(150)");
+
+                    b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
             modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Announcements", b =>
                 {
-                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.Users", "AnnouncementUserModifiedNavigation")
-                        .WithMany("AnnouncementsAnnouncementUserModifiedNavigation")
-                        .HasForeignKey("AnnouncementUserModified")
-                        .HasConstraintName("FK_Announcements_Users_Modified");
-
                     b.HasOne("ElektronskaOglasnaTabla.Domain.Models.Categories", "Category")
                         .WithMany("Announcements")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Announcements_Categories");
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.Users", "User")
-                        .WithMany("AnnouncementsUser")
-                        .HasForeignKey("UserId")
-                        .HasConstraintName("FK_Announcements_Users_Created");
+                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser", "UserCreated")
+                        .WithMany()
+                        .HasForeignKey("UserCreatedId");
+
+                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser", "UserModified")
+                        .WithMany()
+                        .HasForeignKey("UserModifiedId");
                 });
 
             modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Categories", b =>
@@ -392,7 +375,15 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                     b.HasOne("ElektronskaOglasnaTabla.Domain.Models.Priorities", "Priority")
                         .WithMany("Categories")
                         .HasForeignKey("PriorityId")
-                        .HasConstraintName("FK_Categories_Priotities");
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Files", b =>
+                {
+                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.Announcements")
+                        .WithMany("Files")
+                        .HasForeignKey("AnnouncementId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("ElektronskaOglasnaTabla.Domain.Models.Users", b =>
@@ -400,7 +391,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                     b.HasOne("ElektronskaOglasnaTabla.Domain.Models.UserTypes", "UserType")
                         .WithMany("Users")
                         .HasForeignKey("UserTypeId")
-                        .HasConstraintName("FK_Users_UserTypes");
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -413,7 +404,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -421,7 +412,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -434,7 +425,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
@@ -442,7 +433,7 @@ namespace ElektronskaOglasnaTabla.Domain.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("ElektronskaOglasnaTabla.Domain.Models.ApplicationUser")
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);

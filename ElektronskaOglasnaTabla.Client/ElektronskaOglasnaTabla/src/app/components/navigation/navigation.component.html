@@ -1,234 +1,443 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-dark custom-sticky-navbar">
-    <a class="navbar-brand text-white" [routerLink]="'/pocetna'">eOglasna Tabla</a>
+<nav id="navbar-md" class="navbar navbar-light bg-dark">
+    <a class="navbar-brand text-white" 
+       [routerLink]="'/home'"
+       routerLinkActive="active"
+       data-toggle="collapse" 
+       data-target="#navbar-md-content">
+       
+       eOglasna Tabla
+    </a>
     <button class="navbar-toggler bg-white" 
             type="button" 
             data-toggle="collapse" 
-            data-target="#navbarSupportedContent" 
-            aria-controls="navbarSupportedContent" 
+            data-target="#navbar-md-content" 
+            aria-controls="navbar-md-content" 
             aria-expanded="false" 
             aria-label="Toggle navigation">
 
         <span class="navbar-toggler-icon"></span>
     </button>
-  
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+    <div class="collapse navbar-collapse" id="navbar-md-content">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link mr-3 text-white" 
-                   [routerLink]="'/pocetna'" 
-                   routerLinkActive="active">
+                <a class="nav-link mr-3 text-white collapse-navbar" 
+                   [routerLink]="'/home'" 
+                   data-toggle="collapse" 
+                   data-target="#navbar-md-content" 
+                   routerLinkActive="active"
+                   style="font-size: small;">
                     
                     Početna
-                    <!--<span class="sr-only">(current)</span>-->
                 </a>
             </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle mr-3 text-white" 
-                   href="#"
+            <li class="nav-item">
+                <a class="nav-link mr-3 text-white collapse-navbar"
+                   [routerLink]="'/the-latest'" 
                    routerLinkActive="active"
-                   id="navbarDropdownCategory" 
-                   role="button"
-                   data-toggle="dropdown"
-                   aria-haspopup="true"
-                   aria-expanded="false">
+                   data-toggle="collapse" 
+                   data-target="#navbar-md-content" 
+                   style="font-size: small;">
+
+                    Najnovije
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link mr-3 text-white collapse-navbar"
+                   [routerLink]="'/the-most-important'" 
+                   routerLinkActive="active"
+                   data-toggle="collapse" 
+                   data-target="#navbar-md-content" 
+                   style="font-size: small;">
+
+                    Najvažnije
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link mr-3 text-white collapse-navbar"
+                   [routerLink]="'/categories'" 
+                   routerLinkActive="active"
+                   data-toggle="collapse" 
+                   data-target="#navbar-md-content" 
+                   style="font-size: small;">
 
                     Kategorije
                 </a>
-                <div class="dropdown-menu"
-                     aria-labelledby="navbarDropdownCategory">
-
-                    <a *ngIf="!listOfAllCategories">Kategorije nisu unesene</a>
-                    <a *ngIf="listOfAllCategories" class="dropdown-item" [routerLink]="'/show-all-categories'">
-                        <strong>Vidi sve objave</strong>
-                    </a>
-                    <a class="dropdown-item" href="#" *ngFor="let cat of listOfAllCategories">
-                        {{ cat.categoryName }}
-                    </a>
-                </div>
             </li>
             <li class="nav-item">
-                <a class="nav-link mr-3 text-white"
-                   [routerLink]="''" 
-                   routerLinkActive="active">
+                <a class="nav-link mr-3 text-white collapse-navbar"
+                   [routerLink]="'/search-results'" 
+                   routerLinkActive="active"
+                   data-toggle="collapse" 
+                   data-target="#navbar-md-content" 
+                   style="font-size: small;">
 
-                    Sva obavještenja
+                    Sve objave
                 </a>
             </li>
             <li class="nav-item dropdown"
-                *ngIf="userLogged">
+                *ngIf="isUserLoggedIn">
                 <a class="nav-link dropdown-toggle mr-3 text-white"
                    routerLinkActive="active"
                    id="navbarDropdownProfile" 
                    role="button"
                    data-toggle="dropdown"
                    aria-haspopup="true"
-                   aria-expanded="false">
+                   aria-expanded="false"
+                   style="font-size: small;">
 
                     Profil
                 </a>
-                <div class="dropdown-menu"
+                <div class="dropdown-menu bg-dark"
                      aria-labelledby="navbarDropdownProfile">
 
-                    <a class="dropdown-item" [routerLink]="'/list-of-user-announcements'">Vaša obavještenja</a>
-                    <a class="dropdown-item" [routerLink]="'/show-all-users'">Prikaz korisnika</a>
-                    <a class="dropdown-item" [routerLink]="'/list-of-all-categories'">Upravljanje kategorijama</a>
-                    <a class="dropdown-item">Upravljanje prikazom</a>
+                    <a style="font-size: small;"
+                       data-toggle="collapse" 
+                       data-target="#navbar-md-content" 
+                       class="dropdown-item collapse-navbar text-white" 
+                       [routerLink]="'/list-of-user-announcements'">
+                       Upravljanje obavještenjima
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       data-toggle="collapse" 
+                       data-target="#navbar-md-content" 
+                       class="dropdown-item collapse-navbar text-white" 
+                       [routerLink]="'/list-of-all-announcements'">
+                       
+                       Upravljanje svim obavještenjima
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       data-toggle="collapse" 
+                       data-target="#navbar-md-content" 
+                       class="dropdown-item collapse-navbar text-white" 
+                       [routerLink]="'/list-of-all-categories'">
+                       
+                       Upravljanje kategorijama
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       data-toggle="collapse" 
+                       data-target="#navbar-md-content" 
+                       class="dropdown-item collapse-navbar text-white" 
+                       [routerLink]="'/show-all-users'">
+                       
+                       Upravljanje korisnicima
+                    </a>
+                    <!-- data-toggle="collapse" 
+                        data-target="#navbar-content">Prikaz kategorija</a> -->
+                    <a style="font-size: small;" 
+                       data-toggle="collapse" 
+                       data-target="#navbar-md-content" 
+                       class="dropdown-item collapse-navbar text-white" 
+                       [routerLink]="'/user-profile'">
+                       
+                       Upravljanje nalogom
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       data-toggle="collapse" 
+                       data-target="#navbar-md-content" 
+                       class="dropdown-item collapse-navbar text-white" 
+                       [routerLink]="'/users-statistic'">
+                       
+                       Statistika
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       data-toggle="collapse" 
+                       data-target="#navbar-md-content" 
+                       class="dropdown-item collapse-navbar text-white" 
+                       [routerLink]="'/page-settings'">
+                       
+                       Podešavanja sajta
+                    </a>
                 </div>
-            </li>
-            <li class="nav-item dropdown"
-                *ngIf="userLogged">
-
-                <a class="nav-link mr-3 text-white" 
-                   [routerLink]="'/user-profile'" 
-                   routerLinkActive="active">
-                    
-                    Profil
-                </a>
             </li>
             <!--<li *ngIf="isVisible"><a href="#">Korisnici</a></li>
             <li *ngIf="isVisible"><a href="#">Statistika</a></li>
             <li *ngIf="isVisible"><a href="#">Upravljanje nalozima</a></li>-->
         </ul>
-        <form class="form-inline my-2 my-lg-0 mr-4">
-            <input class="form-control mr-sm-2" 
-                    type="search" 
-                    placeholder="Pretražite"
-                    aria-label="Search">
-            <div class="btn-group">
-                <button class="btn btn-outline-primary my-2 my-sm-0" 
-                    type="button" 
-                    title="Traži"
-                    [routerLink]="'/search-results'">
-
-                    <i class="fa fa-search" aria-hidden="true"></i>
-                </button>
-                <button class="btn btn-primary dropdown-toggle" 
-                        type="button" id="dropdownMenuButton" 
-                        data-toggle="dropdown" 
-                        aria-expanded="false">
-
-                </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <div class="d-block">
-                        <input class="d-inline-block ml-2" id="chckbxTitle" type="checkbox">
-                        <label class="ml-2 d-inline-block" for="chckbxTitle">Naslov</label>
-                    </div>
-                    <div class="d-block">
-                        <input class="d-inline-block ml-2" id="chckbxDescription" type="checkbox">
-                        <label class="ml-2 d-inline-block" for="chckbxDescription">Opis</label>
-                    </div>
-                    <div class="d-block">
-                        <input class="d-inline-block ml-2" id="chckbxCategory" type="checkbox">
-                        <label class="ml-2 d-inline-block" for="chckbxCategory">Kategorija</label>
-                    </div>
-                    <div class="d-block">
-                        <input class="d-inline-block ml-2" id="chckbxUser" type="checkbox">
-                        <label class="ml-2 d-inline-block" for="chckbxUser">Korisnik</label>
-                    </div>
-                    <div class="d-block">
-                        <input class="d-inline-block ml-2" id="chckbxTime" type="checkbox">
-                        <label class="ml-2 d-inline-block" for="chckbxTime">Vremenski period (dd-mm-yyyy)</label>
-                    </div>
-                </div>
-            </div>
+        <form class="form-inline my-2 my-lg-0">
+            <input type="text" class="form-control w-100"
+                        name="searchModelSmallNav"
+                        placeholder="Pretraga po naslovu"
+                        [ngbTypeahead]="search"
+                        [inputFormatter]="formatter"
+                        [resultFormatter]="formatter"
+                        [editable]='false'
+                        (selectItem)="selectedItem($event)"
+                        style="font-size: small;">
         </form>
-        <button type="button" 
-                class="btn btn-primary my-2 my-sm-0" 
-                data-toggle="modal" 
-                data-target="#logInModal">
-
+        <div class="my-1">
+            <i *ngIf="isUserLoggedIn" 
+               class="fa fa-user-o mr-2 fa-lg" 
+               style="color: white; vertical-align: middle;" 
+               aria-hidden="true">
+            </i>
+            <a data-toggle="collapse" 
+               data-target="#navbar-md-content" 
+               *ngIf="isUserLoggedIn" 
+               [routerLink]="'/user-profile'" 
+               routerLinkActive="active" 
+               class="text-white mr-4" 
+               style="text-decoration: underline; vertical-align: middle; font-size: small;"> 
+                {{ loggedUserName }} 
+            </a>
+        </div>
+        <button *ngIf="!isUserLoggedIn"
+                type="button" 
+                class="btn btn-primary my-2 my-sm-0 col-xs-12"
+                (click)="openModal(template)" 
+                data-toggle="collapse" 
+                data-target="#navbar-md-content"
+                style="font-size: small;">
+                
+                <i class="fa fa-sign-in mr-1" aria-hidden="true"></i>
                 Prijavi se
-                <i class="fa fa-sign-in" aria-hidden="true"></i>
+        </button>
+        <button *ngIf="isUserLoggedIn"
+                type="button" 
+                class="btn btn-danger my-2 my-sm-0 col-xs-12"
+                (click)="onSignOut()"
+                data-toggle="collapse" 
+                data-target="#navbar-md-content"
+                style="font-size: small;">
+
+                Odjavi se
+                <i class="fa fa-sign-out ml-1" aria-hidden="true"></i>
         </button>
         <!--<button class="btn btn-success my-2 my-sm-0">Prijavi se</button>-->
     </div>
 </nav>
+<!-- Big Nav -->
+<nav id="navbar-lg" class="navbar navbar-expand-lg navbar-light bg-dark custom-sticky-navbar">
+    <a class="navbar-brand text-white" 
+       [routerLink]="'/home'"
+       routerLinkActive="active">
+       
+       eOglasna Tabla
+    </a>
+  
+    <div class="collapse navbar-collapse" id="navbar-content">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link text-white collapse-navbar" 
+                   [routerLink]="'/home'"
+                   routerLinkActive="active" 
+                   style="font-size: small;">
+                    
+                    Početna
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white collapse-navbar"
+                   [routerLink]="'/the-latest'"
+                   routerLinkActive="active" 
+                   style="font-size: small;">
 
-<div class="modal fade" 
-     id="logInModal" 
-     tabindex="-1"
-     role="dialog" 
-     aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
+                    Najnovije
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white collapse-navbar"
+                   [routerLink]="'/the-most-important'" 
+                   routerLinkActive="active" 
+                   style="font-size: small;">
 
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" 
-                        class="close" 
-                        data-dismiss="modal" 
-                        aria-label="Close">
+                    Najvažnije
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white collapse-navbar"
+                   [routerLink]="'/categories'" 
+                   routerLinkActive="active" 
+                   style="font-size: small;">
 
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-                <br>
-                <br>
-                <!--<div class="w-100 text-center">
-                    <img class="img-fluid" 
-                    src="https://www.singaporeg.sg/images/Login.png" width="200px" height="200px" alt="Sign In Image">
-                </div>-->
-                <div class="w-100 text-center">
-                    <img class="img-fluid" 
-                         src="https://img.pngio.com/cyber-security-lock-free-image-on-pixabay-security-png-free-720_720.png" 
-                         width="200px" 
-                         height="200px" 
-                         alt="Sign In Image">
-                    <!--<img class="img-fluid" 
-                    src="https://d259t2jj6zp7qm.cloudfront.net/images/v1371103177-zaixahhzvf20dafb6ys8.png" width="200px" height="200px" alt="Sign In Image">-->
+                    Kategorije
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-white collapse-navbar"
+                   [routerLink]="'/search-results'" 
+                   routerLinkActive="active" 
+                   style="font-size: small;">
+
+                    Sve objave
+                </a>
+            </li>
+            <li class="nav-item dropdown"
+                *ngIf="isUserLoggedIn">
+                <a class="nav-link dropdown-toggle text-white"
+                   id="navbarDropdownProfile" 
+                   role="button"
+                   data-toggle="dropdown"
+                   aria-haspopup="true"
+                   aria-expanded="false"
+                   style="font-size: small;">
+
+                    Profil
+                </a>
+                <div class="dropdown-menu bg-dark drop-down-hover"
+                     aria-labelledby="navbarDropdownProfile">
+
+                    <a style="font-size: small;" 
+                       class="dropdown-item collapse-navbar text-white drop-down-hover" 
+                       [routerLink]="'/list-of-user-announcements'">
+                       
+                       Upravljanje obavještenjima
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       class="dropdown-item collapse-navbar text-white drop-down-hover" 
+                       [routerLink]="'/list-of-all-announcements'">
+                           
+                       Upravljanje svim obavještenjima
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       class="dropdown-item collapse-navbar text-white drop-down-hover" 
+                       [routerLink]="'/list-of-all-categories'">
+                           
+                       Upravljanje kategorijama
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       class="dropdown-item collapse-navbar text-white drop-down-hover" 
+                       [routerLink]="'/show-all-users'">
+                           
+                       Upravljanje korisnicima
+                    </a>
+                    <!-- data-toggle="collapse" 
+                        data-target="#navbar-content">Prikaz kategorija</a> -->
+                    <a style="font-size: small;" 
+                       class="dropdown-item collapse-navbar text-white drop-down-hover" 
+                       [routerLink]="'/user-profile'">
+                       
+                       Upravljanje nalogom
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       class="dropdown-item collapse-navbar text-white drop-down-hover" 
+                       [routerLink]="'/users-statistic'">
+                        
+                       Statistika
+                    </a>
+                    <a style="font-size: small;" 
+                       *ngIf="isAdmin" 
+                       class="dropdown-item collapse-navbar text-white drop-down-hover" 
+                       [routerLink]="'/page-settings'">
+                           
+                       Podešavanja sajta
+                    </a>
                 </div>
-                <br>
-                <nav class="text-center">
+            </li>
+            <!--<li *ngIf="isVisible"><a href="#">Korisnici</a></li>
+            <li *ngIf="isVisible"><a href="#">Statistika</a></li>
+            <li *ngIf="isVisible"><a href="#">Upravljanje nalozima</a></li>-->
+        </ul>
+        <form class="form-inline my-2 my-lg-0 mr-2">
+            <input type="text" class="form-control"
+                        name="searchModelBigNav"
+                        placeholder="Pretraga po naslovu"
+                        [ngbTypeahead]="search"
+                        [inputFormatter]="formatter"
+                        [resultFormatter]="formatter"
+                        [editable]='false'
+                        (selectItem)="selectedItem($event)"
+                        style="font-size: small;">
+        </form>
+        <div>
+            <i *ngIf="isUserLoggedIn" 
+               class="fa fa-user-o mr-2 fa-lg" 
+               style="color: white; vertical-align: middle;" 
+               aria-hidden="true"></i>
+            <a *ngIf="isUserLoggedIn" 
+               [routerLink]="'/user-profile'" 
+               routerLinkActive="active" 
+               class="text-white mr-2" 
+               style="text-decoration: underline; vertical-align: middle; font-size: small;"> 
+                {{ loggedUserName }} 
+            </a>
+        </div>
+        <button *ngIf="!isUserLoggedIn; else loggedOut"
+                type="button" 
+                class="btn btn-primary my-2 my-sm-0 col-xs-12"
+                (click)="openModal(template)"
+                style="font-size: small;">
+
+                <i class="fa fa-sign-in mr-1" aria-hidden="true"></i>
+                Prijavi se
+        </button>
+        <ng-template #loggedOut>
+            <button *ngIf="isUserLoggedIn"
+                    type="button" 
+                    class="btn btn-danger my-2 my-sm-0 col-xs-12"
+                    (click)="onSignOut()"
+                    style="font-size: small;">
+
+                    Odjavi se
+                    <i class="fa fa-sign-out ml-1" aria-hidden="true"></i>
+            </button>
+        </ng-template>
+    </div>
+</nav>
+ 
+<ng-template #template>
+    <div class="bg-dark">
+        <div class="modal-header">
+            <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body custom-modal-body">
+            <div class="col-12 mt-4">
+                <nav class="text-center px-0">
                     <div class="nav nav-tabs" 
-                         id="nav-tab" 
-                         role="tablist">
-
-                        <a class="w-50 nav-item nav-link active" 
-                           id="nav-home-tab" 
-                           data-toggle="tab" 
-                           href="#nav-home" 
-                           role="tab" 
-                           aria-controls="nav-home" 
-                           aria-selected="true">
-
+                            id="nav-tab" 
+                            role="tablist">
+    
+                        <a class="col-6 nav-item nav-link active" 
+                            id="nav-signin-tab" 
+                            data-toggle="tab" 
+                            href="#nav-signin" 
+                            role="tab" 
+                            aria-controls="nav-signin" 
+                            aria-selected="true">
+                            <!-- (click)="onSignIn()"> -->
+    
                             <strong>Sign In</strong>
                         </a>
-                        <a class="w-50 nav-item nav-link" 
-                           id="nav-profile-tab" 
-                           data-toggle="tab" 
-                           href="#nav-profile" 
-                           role="tab" 
-                           aria-controls="nav-profile" 
-                           aria-selected="false">
-
+                        <a class="col-6  nav-item nav-link" 
+                            id="nav-signup-tab" 
+                            data-toggle="tab" 
+                            href="#nav-signup" 
+                            role="tab" 
+                            aria-controls="nav-signup" 
+                            aria-selected="false">
+    
                             <strong>Sign Up</strong>
                         </a>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
-                    <div class="tab-pane fade" 
-                         id="nav-home" 
-                         role="tabpanel" 
-                         aria-labelledby="nav-home-tab">
-
-                        <app-login-form></app-login-form>
+                    <div class="tab-pane active" 
+                            id="nav-signin" 
+                            role="tabpanel" 
+                            aria-labelledby="nav-signin-tab">
+    
+                        <app-login-form (closeModal)="closeModal()"></app-login-form>
                     </div>
-                    <div class="tab-pane fade" 
-                         id="nav-profile" 
-                         role="tabpanel" 
-                         aria-labelledby="nav-profile-tab">
-
-                        <app-registration-form></app-registration-form>
+                    <div class="tab-pane" 
+                            id="nav-signup" 
+                            role="tabpanel" 
+                            aria-labelledby="nav-signup-tab">
+    
+                        <app-registration-form (closeModal)="closeModal()"></app-registration-form>
                     </div>
                 </div>
-                <!--<mat-tab-group class="col-ls-12 col-md-12 col-sm-12 col-xs-12" animationDuration="0ms">
-                    <mat-tab label="Sign In">
-                        <app-login-form></app-login-form>
-                    </mat-tab>
-                    <mat-tab label="Sign Up">
-                        <app-registration-form></app-registration-form>
-                    </mat-tab>
-                </mat-tab-group>-->
             </div>
         </div>
     </div>
-</div>
+</ng-template>

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElektronskaOglasnaTabla.Domain.Models
 {
@@ -7,24 +9,27 @@ namespace ElektronskaOglasnaTabla.Domain.Models
     {
         public Announcements()
         {
-            AnnouncementImageId = new HashSet<AnnouncementImageId>();
+            Files = new HashSet<Files>();
         }
-
+        [Key]
         public int AnnouncementId { get; set; }
         public string AnnouncementTitle { get; set; }
         public string AnnouncementDescription { get; set; }
         public DateTime AnnouncementDateCreated { get; set; }
         public DateTime? AnnouncementDateModified { get; set; }
-        public int? AnnouncementUserModified { get; set; }
-        public DateTime? AnnouncementExpiryDate { get; set; }
+        public DateTime AnnouncementExpiryDate { get; set; }
         public int AnnouncementImportantIndicator { get; set; }
-        public int UserId { get; set; }
+        [Column(TypeName = "nvarchar(450)")]
+        public string UserModifiedId { get; set; }
+        //[Required]
+        [Column(TypeName = "nvarchar(450)")]
+        public string UserCreatedId { get; set; }
         public int CategoryId { get; set; }
-        public bool IsDeleted { get; set; }
+        public bool AnnouncementShow { get; set; }
 
-        public virtual Users AnnouncementUserModifiedNavigation { get; set; }
+        public virtual ApplicationUser UserCreated { get; set; }
+        public virtual ApplicationUser UserModified { get; set; }
         public virtual Categories Category { get; set; }
-        public virtual Users User { get; set; }
-        public virtual ICollection<AnnouncementImageId> AnnouncementImageId { get; set; }
+        public virtual ICollection<Files> Files { get; set; }
     }
 }

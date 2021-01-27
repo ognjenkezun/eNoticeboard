@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ElektronskaOglasnaTabla.Domain.Models;
 using Microsoft.AspNetCore.Identity;
+using ElektronskaOglasnaTabla.Domain.CustomModels;
+using Microsoft.AspNetCore.Authorization;
+using ElektronskaOglasnaTabla.Api.Interfaces;
 
 namespace ElektronskaOglasnaTabla.Api.Controllers
 {
@@ -15,8 +18,9 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly ElektronskaOglasnaTablaContext _context;
-        private UserManager<Users> _userManager;
+        private UserManager<ApplicationUser> _userManager;
         private SignInManager<Users> _signInManager;
+        private readonly IEmailSender _emailSender;
 
         /*public UserController(ElektronskaOglasnaTablaContext context, UserManager<Users> userManager, SignInManager<Users> signInManager)
         {
@@ -25,20 +29,40 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
             _context = context;
         }
         */
-        public UserController(ElektronskaOglasnaTablaContext context)
+        public UserController(ElektronskaOglasnaTablaContext context, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
         {
             _context = context;
+            _userManager = userManager;
+            _emailSender = emailSender;
         }
 
         // GET: api/User
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Users>>> GetUsers()
+        //[Authorize(Roles = "Administrator")]
+        public ActionResult<IEnumerable<Users>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = _userManager.Users.ToList();
+
+            var resultList = new List<Users>();
+
+            users.ForEach(item =>
+            {
+                var user = new Users();
+
+                //user.UserId = item.Id;
+                user.UserFirstName = item.FirstName;
+                user.UserLastName = item.LastName;
+                user.UserEmail = item.Email;
+
+                resultList.Add(user);
+            });
+
+            return resultList;
         }
 
         // GET: api/User/5
         [HttpGet("{id}")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<ActionResult<Users>> GetUsers(int id)
         {
             var users = await _context.Users.FindAsync(id);
@@ -53,6 +77,7 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
 
         // PUT: api/User/5
         [HttpPut("{id}")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<IActionResult> PutUsers(int id, Users users)
         {
             if (id != users.UserId)
@@ -83,6 +108,7 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
 
         // POST: api/User
         [HttpPost]
+        //[Authorize(Roles = "Administrator")]
         public async Task<ActionResult<Users>> PostUsers(Users users)
         {
             _context.Users.Add(users);
@@ -93,6 +119,7 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
 
         // DELETE: api/User/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "Administrator")]
         public async Task<ActionResult<Users>> DeleteUsers(int id)
         {
             var users = await _context.Users.FindAsync(id);
@@ -112,7 +139,7 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
             return _context.Users.Any(e => e.UserId == id);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [Route("Register")]
         //POST: /api/ElektronskaOglasnaTabla/Register
         public async Task<Object> PostUser(Users model)
@@ -130,6 +157,35 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
             {
                 throw ex;
             }
+        }*/
+
+        // GET: api/User/UsersDetails
+        [HttpGet("UsersDetails")]
+        //[Authorize(Roles = "Administrator")]
+        public ActionResult<IEnumerable<UserDetails>> GetUsersDetails()
+        {
+            var userList = _context.Users.ToList();
+
+            var result = new List<UserDetails>();
+
+            userList.ForEach(user => {
+                var resultItem = new UserDetails();
+
+                //User
+                resultItem.UserId = user.UserId;
+                resultItem.UserFirstName = user.UserFirstName;
+                resultItem.UserLastName = user.UserLastName;
+                resultItem.UserEmail = user.UserEmail;
+
+                //User type
+                resultItem.UserTypeId = user.UserTypeId;
+                var userTypeItem = _context.UserTypes.FirstOrDefault(x => x.UserTypeId == user.UserTypeId);
+                resultItem.UserTypeName = userTypeItem.UserTypeName;
+
+                result.Add(resultItem);
+            });
+
+            return result;
         }
     }
 }

@@ -1,0 +1,29 @@
+mkdir project-name -> kreiranje foldera za projekat
+npm init -> inicijalizacija Node.js projekta unutar zeljenog foldera
+
+npm install express --save -> lokalna instalacija expresa-a
+node index.js -> pokretanje Node.js projekta
+
+
+npm run dev -> pokretanje Node.js projekta
+
+npm i nodemon --save -> lokalna instalacija nodemon
+nodemon index.js -> nodemon pokretanje projkta
+
+npm i sequelize --save -> lokalna instalacija sequelize
+npm install --save pg pg-hstore -> lokalna instalacija za PostgreSql
+
+npm install --save-dev sequelize-cli -> instalacija sequelize-cli u dev
+npx sequelize-cli init -> inicijalizacija sequelize-cli
+npx sequelize-cli model:generate --name User --attributes firstName:string, 
+					lastName:string, email:string -> generisanje modela
+
+npx sequelize-cli db:migrate -> pokretanje migracije
+
+npx sequelize-cli migration:create --name Users -> kreiranje migracije sa imenom Users
+
+npm install jsonwebtoken --save -> lokalna instalacija jsonwebtoken-a
+
+npm install body-parser --save -> lokalna instalacija body-parser-a za requeste 
+
+npm i dotenv --save -> lokalna instalacija dotenv gdje se cuvaju konfiguracije

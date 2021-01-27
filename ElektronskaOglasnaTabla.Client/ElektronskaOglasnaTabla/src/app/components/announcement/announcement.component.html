@@ -1,41 +1,59 @@
-<div class="card mx-1 border-primary custom-card-style shadow">
-    <div class="card-header container py-1">
+<div class="card border-primary custom-card-style shadow">
+    <div class="card-header container-fluid mx-0 py-1 px-1 px-1 px-sm-2 px-md-2 px-lg-2 px-xl-2">
         <div class="row">
-            <div class="col-6 text-left align-middle">
-                <span class="text-muted h6 elipsis">
-                    <strong> {{ announcementInput.announcementTitle }} </strong>
-                </span>
+            <div class="col-9 text-left align-middle">
+                <h6 class="text-muted custom-ellipsis mb-0">
+                    <strong>
+                        {{ announcementInput.announcementTitle }}
+                    </strong>
+                </h6>
             </div>
-            <div class="col-6 text-right">
+            <div class="col-3 text-left align-middle text-right" *ngIf="announcementInput.isNew">
+                <span class="badge badge-primary right"> Novo </span>
+            </div>
+            <div class="col-8 align-middle custom-ellipsis">
                 <span class="small text-muted">
-                    Crna hronika
+                    {{ announcementInput.categoryName }}
                 </span>
             </div>
-        </div>
-    </div>
-    <div class="card-body container">
-        <div class="row">
-            <div class="col-5">
-                <img src="https://via.placeholder.com/100" />
-            </div>
-            <div class="col-7 text-justify">
-                <span class="text-muted small" [innerHTML]="announcementInput.announcementDescription">
-                </span>
-            </div>
-        </div>
-
-    </div>
-    <div class="card-footer container py-1">
-        <div class="row">
-            <p class="card-text col-9 mb-0">
-                <small class="text-muted">
-                    Objavljeno {{ announcementInput.announcementDateCreated | date: 'dd.MM.yyyy.' }} od
-                    <a href="#"> Rada Šućur </a>
-                </small>
-            </p>
-            <div class="col-3 text-right">
+            <div class="col-4 text-right" *ngIf="announcementInput.importantIndicator">
                 <span class="badge badge-danger"> Važno! </span>
             </div>
+        </div>
+    </div>
+    <div class="card-body container-fluid mx-0 px-1 px-1 px-sm-2 px-md-2 px-lg-2 px-xl-2">
+        <div class="row divtext">
+            <!-- <div class="col-5">
+                <img src="https://via.placeholder.com/100" class="d-none d-sm-block"/>
+            </div> -->
+            <div class="col-12 text-justify">
+                <span class="text-muted small line-clamp" [innerHTML]="announcementInput.announcementDescription">
+                <!-- <span class="text-muted small line-clamp"> -->
+                    <!-- {{ announcementInput.announcementDescription }} -->
+                </span>
+            </div>
+            <!-- <div class="col-12 text-justify">
+                <span class="text-muted small line-clamp">
+                    {{ announcementInput.announcementDescription }}
+                </span> -->
+                <!-- <span class="text-muted small line-clamp" [innerHtml]="announcementInput.announcementDescription"></span> -->
+            <!-- </div> -->
+        </div>
+    </div>
+    <div class="card-footer container-fluid mx-0 py-1 px-1 px-sm-2 px-md-2 px-lg-2 px-xl-2">
+        <div class="row">
+            <p class="card-text col-12 mb-0">
+                <small class="text-muted">
+                    Objavljeno {{ announcementInput.announcementDateCreated | date: 'dd.MM.yyyy. u HH:mm' }}, 
+                    {{ announcementInput.userCreatedFirstName }} {{ announcementInput.userCreatedLastName }}
+                </small>
+            </p>
+            <p class="card-text col-12 mb-0">
+                <small class="text-muted" *ngIf="announcementInput.announcementDateModified && announcementInput.userModifiedFirstName && announcementInput.userModifiedLastName                      ">
+                    Modifikovano {{ announcementInput.announcementDateModified | date: "dd.MM.yyyy. u HH:mm"}},
+                    {{ announcementInput.userModifiedFirstName }} {{ announcementInput.userModifiedLastName }}
+                </small>
+            </p>
         </div>
     </div>
 </div>

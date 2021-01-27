@@ -3,7 +3,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Announcements } from 'src/app/models/Announcements';
 import { AnnouncementService } from 'src/app/services/announcement-service/announcement.service';
 import { DatePipe } from '@angular/common';
-import { NgbCalendar, NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
+import { NgbCalendar, NgbDatepicker, NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { Categories } from 'src/app/models/Categories';
 import { CategoryService } from 'src/app/services/category-service/category.service';
 import { ToastrService } from 'ngx-toastr';
@@ -25,7 +25,11 @@ export class AddAnnouncementFormComponent implements OnInit {
   public selectedCategoryId: number;
   public importantIndicator: boolean;
   public importantIndicatorToNumber: number;
+
+  public currentDate: Date;
   //public currentDateAndTime: Date = new Date();
+
+  model: NgbDateStruct
 
   public pipe = new DatePipe('en-US');
   public now = Date.now();
@@ -40,7 +44,10 @@ export class AddAnnouncementFormComponent implements OnInit {
 
   ngOnInit() {
 
+    this.currentDate = new Date();
+
     this.addAnnouncementForm = new FormGroup({
+
       'announcementCategory': new FormControl(this.listOfCategories[0],
         Validators.required
       ),
@@ -51,6 +58,9 @@ export class AddAnnouncementFormComponent implements OnInit {
         Validators.required
       ),
       'announcementDescription': new FormControl('',
+        Validators.required
+      ),
+      'announcementExpiryDate': new FormControl('',
         Validators.required
       )
     });
@@ -68,86 +78,53 @@ export class AddAnnouncementFormComponent implements OnInit {
 
   get announcementCategory() { return this.addAnnouncementForm.get('announcementCategory') }
 
-  get announcementPriority() { return this.addAnnouncementForm.get('announcementPriority') }
+  get announcementPriority() { return this.addAnnouncementForm.get('announcementImportant') }
 
   get announcementTitle() { return this.addAnnouncementForm.get('announcementTitle') }
 
   get announcementDescription() { return this.addAnnouncementForm.get('announcementDescription') }
+
+  get announcementExpiryDate() { return this.addAnnouncementForm.get('announcementExpiryDate') }
 
   onSubmit(): void {
     let currentDateAndTime: Date = new Date();
     //let dateFormat = require('dateformat');
     //let dateTimeNow = new Date();
     //dateFormat(dateTimeNow, "dd.mm.yyyy. HH:MM:ss");
-
+    console.log("ADD button clicked");
     console.warn(this.addAnnouncementForm.value);
 
-    if(this.importantIndicator){
+    if(this.addAnnouncementForm.get('announcementImportant').value){
       this.importantIndicatorToNumber = 1;
     }
     else{
       this.importantIndicatorToNumber = 0;
     }
 
-    let announcementAA = {
-      announcementTitle: this.addAnnouncementForm.get('announcementTitle').value.toString(),
-      announcementDescription: this.addAnnouncementForm.get('announcementDescription').value.toString(),
+    let announcement = {
+      announcementTitle: this.addAnnouncementForm.get('announcementTitle').value,
+      announcementDescription: this.addAnnouncementForm.get('announcementDescription').value,
       announcementDateCreated: currentDateAndTime,
-      announcementDateModified: currentDateAndTime,
-      announcementExpiryDate: currentDateAndTime,
+      announcementExpiryDate: this.addAnnouncementForm.get('announcementExpiryDate').value,
       announcementImportantIndicator: this.importantIndicatorToNumber,
-      userId: 1,
-      categoryId: this.selectedCategoryId,
-      isDeleted: false
+      userId: 2,
+      categoryId: this.addAnnouncementForm.get('announcementCategory').value,
+      announcementShow: false,
+      userIdentity: ""
     }
 
-    console.log(announcementAA);
+    console.log(announcement);
 
-    this._sharingDataService.changeAnnouncement(announcementAA);
+    this._sharingDataService.changeAnnouncement(announcement);
 
-    this._announcementService.addAnnouncement(announcementAA).subscribe(
+    this._announcementService.addAnnouncement(announcement).subscribe(
       (res: any) => {
-        if(res.succeeded) {
           this.toastr.success('Novo obavještenje dodato!', 'Dodavanje uspješno.');
-        }
-        else {
-          this.toastr.error(res.errors, 'Dodavanje nije uspjelo.');
-        }
-    },
-    err => {
-      console.log(err);
+          this.addAnnouncementForm.reset();
+      },
+      err => {
+        this.toastr.error(err, 'Dodavanje nije uspjelo.');
+        console.log(err);
     });
-
-    this.addAnnouncementForm.reset();
-  }
-
-  public addNewCategory(): void {
-
-    let newCat = {
-      categoryName: this.newCategory.categoryName,
-      priorityId: 1
-    }
-
-    this._categoryService.addCategory(newCat).subscribe(
-      (res: any) => {
-        if(res.succeeded) {
-          this.toastr.success('Nova kategorija dodata!', 'Dodavanje uspješno.');
-        }
-        else {
-          this.toastr.error(res.errors, 'Dodavanje nije uspjelo.');
-        }
-        this.newCategory.categoryName = null;
-        this.loadCategories();
-        //this.newCategory.categoryId = this.selectedCategoryId;
-        //this.selectedCategoryId = null;
-        this.listOfCategories.forEach(element => {
-          if(element.categoryName === this.newCategory.categoryName){
-            this.selectedCategoryId = element.categoryId;
-          }
-        });
-    },
-    err => {
-      console.log(err);
-    }); //toastr-om postaviti obavjestenje
   }
 }

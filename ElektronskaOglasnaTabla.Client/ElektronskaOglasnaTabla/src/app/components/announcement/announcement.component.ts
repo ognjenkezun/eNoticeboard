@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Announcements } from 'src/app/models/Announcements';
+import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
 
 @Component({
     selector: 'app-announcement',
@@ -8,19 +9,25 @@ import { Announcements } from 'src/app/models/Announcements';
 })
 export class AnnouncementComponent implements OnInit {
 
-    //POREDITI VRIJEME, AKO JE U POSLJEDNJA 25 h, ONDA IMA PLAVI BEDŽ NOVO!!!!
+    @Input() announcementInput = {} as AnnouncementDetails;
+    public currentDate: Date;
 
-    @Input() announcementInput = {} as Announcements;
-
-    public imageExist: boolean = false;
-    public announcementImageURL: string = "https://cdn.pixabay.com/photo/2015/12/01/20/28/fall-1072821_960_720.jpg";
+    public isNew: boolean = false;
+    //public imageExist: boolean = false;
+    //public announcementImageURL: string = "https://cdn.pixabay.com/photo/2015/12/01/20/28/fall-1072821_960_720.jpg";
 
     constructor() { }
 
     ngOnInit() {
-        if(this.announcementImageURL!=null)
+
+        //this.announcementInput.announcementDescription = this.announcementInput.announcementDescription.replace(/(<([^>]+)>)/gi, "");
+        let currentTime = Date.now();
+        let dateCreated = Date.parse(this.announcementInput.announcementDateCreated.toString());
+        let differenceInMilliceconds = currentTime - dateCreated;
+        let hours = (differenceInMilliceconds/(1000*60*60));
+        if(Math.abs(hours) < 24)
         {
-            this.imageExist = true;
+            this.announcementInput.isNew = true;
         }
     }
 }

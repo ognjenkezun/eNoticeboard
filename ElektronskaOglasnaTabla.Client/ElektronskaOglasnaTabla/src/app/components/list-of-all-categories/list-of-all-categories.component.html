@@ -1,62 +1,232 @@
-<h1 *ngIf="listOfAllCategories">Postojeće kategorije</h1>
-<h1 *ngIf="!listOfAllCategories">Trenutno nema unesenih kategorija</h1>
-<button type="button" class="btn btn-primary mb-2">
-    <i class="fa fa-plus mr-1" aria-hidden="true"></i> 
-    Nova Kategorija
-</button>
-<div class="d-block mb-2" *ngIf="listOfAllCategories">
-    <input class="form-control" 
-           type="text" 
-           name="search" 
-           placeholder="Unesite pojam za pretragu"
-           [(ngModel)]="searchText">
-</div>
-<div class="table-responsive" *ngIf="listOfAllCategories">
-    <table class="table table-hover shadow">
-        <caption>Postojeće kategorije</caption>
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>Naziv</th>
-                <th>Prioritet</th>
-                <th>Broj obavještenja</th>
-                <th>Izmjena/Brisanje</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr *ngFor="let cat of listOfAllCategories | filter : searchText | 
-                        paginate: { itemsPerPage: itmsPerPage, currentPage: p }; let i=index">
-                <td> {{ i+1 }} </td>
-                <td class="text-visible-column-ann-title"><a href="#"> {{ cat.categoryName }} </a></td>
-                <td class="text-visible-column-ann-title"> {{ cat.priorityId }} </td>
-                <td> 19/100 </td>
-                <td class="d-inline-block">
-                    <button class="btn btn-primary btn-sm mr-2 d-inline-block" 
-                            (click)="updateAnnouncement(ann);" 
-                            title="Izmjena">
-                        <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
-                    </button>
-                    <button class="btn btn-danger btn-sm d-inline-block" 
-                            (click)="deleteAnnouncement(ann);" 
-                            title="Brisanje">
-                        <i class="fa fa-trash-o" aria-hidden="true"></i>
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-    <pagination-controls (pageChange)="p = $event"></pagination-controls>
-    <div class="input-group">
-        <div class="input-group-prepend">
-            <span class="input-group-text">
-                Prikaza po stranici
-            </span>
+<div class="container-fluid">
+    <div class="row">
+        <h4 class="text-muted" *ngIf="listOfAllCategories">Pregled kategorija</h4>
+        <hr class="col-12 px-0">
+        <h1 *ngIf="!listOfAllCategories">Trenutno nema unesenih kategorija</h1>
+        
+        <!-- Modal add category -->
+        <button class="btn btn-primary col-lg-3 col-md-12 mb-3 btn-block" 
+                type="button" 
+                (click)="openModalAdd(templateAdd)">
+
+            <i class="fa fa-plus mr-1" aria-hidden="true"></i> 
+            Nova kategorija
+        </button>
+
+        <!-- Modal add announcement -->
+        <ng-template #templateAdd>
+            <div class="modal-header">
+                <h5 class="modal-title pull-left">Nova kategorija</h5>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="modalRefAdd.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form [formGroup]="_categoryService.formModel" autocomplete="off" (submit)="onSubmit()">
+                <div class="modal-body custom-modal-body">
+                    <div class="form-group">
+                        <label for="category-input" class="col-form-label">Kategorija</label>
+                        <input type="text" 
+                                class="form-control"
+                                formControlName="CategoryName"
+                                required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categorySelect" class="col-form-label">Prioritet</label>
+                        <select class="form-control"
+                                name="priorityIdAdd"
+                                formControlName="PriorityName"
+                                required>
+                
+                            <option *ngFor="let prior of listOfAllPriorities" 
+                                    [value]="prior.priorityId">
+                            
+                                {{ prior.priorityValue }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <button type="submit" class="btn btn-primary col-12" [disabled]="!_categoryService.formModel.valid">Dodaj</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+        
+        <!-- Modal update category -->
+        <ng-template #templateUpdate>
+            <div class="modal-header">
+                <h5 class="modal-title pull-left">Izmjena kategorije</h5>
+                <button type="button" class="close pull-right" aria-label="Close" (click)="modalRefUpdate.hide()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+
+            <form [formGroup]="_categoryService.formModel" autocomplete="off" (submit)="onSubmit()">
+                <div class="modal-body custom-modal-body">
+                    <div class="form-group">
+                        <label for="category-input" class="col-form-label">Kategorija</label>
+                        <input type="text" 
+                                class="form-control"
+                                formControlName="CategoryName"
+                                required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categorySelect" class="col-form-label">Prioritet</label>
+                        <select class="form-control"
+                                name="priorityIdUpdate"
+                                formControlName="PriorityName"
+                                required>
+                
+                            <option *ngFor="let prior of listOfAllPriorities" 
+                                    [value]="prior.priorityId">
+                            
+                                {{ prior.priorityValue }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <button type="submit" class="btn btn-primary col-12" [disabled]="!_categoryService.formModel.valid">Dodaj</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+        
+        <!-- Search category -->
+        <div class="mb-3 col-lg-9 col-md-12 px-1" *ngIf="listOfAllCategories">
+            <input class="form-control" 
+                   type="text" 
+                   name="search" 
+                   placeholder="Unesite pojam za pretragu"
+                   [(ngModel)]="searchText"
+                   autocomplete="off">
         </div>
-        <select class="form-control d-inline-block" 
-                [(ngModel)]="itmsPerPage">
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="20">20</option>
-        </select>
+        
+        <!-- Category table -->
+        <div class="table-responsive px-1" *ngIf="listOfAllCategories">
+            <table class="table table-hover shadow d-none d-md-block">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="py-1" style="width: 10%;">#</th>
+                        <th class="py-1" style="max-width: 35%; width: 35%;">Naziv</th>
+                        <th class="py-1" style="max-width: 45%; width: 45%;">Prioritet</th>
+                        <th class="py-1" style="width: 10%;">Izmjena/Brisanje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let cat of listOfAllCategories | filter : searchText | 
+                                paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalCatItems }; let i=index">
+                        <td class="py-1" style="vertical-align: middle;"> {{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage }} </td>
+                        <td class="text-visible-column-ann-title py-1" style="vertical-align: middle;"><span> {{ cat.categoryName }} </span></td>
+                        <td class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ cat.priorityValue }} </td>
+                        <td class="float-right w-100 py-1" style="vertical-align: middle;">
+                            <button class="btn btn-primary btn-sm mr-2" 
+                                    (click)="openModalUpdate(templateUpdate, cat)"
+                                    title="Izmjena">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm" 
+                                    data-toggle="modal"
+                                    data-target="#deleteConfirmationModal"
+                                    title="Brisanje"
+                                    (click)="returnSelectedCategory(cat)">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngFor="let cat of listOfAllCategories | filter : searchText | 
+                    paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalCatItems }; let i=index"
+                    class="col-lg-4 col-md-6 col-sm-12 col-xs-12 d-md-none d-xs-block mb-2 px-0">
+        
+                <!-- <app-announcement [announcementInput]="ann">
+                </app-announcement> -->
+    
+                <div class="card mb-3 border-primary">
+                    <div class="card-body text-overflow-ellipsis">
+                        <p class="mb-2"><strong>#{{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage }}</strong></p>
+                        <span><strong>Naziv: </strong></span><span>{{cat.categoryName}}</span>
+                        <br>
+                        <span><strong>Prioritet: </strong></span><span> {{cat.priorityValue}} </span>
+                    </div>
+                    <div class="card-footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-6">
+                                    <button type="button" 
+                                            class="btn btn-primary btn-sm w-100"
+                                            (click)="openModalUpdate(templateUpdate, cat)">
+                                            Izmijeni
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm w-100"
+                                            data-toggle="modal"
+                                            data-target="#deleteConfirmationModal"
+                                            (click)="returnSelectedCategory(cat)">
+                                            Obriši
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="col-12 px-0">
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-between">
+                <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 col-xs-12 px-0"
+                                [collectionSize]="totalCatItems" 
+                                [(page)]="selectedPage" 
+                                aria-label="Default pagination"
+                                [boundaryLinks]="true"
+                                [maxSize]="7"
+                                [rotate]="true"
+                                [pageSize]="itmsPerPage"
+                                (pageChange)="selectPage($event)">
+                </ngb-pagination>
+                <select class="custom-select col-lg-4 col-md-5 col-sm-12 col-xs-12"
+                        name="pageSize" 
+                        [(ngModel)]="itmsPerPage"
+                        (change)="onItemsPerPageChange()">
+                    <option [ngValue]="5">5 objave po strani</option>
+                    <option [ngValue]="10">10 objava po strani</option>
+                    <option [ngValue]="20">20 objava po strani</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModal">Potvrdi brisanje</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">Odbij</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary w-100" (click)="deleteCategory(selectedCategory);">Potvrdi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

@@ -1,60 +1,255 @@
-<!--<div class="mt-3">
-    <div class="card col-lg-3 col-md-3 col-sm-12 col-xs-12 p-0 float-left">
-        <img class="card-img-top w-100" 
-             src="https://www.w3schools.com/howto/img_avatar.png" 
-             alt="User image">
-        <div class="card-body">
-            <h4 class="card-title text-center">Stefan Stefanovic</h4>
-            <p class="card-text text-center text-muted">stefan123@gmail.com</p>
+<div class="container-fluid mt-5">
+    <div class="row">
+        <div class="col-lg-6 m-auto col-sm-12 px-0">
+            <h4 class="text-muted text-center">Podešavanje naloga</h4>
+            <div class="card p-3">
+                <div class="cad-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-3 float-right px-0">
+                                <span>Ime:</span>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 px-0">
+                                <span>{{ userProfile.firstName }}</span>
+                            </div>
+                            <hr class="col-lg-12 px-0">
+                            <div class="col-lg-3 col-md-3 col-sm-3 float-right px-0">
+                                <span>Prezime:</span>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 px-0">
+                                <span>{{ userProfile.lastName }}</span>
+                            </div>
+                            <hr class="col-lg-12 px-0">
+                            <div class="col-lg-3 col-md-3 col-sm-3 float-right px-0">
+                                <span>Email:</span>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 px-0">
+                                <span>{{ userProfile.email }}</span>
+                            </div>
+                            <hr class="col-lg-12 px-0">
+                            <div class="col-lg-3 col-md-3 col-sm-3 float-right px-0">
+                                <span>Tip korisnika:</span>
+                            </div>
+                            <div class="col-lg-9 col-md-9 col-sm-9 px-0">
+                                <span>{{ userProfile.role }}</span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <hr class="col-lg-12 px-0">
+                            <div class="col-lg-6 col-sm-6 col-xs-12 pr-sm-2 px-0">
+                                <button class="w-100 mb-2 btn btn-primary"
+                                        type="button"
+                                        (click)="openModalUpdateProfile(templateUpdateProfile)">Uredi profil</button>
+                            </div>
+                            <div class="col-lg-6 col-sm-6 col-xs-12 pl-sm-2 px-0">
+                                <button class="w-100 mb-2 btn btn-primary"
+                                        type="button"
+                                        (click)="openModalChangePassword(templateChangePassword)">Promijeni lozinku</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-footer">
-            <ul class="nav flex-column">
-                <li class="nav-item">
-                    <a [routerLink]="'./list-of-user-announcements'" 
-                       routerLinkActive="active" 
-                       class="m-1 nav-link">
-                        
-                        Vaše objave
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a [routerLink]="'./show-all-users'" 
-                       routerLinkActive="active" 
-                       class="m-1 nav-link">
-                       
-                        Prikaz svih korisnika
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 float-left p-0">
-        <div class="wrapper">
-            <h2 class="underlineHover d-inline-block" 
-                [routerLink]="'./list-of-user-announcements'" 
-                routerLinkActive="active">
-                PRIJAVI SE
-            </h2>
-            <h2 class="underlineHover d-inline-block" 
-                [routerLink]="'./show-all-users'" 
-                routerLinkActive="active">
-                REGISTRUJ SE
-            </h2>
-        </div>
-        <router-outlet></router-outlet>
-    </div>
-</div>-->
-
-<div class="wrapper">
-    <div class="wrapped-div">
-      <div class="tab-header">
-        <h2 [routerLink]="'./sign-in'" routerLinkActive='active'>Prijavi se</h2>
-        <h2 [routerLink]="'./sign-up'" routerLinkActive='active'>Registruj se</h2>
-      </div>
-      <div class="row">
-        <div class="col-md-10 offset-md-1">
-          <router-outlet></router-outlet>
-        </div>
-      </div>
     </div>
 </div>
+
+<!-- Modal add announcement -->
+<ng-template #templateUpdateProfile>
+    <div class="modal-header">
+        <h5 class="modal-title pull-left">Izmjena ličnih podataka</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRefUpdateProfile.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="editPersonalDataForm" (ngSubmit)="onEditPersonalDataSubmit(editPersonalDataForm)" autocomplete="off">
+        <div class="modal-body custom-modal-body">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="firstName">Ime</label>
+                    <input id="firstName"
+                            formControlName="firstName"
+                            type="text"
+                            class="form-control">
+                    <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)"
+                            class="alert alert-danger">
+
+                        <div *ngIf="firstName.errors.required">
+                            Ime je obavezno polje.
+                        </div>
+                    </div>        
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Prezime</label>
+                    <input id="lastName"
+                            type="text"
+                            formControlName="lastName"
+                            class="form-control">
+                    <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)"
+                            class="alert alert-danger">
+
+                        <div *ngIf="lastName.errors.required">
+                            Prezime je obavezno polje.
+                        </div>
+                    </div> 
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" 
+                            name="email" 
+                            formControlName="email"
+                            id="email"
+                            class="form-control"
+                            placeholder="example@mail.com">
+                    <div *ngIf="email.invalid && (email.dirty || email.touched)"
+                    class="alert alert-danger">
+
+                        <div *ngIf="email.errors.required">
+                            Email je obavezno polje.
+                        </div>
+                        <div *ngIf="email.errors.email">
+                            Korisničko ime mora da bude e-mail.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <button type="submit" 
+                            class="btn btn-primary form-control" 
+                            [disabled]="!editPersonalDataForm.valid">
+                        
+                        Potvrdi izmjenu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</ng-template>
+
+<ng-template #templateChangePassword>
+    <div class="modal-header">
+        <h5 class="modal-title pull-left">Promjena lozinke</h5>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRefChangePassword.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePasswordSubmit()" autocomplete="off">
+        <div class="modal-body custom-modal-body">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <label for="oldPassword">Unesite staru lozinku</label>
+                    <div class="input-group">
+                        <input id="oldPassword"
+                                [type]="fieldTextType ? 'text' : 'password'"
+                                name="oldPassword"
+                                formControlName="oldPassword"
+                                class="form-control">
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fa"
+                                    [ngClass]="{
+                                        'fa-eye-slash': !fieldTextType,
+                                        'fa-eye': fieldTextType
+                                    }"
+                                    (click)="toggleFieldTextType()">
+                                </i>
+                            </span>
+                        </div>
+                    </div>
+                    <div *ngIf="oldPassword.invalid && (oldPassword.dirty || oldPassword.touched)"
+                            class="alert alert-danger">
+
+                        <div *ngIf="oldPassword.errors.required">
+                            Stara lozinka je obavezno polje.
+                        </div>
+                        <div *ngIf="oldPassword.errors.minlength">
+                            <p>Dužina lozinke mora biti najmanje 8 karaktera.</p>
+                        </div>
+                    </div>
+                </div>
+                <div formGroupName="passwords">
+                    <div class="form-group">
+                        <label for="newPassword">Unesi novu lozinku</label>
+                        <div class="input-group">
+                            <input id="newPassword"
+                                    [type]="fieldTextType ? 'text' : 'password'"
+                                    name="newPassword"
+                                    formControlName="newPassword"
+                                    class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fa"
+                                        [ngClass]="{
+                                            'fa-eye-slash': !fieldTextType,
+                                            'fa-eye': fieldTextType
+                                        }"
+                                        (click)="toggleFieldTextType()">
+                                    </i>
+                                </span>
+                            </div>
+                        </div>
+                        <div *ngIf="newPassword.invalid && (newPassword.dirty || newPassword.touched)"
+                            class="alert alert-danger">
+
+                            <div *ngIf="newPassword.errors.required">
+                                Nova lozinka je obavezno polje.
+                            </div>
+                            <div *ngIf="newPassword.errors.minlength">
+                                <p>Dužina lozinke mora biti najmanje 8 karaktera.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmNewPassword">Potvrdi novu lozinku</label>
+                        <div class="input-group">
+                            <input [type]="fieldTextType ? 'text' : 'password'"
+                                    name="confirmNewPassword"
+                                    formControlName="confirmNewPassword"
+                                    id="confirmNewPassword"
+                                    class="form-control">
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fa"
+                                        [ngClass]="{
+                                            'fa-eye-slash': !fieldTextType,
+                                            'fa-eye': fieldTextType
+                                        }"
+                                        (click)="toggleFieldTextType()">
+                                    </i>
+                                </span>
+                            </div>
+                        </div>
+                        <div *ngIf="confirmNewPassword.invalid && (confirmNewPassword.dirty || confirmNewPassword.touched)"
+                            class="alert alert-danger">
+
+                            <div *ngIf="confirmNewPassword.errors.required">
+                                Potvrdna lozinka je obavezno polje.
+                            </div>
+                            <div *ngIf="confirmNewPassword.errors.minlength">
+                                <p>Dužina lozinke mora biti najmanje 8 karaktera.</p>
+                            </div>
+                            <div *ngIf="confirmNewPassword.errors?.passwordMismatch">
+                                Potvrdna lozinka se ne poklapa sa novom lozinkom.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="form-group">
+                    <button type="submit" 
+                            class="btn btn-primary form-control" 
+                            [disabled]="!changePasswordForm.valid">
+                        
+                        Potvrdi izmjenu
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</ng-template>

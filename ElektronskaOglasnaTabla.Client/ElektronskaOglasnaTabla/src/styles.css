@@ -3,13 +3,63 @@
     font-family: Playfair Display, Georgia, Times New Roman, serif;
 }
 
-.text-overflow-ellipsis {
-    overflow: hidden; 
-    white-space: nowrap; 
+@media (min-width: 1135px) {
+    #navbar-md{
+        display: none;
+    }
+}
+
+@media (max-width: 1134px) {
+    #navbar-lg{
+        display: none;
+    }
+
+    .custom-input-text-expand {
+        width: 100%;
+    }
+}
+
+.vert-algn {
+    vertical-align: middle;
+}
+
+.text-visible-column-ann-title {
+    max-width: 300px;
     text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .fa-eye-slash:hover,
 .fa-eye:hover {
-  cursor: pointer;
+    cursor: pointer;
 }
+
+.carousel-navigation {
+    background-color: lightgray;
+}
+
+.custom-select-number-of-pages {
+    width: 100px;
+}
+
+.zoomElement:hover{
+    transition-duration: 0.5s;
+    transform: scale(1.02);
+}
+
+/* table tr:hover {
+    cursor: pointer;
+} */
+
+.pointer-on-hover :hover {
+    cursor: pointer;
+}
+
+.custom-modal-body {
+  max-height: 70vh;
+}
+
+/* table tr td {
+    vertical-align: middle !important;
+} */

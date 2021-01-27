@@ -1,9 +1,13 @@
 <!-- Application Navigation -->
 <app-navigation></app-navigation>
-
+<!-- Header Image -->
+<!-- <header>
+    <img class="w-100" src="https://cdn.pixabay.com/photo/2018/03/15/09/27/list-3227575_960_720.jpg" alt="headerImage">
+</header> -->
+    
 <!-- Main central container in application -->
-<div class="container-fluid mt-3 mx-auto mb-5">
-    <router-outlet></router-outlet>
+<div class="container-fluid mt-3 mx-auto px-1 px-1 px-sm-3 px-md-3 px-lg-3 px-xl-3 mb-3" style="min-height: 60vh;">
+    <router-outlet (activate)="onActivate($event)"></router-outlet>
 </div>
 
 <!-- Application Footer -->

@@ -12,9 +12,9 @@
     text-decoration: underline;
 }
 
-@media only screen and (max-width: 767px) {
-    .myShadow{
-        
+@media screen and (max-width: 767px) {
+    .custom-card-style {
+        max-height: 250px;
     }
 }
 
@@ -22,10 +22,10 @@
     .myShadow{
         height: 250px;
     }
-}
 
-.custom-card-style {
-    max-height: 300px;
+    .custom-card-style {
+        height: 250px;
+    }
 }
 
 .custom-card-style :hover{
@@ -33,16 +33,27 @@
 }
 
 .custom-ann-description-style {
-    max-height: 75px;
+    max-height: 45px;
     overflow: hidden;
 }
 
-h5 :hover {
+h6 :hover {
     text-decoration: none;
 }
 
-.elipsis {
+.custom-ellipsis {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+}
+
+.divtext {
+    max-height: 115px;
+    overflow: hidden;
 }

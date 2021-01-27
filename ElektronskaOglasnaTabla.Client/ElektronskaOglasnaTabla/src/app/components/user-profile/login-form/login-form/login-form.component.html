@@ -11,9 +11,9 @@
         </div>
     </div>
 </div>-->
-<div class="col-lg-12 col-sm-12 col-12 main-section mt-4">
+<div class="col-lg-12 col-sm-12 col-12 main-section mt-4 bg-dark">
     <div class="form-input">
-        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
             <div class="form-group">
                 <div class="input-group">
                     <div class="input-group-prepend">
@@ -22,10 +22,9 @@
                         </span>
                     </div>
                     <input type="email" 
-                           formControlName="email" 
+                           formControlName="userName" 
                            class="form-control" 
                            placeholder="example@mail.com">
-
                 </div>
                 <div *ngIf="email.invalid && (email.dirty || email.touched)"
                     class="alert alert-danger">
@@ -75,11 +74,13 @@
                         </div>
                     </div>
             </div>
-            <input id="chckbxRememberMe" type="checkbox">
-            <label class="ml-2" for="chckbxRememberMe">Zapamti moje podatke</label>
+            <!-- <div class="form-group">
+                <input id="chckbxRememberMe" type="checkbox">
+                <label class="ml-2 text-white" for="chckbxRememberMe">Zapamti podatke</label>
+            </div> -->
             <div class="form-group">
                 <button type="submit" 
-                        class="btn btn-primary" 
+                        class="btn btn-primary text-white" 
                         [disabled]="!loginForm.valid">
                     
                     Prijavi se
@@ -88,6 +89,21 @@
         </form>
     </div>
     <div class="text-center">
-        <a href="#" target="_blank">Zaboravili ste lozinku?</a>
+        <button class="text-white btn btn-primary" data-toggle="collapse" 
+        data-target="#forgot-password">Zaboravili ste lozinku?</button>
+        <div id="forgot-password" class="collapse bg-dark card p-0 col-12 mt-2">
+            <form [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPasswordSubmit()">
+                <input type="email" 
+                               formControlName="forgotPassword"
+                               class="form-control w-100 my-2" 
+                               placeholder="example@mail.com">
+                <button class="btn btn-primary w-100 mb-2 text-white" 
+                        data-target="#forgot-password" 
+                        data-toggle="collapse" 
+                        type="submit"
+                        (click)="forgotPasswordForm.reset()"
+                        [disabled]="!forgotPasswordForm.valid">Pošalji</button>
+            </form>
+        </div>
     </div>
 </div>

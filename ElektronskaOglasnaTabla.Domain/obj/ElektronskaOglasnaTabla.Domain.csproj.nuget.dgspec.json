@@ -41,6 +41,10 @@
       "frameworks": {
         "netstandard2.0": {
           "dependencies": {
+            "EntityFramework": {
+              "target": "Package",
+              "version": "[6.4.4, )"
+            },
             "Microsoft.AspNetCore": {
               "target": "Package",
               "version": "[2.2.0, )"
@@ -84,6 +88,10 @@
             "Microsoft.NETCore.Platforms": {
               "target": "Package",
               "version": "[2.2.2, )"
+            },
+            "NETCore.MailKit": {
+              "target": "Package",
+              "version": "[2.0.0, )"
             },
             "NETStandard.Library": {
               "suppressParent": "All",

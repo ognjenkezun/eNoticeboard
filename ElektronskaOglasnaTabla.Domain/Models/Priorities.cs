@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace ElektronskaOglasnaTabla.Domain.Models
 {
@@ -9,7 +10,7 @@ namespace ElektronskaOglasnaTabla.Domain.Models
         {
             Categories = new HashSet<Categories>();
         }
-
+        [Key]
         public int PriorityId { get; set; }
         public string PriorityValue { get; set; }
 

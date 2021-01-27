@@ -1,7 +1,7 @@
 {
   "runtimeTarget": {
     "name": ".NETStandard,Version=v2.0/",
-    "signature": "7e91a8d385ec5a522c618b21caecc1b1443fa90c"
+    "signature": "7f11b105fa7c7c1910b8946be211253a1308208a"
   },
   "compilationOptions": {},
   "targets": {
@@ -9,6 +9,7 @@
     ".NETStandard,Version=v2.0/": {
       "ElektronskaOglasnaTabla.Domain/1.0.0": {
         "dependencies": {
+          "EntityFramework": "6.4.4",
           "Microsoft.AspNetCore": "2.2.0",
           "Microsoft.AspNetCore.Identity": "2.2.0",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "2.2.0",
@@ -26,6 +27,7 @@
           "ElektronskaOglasnaTabla.Domain.dll": {}
         }
       },
+      "EntityFramework/6.4.4": {},
       "Microsoft.AspNetCore/2.2.0": {
         "dependencies": {
           "Microsoft.AspNetCore.Diagnostics": "2.2.0",
@@ -1862,6 +1864,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "EntityFramework/6.4.4": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yj1+/4tci7Panu3jKDHYizxwVm0Jvm7b7m057b5h4u8NUHGCR8WIWirBTw+8EptRffwftIWPBeIRGNKD1ewEMQ==",
+      "path": "entityframework/6.4.4",
+      "hashPath": "entityframework.6.4.4.nupkg.sha512"
     },
     "Microsoft.AspNetCore/2.2.0": {
       "type": "package",
