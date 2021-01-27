@@ -1,0 +1,32 @@
+<div class="container-fluid  mt-5">
+    <div class="row">
+        <div class="col-lg-6 m-auto col-sm-12 px-0">
+            <form [formGroup]="configForm" (ngSubmit)="onSubmit()" autocomplete="off">
+                <h4 class="text-muted text-center">Podešavanje veb sajta</h4>
+                <div class="card p-3">
+                    <div class="cad-body">
+                        <div class="form-group">
+                            <label for="annDuration">Trajanje vijesti <small>(u danima)</small></label>
+                            <input formControlName="annExpiry" id="annDuration" type="number" class="form-control form-control-sm" pattern="\d+">    
+                        </div>
+                        <div class="form-group">
+                            <label for="annNumberPerCat">Broj zadnjih obavještenja po kategoriji</label>
+                            <input formControlName="numberAnnPerCat" id="annNumberPerCat" type="number" class="form-control form-control-sm" min="3" step="1" pattern="\d+">
+                        </div>
+                        <div class="form-group">
+                            <label for="annDurationSlide">Trajanje slajda na TV-u <small>(u sekundama)</small></label>
+                            <input formControlName="slideDuration" id="annDurationSlide" type="number" class="form-control form-control-sm" pattern="\d+">
+                        </div>
+                        <div class="form-group">
+                            <label for="annTimeUpdate">Automatsko ažuriranje <small>(u sekundama)</small></label>
+                            <input formControlName="autoUpdate" id="annTimeUpdate" type="number" class="form-control form-control-sm" pattern="\d+">
+                        </div>
+                        <div class="form-group mb-0">
+                            <button type="submit" class="form-control btn btn-primary btn-sm my-3" [disabled]="!configForm.valid">Ažuriraj vrijednosti</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="container-fluid">
+    <div class="row">
+        <h4 class="text-muted col-12 px-0">Najvažnije</h4>
+
+        <hr class="col-12 px-0">
+        
+        <div class="col-12 text-center" *ngIf="spinnerAnnouncements">
+            <div class="spinner-border text-primary"></div>
+        </div>
+
+        <div class="col-12" *ngIf="announcementsNotExist">
+            <h4 class="text-muted">Trenutno nema obavještenja</h4>
+        </div>
+
+        <!-- Search result -->
+        <div *ngFor="let ann of listAnnouncements | 
+                    paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }"
+                    class="col-lg-4 col-sm-12 my-3 px-2">
+            <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)"></app-announcement>
+        </div>
+        <hr class="col-12 px-0">
+
+        <!-- Pagination -->
+        <div class="col-12 px-0">
+            <div class="container-fluid">
+                <div class="row d-flex justify-content-between">
+                    <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 px-0"
+                                    [collectionSize]="totalAnnItems" 
+                                    [(page)]="selectedPage" 
+                                    aria-label="Default pagination"
+                                    [boundaryLinks]="true"
+                                    [maxSize]="7"
+                                    [rotate]="true"
+                                    [pageSize]="itmsPerPage"
+                                    (pageChange)="selectPage($event)">
+                    </ngb-pagination>
+                    <select class="custom-select col-lg-4 col-md-5 col-sm-12"
+                            name="pageSize" 
+                            [(ngModel)]="itmsPerPage"
+                            (change)="onItemsPerPageChange()">
+                        <option [ngValue]="6">6 objave po strani</option>
+                        <option [ngValue]="12">12 objava po strani</option>
+                        <option [ngValue]="18">18 objava po strani</option>
+                        <option [ngValue]="24">24 objava po strani</option>
+                        <option [ngValue]="30">30 objava po strani</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

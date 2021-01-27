@@ -1,0 +1,11 @@
+.hide-browser-border {
+    outline: none;
+    height: 100%;
+}
+
+.tv-container {
+    /* height: 93vh; */
+    height: 100vh;
+    overflow: hidden;
+    scroll-behavior: smooth;
+}

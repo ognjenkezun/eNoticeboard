@@ -1,0 +1,466 @@
+<div class="container-fluid">
+    <div class="row">
+        <h4 *ngIf="listOfUserAnnouncements" class="col-12 text-muted p-0">Vaša obavještenja</h4>
+        <hr class="col-12 px-0">
+        <div *ngIf="!listOfUserAnnouncements" class="col-12">
+            <h1 class="p-0">Trenutno nemate unesenih obavještenja</h1>
+        </div>
+        <div class="col-lg-3 col-sm-12 px-1">
+            <button class="btn btn-primary mb-3 btn-block" 
+                    type="button" 
+                    (click)="openModalAdd(templateAdd)">
+
+                <i class="fa fa-plus mr-1" aria-hidden="true"></i> 
+                Novo obavještenje
+            </button>
+
+            <!-- Modal add announcement -->
+            <ng-template #templateAdd>
+                <div class="modal-header">
+                    <h5 class="modal-title pull-left">Novo obavještenje</h5>
+                    <button type="button" class="close pull-right" aria-label="Close" (click)="closeModalAdd()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                
+                <form [formGroup]="_announcementService.announcementForm" (submit)="onSubmit()" autocomplete="off">
+                    <div class="modal-body custom-modal-body">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="title">Unesi naslov</label>
+                                <div class="input-group">
+                                    <input id="title"
+                                            type="text" 
+                                            formControlName="announcementTitle" 
+                                            class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--<label style="padding-right: 10px;">Choose Category</label>
+                                <kendo-dropdownlist [data]="listOfCategories">
+                                </kendo-dropdownlist>
+                                <br>-->
+                                <!--<label class="d-inline-block" style="padding-right: 10px;">Izaberite kategoriju</label>-->
+                                
+                                <label for="selCateg">Izaberi kategoriju</label>
+                                <select class="form-control d-inline-block"
+                                        id="selCateg"
+                                        formControlName="announcementCategory">
+                                    <option *ngFor="let cat of listOfCategories" 
+                                            [value]="cat.categoryId"> 
+                                            
+                                        {{ cat.categoryName }} 
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <!--
+                                <label for="priority">
+                                <strong>Important Indicator</strong>
+                                </label>
+                                <input id="priority" type="checkbox" formControlName="announcementPriority" class="form-control">
+                                -->
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                            type="checkbox" 
+                                            formControlName="announcementImportant"
+                                            id="impCheckBox">
+                                    <label class="form-check-label" 
+                                            for="impCheckBox">
+                                            
+                                        Indikator važnosti
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!-- <app-file-upload [disabled]="showProgress" [listOfFiles]="listOfFiles" (uploadStatus)="uploadStatus($event)"></app-file-upload> -->
+                                <!-- <app-file-upload></app-file-upload> -->
+                                <div class="container-uploaded">
+                                    <button [disabled]="disabled"
+                                            [ngClass]="{'disabled': disabled}"
+                                            class="btn btn-success"
+                                            (click)="inputFile.click()"
+                                            type="button">
+                                        Dodaj fajl
+                                    </button>
+                                    <input name="fileUpload" 
+                                           id="fileUpload" 
+                                           (change)="upload($event)" 
+                                           type="file" 
+                                           #inputFile 
+                                           multiple 
+                                           hidden>
+                                    <p *ngFor="let file of listOfFiles">
+                                        {{ file }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="datePickerAdd">Rok prikaza</label>
+                                <input id="datePickerAdd" 
+                                        bsDatepicker 
+                                        type="text" 
+                                        class="form-control"
+                                        formControlName="announcementExpiryDate"
+                                        placeholder="Izaberi datum"
+                                        [minDate]="currentDate"
+                                        [bsConfig]="{ isAnimated: true,
+                                                        adaptivePosition: true,
+                                                        containerClass: 'theme-dark-blue',
+                                                        dateInputFormat: 'DD.MM.YYYY.' }">
+                            </div>
+                            <div class="form-group">
+                                <label>Unesi opis</label>
+                                <!--<kendo-editor [(ngModel)]="annDescription" name="annDescription" style="height: 370px;"></kendo-editor>-->
+                                <kendo-editor class="custom-kendo-text-editor"
+                                                formControlName="announcementDescription" 
+                                                name="annDescription">
+                                                <kendo-toolbar>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorRedoButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorUndoButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorBoldButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorItalicButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorUnderlineButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorUnderlineButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorSuperscriptButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorSubscriptButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorAlignLeftButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorAlignCenterButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorAlignRightButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorAlignJustifyButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-dropdownlist kendoEditorFormat></kendo-toolbar-dropdownlist>
+                                                        <kendo-toolbar-dropdownlist kendoEditorFontSize></kendo-toolbar-dropdownlist>
+                                                        <kendo-toolbar-dropdownlist kendoEditorFontFamily></kendo-toolbar-dropdownlist>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorInsertUnorderedListButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorInsertOrderedListButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorIndentButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorOutdentButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                </kendo-toolbar>
+                                </kendo-editor>
+                                <!--<input type="text" formControlName="announcementDescription" class="form-control" placeholder="Description">-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <button type="submit"
+                                        class="btn btn-primary form-control"
+                                        [disabled]="!_announcementService.announcementForm.valid">
+                                    Dodaj
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </ng-template>
+
+            <!-- Modal update announcement -->
+            <ng-template #templateUpdate>
+                <div class="modal-header">
+                    <h5 class="modal-title pull-left">Izmjena obavještenja</h5>
+                    <button type="button" class="close pull-right" aria-label="Close" (click)="closeModalUpdate()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <form [formGroup]="_announcementService.announcementForm" (submit)="onUpdateSubmit(selectedAnnouncement)" autocomplete="off">
+                    <div class="modal-body custom-modal-body">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label for="titleUpdate">Unesi naslov</label>
+                                <div class="input-group">
+                                    <input id="titleUpdate"
+                                            type="text" 
+                                            formControlName="announcementTitle" 
+                                            class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!--<label style="padding-right: 10px;">Choose Category</label>
+                                <kendo-dropdownlist [data]="listOfCategories">
+                                </kendo-dropdownlist>
+                                <br>-->
+                                <!--<label class="d-inline-block" style="padding-right: 10px;">Izaberite kategoriju</label>-->
+                                
+                                <label for="selCategUpdate">Izaberi kategoriju</label>
+                                <select class="form-control d-inline-block"
+                                        id="selCategUpdate"
+                                        formControlName="announcementCategory">
+                                    <option *ngFor="let cat of listOfCategories" 
+                                            [value]="cat.categoryId"> 
+                                            
+                                        {{ cat.categoryName }} 
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <!--
+                                <label for="priority">
+                                <strong>Important Indicator</strong>
+                                </label>
+                                <input id="priority" type="checkbox" formControlName="announcementPriority" class="form-control">
+                                -->
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                            type="checkbox" 
+                                            formControlName="announcementImportant"
+                                            id="impCheckBoxUpdate">
+                                    <label class="form-check-label" 
+                                            for="impCheckBoxUpdate">
+                                            
+                                        Indikator važnosti
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <!-- <app-file-upload [listOfFiles]="listOfFiles"></app-file-upload> -->
+                                <!-- <app-file-upload></app-file-upload> -->
+                                <div class="container-uploaded">
+                                    <button [disabled]="disabled"
+                                            [ngClass]="{'disabled': disabled}"
+                                            class="btn btn-success"
+                                            (click)="inputFile.click()"
+                                            type="button">
+                                        Dodaj fajl
+                                    </button>
+                                    <input name="fileUpload" 
+                                           id="fileUpload" 
+                                           (change)="upload($event)" 
+                                           type="file" 
+                                           #inputFile 
+                                           multiple 
+                                           hidden>
+                                    <p *ngFor="let file of listOfFiles">
+                                        {{ file }}
+                                    </p>
+                                </div>
+                                <div *ngFor="let fileName of listOfFilesName">
+                                    <span>{{ fileName }}</span>
+                                    <button class="btn btn-sm ml-2" type="button">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="datePickerAdd">Rok prikaza</label>
+                                <input id="datePickerUpdate" 
+                                        bsDatepicker 
+                                        class="form-control"
+                                        formControlName="announcementExpiryDate"
+                                        placeholder="Izaberi datum"
+                                        [bsConfig]="{ isAnimated: true,
+                                                        adaptivePosition: true,
+                                                        containerClass: 'theme-dark-blue',
+                                                        dateInputFormat: 'DD.MM.YYYY.' }">
+                            </div>
+                            <div class="form-group">
+                                <label>Unesi opis</label>
+                                <!--<kendo-editor [(ngModel)]="annDescription" name="annDescription" style="height: 370px;"></kendo-editor>-->
+                                <kendo-editor class="custom-kendo-text-editor"
+                                                formControlName="announcementDescription" 
+                                                name="annDescription">
+                                                <kendo-toolbar>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorRedoButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorUndoButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorBoldButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorItalicButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorUnderlineButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorUnderlineButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorSuperscriptButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorSubscriptButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorAlignLeftButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorAlignCenterButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorAlignRightButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorAlignJustifyButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-dropdownlist kendoEditorFormat></kendo-toolbar-dropdownlist>
+                                                        <kendo-toolbar-dropdownlist kendoEditorFontSize></kendo-toolbar-dropdownlist>
+                                                        <kendo-toolbar-dropdownlist kendoEditorFontFamily></kendo-toolbar-dropdownlist>
+                                                    <kendo-toolbar-buttongroup>
+                                                        <kendo-toolbar-button kendoEditorInsertUnorderedListButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorInsertOrderedListButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorIndentButton></kendo-toolbar-button>
+                                                        <kendo-toolbar-button kendoEditorOutdentButton></kendo-toolbar-button>
+                                                    </kendo-toolbar-buttongroup>
+                                                </kendo-toolbar>
+                                </kendo-editor>
+                                <!-- <textarea rows="10" 
+                                            formControlName="announcementDescription"
+                                            class="form-control">
+                                </textarea> -->
+                                <!--<input type="text" formControlName="announcementDescription" class="form-control" placeholder="Description">-->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <button type="submit"
+                                        class="btn btn-primary form-control"
+                                        [disabled]="!_announcementService.announcementForm.valid">
+                                    Izmijeni
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </ng-template>
+        </div>
+        <div class="col-lg-9 col-sm-12 mb-3 px-1" *ngIf="listOfUserAnnouncements">
+            <input class="form-control" 
+                   type="text" 
+                   name="search" 
+                   placeholder="Pretraži" 
+                   [(ngModel)]="searchText"
+                   autocomplete="off">
+        </div>
+        <div class="table-responsive px-1" *ngIf="listOfUserAnnouncements">
+            <table class="table table-hover shadow d-none d-md-block">
+                <thead class="thead-dark">
+                    <tr>
+                        <th class="py-1" style="width: 10%;">#</th>
+                        <th class="py-1" style="max-width: 25%; width: 25%;">Naslov</th>
+                        <th class="py-1" style="max-width: 30%; width: 30%;">Opis</th>
+                        <th class="py-1" style="max-width: 10%; width: 10%;">Kategorija</th>
+                        <th class="py-1" style="max-width: 15%; width: 15%;">Datum objave</th>
+                        <th class="py-1" style="width: 10%;">Izmjena/Brisanje</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let ann of listOfUserAnnouncements | filter : searchText | 
+                                paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems };
+                                let i=index">
+
+                        <td (click)="onClick(ann.announcementId)" class="py-1" style="vertical-align: middle;"> {{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage  }} </td>
+                        <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann.announcementTitle }} </td>
+                        <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;" [innerHTML]="ann.announcementDescription"></td>
+                        <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann.categoryName }} </td>
+                        <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann.announcementDateCreated | date: "dd.MM.yyyy." }} </td>
+                        <td class="d-inline-block float-right w-100 py-1" style="vertical-align: middle;">
+                            <button class="btn btn-primary btn-sm mr-2 d-inline-block text-visible-column-ann-title" 
+                                    (click)="openModalUpdate(templateUpdate, ann)"
+                                    title="Izmjena">
+                                <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-danger btn-sm d-inline-block text-visible-column-ann-title"
+                                    data-toggle="modal"
+                                    data-target="#deleteConfirmationModal"
+                                    (click)="returnSelectedAnnonucement(ann)"
+                                    title="Brisanje">
+                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div *ngFor="let ann of listOfUserAnnouncements | filter : searchText | 
+                 paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }; let i=index"
+                 class="col-lg-4 col-md-6 col-sm-12 col-xs-12 d-md-none d-xs-block mb-2 px-0">
+        
+                <!-- <app-announcement [announcementInput]="ann">
+                </app-announcement> -->
+
+                <div class="card mb-3 border-primary">
+                    <div class="card-body text-overflow-ellipsis" (click)="onClick(ann.announcementId)">
+                        <p class="mb-2"><strong> # {{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage }} </strong></p>
+                        <div *ngIf="ann.announcementImportantIndicator">
+                            <span class="badge badge-danger"> Važno! </span>
+                        </div>
+                        <span><strong>Naslov: </strong></span><span> {{ann.announcementTitle}} </span>
+                        <br>
+                        <span><strong>Opis: </strong></span><span [innerHTML]="ann.announcementDescription"></span>
+                        <br>
+                        <span><strong>Kategorija: </strong></span><span> {{ ann.categoryName }} </span>
+                        <br>
+                        <span><strong>Datum objave: </strong></span><span> {{ ann.announcementDateCreated | date: 'dd.MM.yyyy.'}} </span>
+                    </div>
+                    <div class="card-footer">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-6">
+                                    <button type="button" 
+                                            class="btn btn-primary btn-sm w-100" 
+                                            (click)="openModalUpdate(templateUpdate, ann)">Izmijeni
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" 
+                                            class="btn btn-danger btn-sm w-100"
+                                            data-toggle="modal"
+                                            data-target="#deleteConfirmationModal"
+                                            (click)="returnSelectedAnnonucement(ann)">Obriši
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="col-12 px-0">
+        <div class="container-fluid">
+            <div class="row d-flex justify-content-between">
+                <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 col-xs-12 px-0"
+                                [collectionSize]="totalAnnItems" 
+                                [(page)]="selectedPage" 
+                                aria-label="Default pagination"
+                                [boundaryLinks]="true"
+                                [maxSize]="7"
+                                [rotate]="true"
+                                [pageSize]="itmsPerPage"
+                                (pageChange)="selectPage($event)">
+                </ngb-pagination>
+                <select class="custom-select col-lg-4 col-md-5 col-sm-12 col-xs-12"
+                        name="pageSize" 
+                        [(ngModel)]="itmsPerPage"
+                        (change)="onItemsPerPageChange()">
+                    <option [ngValue]="5">5 objave po strani</option>
+                    <option [ngValue]="10">10 objava po strani</option>
+                    <option [ngValue]="20">20 objava po strani</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModal" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModal">Potvrdi brisanje</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-6">
+                            <button type="button" class="btn btn-secondary w-100" data-dismiss="modal">Odbij</button>
+                        </div>
+                        <div class="col-6">
+                            <button type="button" class="btn btn-primary w-100" (click)="deleteAnnouncement()" data-dismiss="modal">Potvrdi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,155 @@
+<!-- <div class="container-fluid d-none d-xl-block"> -->
+<div class="row">
+    <div class="col-12">
+        <button *ngIf="!announcementsNotExist" class="btn btn-primary btn-lg col-4 offset-4 mb-2" (click)="openFullscreen()">Prikaži preko cijelog ekrana</button>
+        <div #tvContainer class="container-fluid p-0 hide-browser-border d-none d-xl-block shadow">
+            <div class="row">
+                <div class="col-xl-12">
+                    <carousel [isAnimated]="true" 
+                              [interval]="false" 
+                              [showIndicators]="false"
+                              [pauseOnFocus]="false"
+                              [noPause]="true"
+                              [(activeSlide)]="activeSlide"
+                              (activeSlideChange)="onSlideChange($event)">
+        
+                        <slide *ngFor="let ann of listOfAnnouncements; let i = index">
+                            <div class="card">
+                                <div class="card-body tv-container">
+                                    <div class="col-12 d-inline-block" style="overflow-y: scroll; overflow: hidden; height: 95vh;">
+                                        <h4 class="mt-2 text-muted">
+                                            {{ ann.announcementTitle }}
+                                        </h4>
+            
+                                        <!-- Important indicator -->
+                                        <h5>
+                                            <span *ngIf="ann.isNew" class="badge badge-primary mr-1">
+                                                Novo
+                                            </span>
+                                            <span class="badge badge-danger">
+                                                Važno
+                                            </span>
+                                        </h5>
+                                        
+                                        <!-- Category -->
+                                        <p class="text-muted">
+                                            Kategorija: {{ ann.categoryName }}
+                                        </p>
+                                        <hr>
+            
+                                        <!-- Data/Time and Author -->
+                                        <p class="text-muted">
+                                            Obajvljeno {{ ann.announcementDateCreated | date: "dd.MM.yyyy. u HH:mm"}}, 
+                                            autor {{ ann.userCreatedFirstName }} {{ ann.userCreatedLastName }} 
+                                        </p>
+                                        <p class="text-muted" *ngIf="ann.announcementDateModified && ann.userModifiedFirstName && ann.userModifiedLastName                      ">
+                                            Modifikovano {{ ann.announcementDateModified | date: "dd.MM.yyyy. u HH:mm"}}, 
+                                            modifikovao {{ ann.userModifiedFirstName }} {{ ann.userModifiedLastName }}
+                                        </p>
+                                        <hr>
+    
+                                        <!-- Description -->
+                                        <p [innerHTML]="ann.announcementDescription"></p>
+                                        <!-- <hr>
+                                        <div class="text-center w-100">
+                                            <img *ngFor="let path of listOfImagesPaths" 
+                                                    [src]="path" 
+                                                    class="mb-2 p-2 col-3">
+                                        </div> -->
+                                        <hr>
+                                        <img *ngFor="let item of filterImages(ann)" 
+                                             [src]="item.filePath" 
+                                             class="mb-2 p-2 col-12">
+                                        <hr>
+                                        <pdf-viewer *ngFor="let item of filterFiles(ann)"
+                                                    [src]="item.filePath"
+                                                    [show-all]="true"
+                                                    [show-borders]="true"
+                                                    [original-size]="true"
+                                                    [render-text]="true"
+                                                    [render-text-mode]="1"
+                                                    [zoom]="0.9"
+                                                    (page-rendered)="pageRendered($event)"
+                                                    (text-layer-rendered)="textLayerRendered($event)"
+                                                    (on-progress)="onProgress($event)"
+                                                    (after-load-complete)="callBackFn($event)"
+                                                    style="display: block;"
+                                                    class="col-12">
+                                        </pdf-viewer>
+                                    <div *ngIf="true" style="height: 40vh;"></div>
+                                </div>
+                                    <div *ngFor="let item of filterVideos(ann)">
+                                        <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop #videoPlayer (ended)="onVideoEnded($event)">
+                                            <source [src]="item.filePath" type="video/mp4">
+                                            <!-- <source src=".ogg" type="video/ogg">
+                                            <source src=".webm" type="video/webm"> -->
+                                        </video>
+                                    </div>
+                                    <!-- <div class="col-6 d-inline-block">
+                                        <video class="col-12" style="position: absolute; top: 0;" autoplay loop #videoPlayer>
+                                            <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                                            <source src=".ogg" type="video/ogg">
+                                            <source src=".webm" type="video/webm">
+                                            <p>Browser doesn't suport the video tag.</p>
+                                        </video>
+                                    </div> -->
+                                    <!-- OVO DOLE JE PRAVO !!!!!!!!!!!! ############### -->
+                                    <!-- <div *ngIf="true">
+                                        <video class="" style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop #videoPlayer (ended)="onVideoEnded($event)">
+                                            <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                                            <source src=".ogg" type="video/ogg">
+                                            <source src=".webm" type="video/webm">
+                                            <p>Browser doesn't suport the video tag.</p>
+                                        </video>
+                                    </div> -->
+                                    
+                                    <!-- <video class="w-100" style="position: fixed" controls autoplay>
+                                        <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                                    </video> -->
+                                    <!-- <div class="col-5" style="border: 1px solid red; 
+                                                                height: 250px; 
+                                                                right: 0; 
+                                                                top: 0; 
+                                                                position: fixed; 
+                                                                z-index: 100;
+                                                                text-align: center;
+                                                                background-color: blue;">
+                                        <video class="w-100" controls autoplay>
+                                            <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
+                                        </video>-->
+                                        <!-- <h1 style="color: red; 
+                                                    vertical-align: middle; 
+                                                    align-items: center;">
+                                            VIDEO
+                                        </h1> -->
+                                    <!--</div> -->
+                                    <!-- <div class="col-8 offset-2" style="border: 1px solid blue; 
+                                                                        height: 400px;
+                                                                        position: fixed; 
+                                                                        z-index: 99;
+                                                                        text-align: center;
+                                                                        background-color: red;">
+                                        <h1 style="color: blue; 
+                                                    vertical-align: middle; 
+                                                    align-items: center;">
+                                            VIDEO
+                                        </h1>
+                                    </div> -->
+                                    <!-- Title -->
+                                    
+                                </div>
+                            </div>
+                        </slide>
+                    </carousel>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h4 *ngIf="announcementsNotExist" class="text-muted my-5">Trenutno nema obavještenja</h4>
+        </div>
+        <div class="col-12 text-center my-5">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status" *ngIf="spinnerCarousel">
+            </div>
+        </div>
+    </div>
+</div>

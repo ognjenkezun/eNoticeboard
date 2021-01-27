@@ -1,0 +1,19 @@
+<div class="container-uploaded">
+    <button [disabled]="disabled"
+            [ngClass]="{'disabled': disabled}"
+            class="btn btn-success"
+            (click)="inputImage.click()"
+            type="button">
+        Dodaj sliku
+    </button>
+    <input name="fileUpload" 
+            id="fileUpload" 
+            (change)="upload($event)" 
+            type="file" 
+            #inputImage 
+            multiple 
+            hidden>
+    <p *ngFor="let file of listOfImages">
+            {{ file }}
+    </p>
+</div>

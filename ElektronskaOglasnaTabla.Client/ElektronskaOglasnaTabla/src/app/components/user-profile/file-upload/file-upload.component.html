@@ -1,0 +1,19 @@
+<div class="container-uploaded">
+    <button [disabled]="disabled"
+            [ngClass]="{'disabled': disabled}"
+            class="btn btn-success"
+            (click)="inputFile.click()"
+            type="button">
+        Dodaj fajl
+    </button>
+    <input name="fileUpload" 
+           id="fileUpload" 
+           (change)="upload($event)" 
+           type="file" 
+           #inputFile 
+           multiple 
+           hidden>
+    <p *ngFor="let file of listOfFiles">
+        {{ file }}
+    </p>
+</div>
