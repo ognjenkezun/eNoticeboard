@@ -49,22 +49,23 @@
             <app-file-manager></app-file-manager> -->
             
             <div *ngFor="let item of filterFiles">
-                <video class="col-12" controls>
+                <video class="col-12 px-0" controls>
                     <source [src]="item.filePath" type="video/mp4">
                     <source [src]="item.filePath" type="video/ogg">
                     <source [src]="item.filePath" type="video/webm">
                 </video>
             </div>
             <br>
-            <div class="col-12">
+            <div class="col-12 px-0">
                 <carousel [isAnimated]="true"
                           [showIndicators]="true"
                           [pauseOnFocus]="true"
                           [noPause]="true">
     
                     <slide *ngFor="let item of filterImages">
-                        <img [src]="item.filePath"
-                             class="mb-2 col-12">
+                        <img [src]="item.filePath" 
+                             style="height: 400px; object-fit: cover; object-position: 0 0;"
+                             class="mb-2 px-0 col-12">
                     </slide>
                 </carousel>
             </div>

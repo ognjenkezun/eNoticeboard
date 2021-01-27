@@ -2,16 +2,12 @@
 <h4 class="text-muted">Lista fajlova</h4>
 <p *ngIf="showProgress">Progress <strong> {{ percentage }} % </strong></p>
 <hr> -->
-<div class="container">
-    <div class="row">
-        <div class="col-12">
-            <p *ngFor="let file of listOfFiles">
-                {{ file }}
-                <app-file-download [disabled]="showProgress" 
-                                    [fileName]="file" 
-                                    (downloadStatus)="downloadStatus($event)">
-                </app-file-download>
-            </p>
-        </div>
-    </div>
+<div class="col-12 px-0">
+    <p *ngFor="let file of listOfFiles">
+        {{ file }}
+        <app-file-download [disabled]="showProgress" 
+                            [fileName]="file" 
+                            (downloadStatus)="downloadStatus($event)">
+        </app-file-download>
+    </p>
 </div>

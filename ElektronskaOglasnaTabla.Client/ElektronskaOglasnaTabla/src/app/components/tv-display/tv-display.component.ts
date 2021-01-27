@@ -21,7 +21,7 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     public listOfFilesPaths: string[] = [];
     public listOfImagesPaths: string[] = [];
 
-    public duration: number = 180000;
+    public duration: number = 30000;
     public numberOfSlideChange: number = 0;
     public numberOfFinishVideo: number = 0;
     
@@ -54,7 +54,6 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     ngAfterViewInit(): void {
-
         console.log(this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children);
         this.fullscreenComponent = this.tvContainer.nativeElement;
     }
@@ -114,15 +113,16 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     filterVideos(announcement: AnnouncementDetails) {
         if (announcement.files) {
             return announcement.files.filter(file => 
-                file.type == "video/mp4"
+                file.type.includes("video")
             );
         }
     }
 
     filterImages(announcement: AnnouncementDetails) {
         if (announcement.files) {
-            return announcement.files.filter(file => 
-                file.type == "image/png" || "image/jpg" || "image/jpeg"
+            //const condition = 
+            return announcement.files.filter(file =>
+                file.type.includes("image")
             );
         }
     }
@@ -175,6 +175,7 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
         //console.log("Active slide is event ", event, this.activeSlide);
         clearInterval(this.interval);
         this.interval = 0;
+        let scrollSpeed = 0;
         this.numberOfSlideChange = 0;
         this.counterOfHeight = 0;
         this.numberOfFinishVideo = 0;
@@ -186,11 +187,12 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
                 
                 this.scrollHeight = this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children[this.activeSlide].children[0].children[0].children[0].children[0].scrollHeight;
                 //console.log(this.scrollHeight);
+                scrollSpeed = (this.scrollHeight / this.duration) * 50;
                 
                 this.interval = setInterval(() => {
                     if (this.counterOfHeight < elem.scrollHeight) {
-                        this.counterOfHeight += 1;
-                        elem.scrollBy(0, 1);
+                        this.counterOfHeight += scrollSpeed;
+                        elem.scrollBy(0, scrollSpeed);
                     }
                     else {
                         //this.duration = 1000;

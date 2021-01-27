@@ -6,7 +6,7 @@
             <div class="row">
                 <div class="col-xl-12">
                     <carousel [isAnimated]="true" 
-                              [interval]="false" 
+                              [interval]="duration" 
                               [showIndicators]="false"
                               [pauseOnFocus]="false"
                               [noPause]="true"
@@ -56,10 +56,14 @@
                                                     [src]="path" 
                                                     class="mb-2 p-2 col-3">
                                         </div> -->
-                                        <hr>
+                                        <hr *ngIf="ann.files.length">
                                         <img *ngFor="let item of filterImages(ann)" 
                                              [src]="item.filePath" 
-                                             class="mb-2 p-2 col-12">
+                                             style="object-fit: cover; object-position: 0 0;"
+                                             class="mb-2 p-2"
+                                             [ngClass]="{'col-12': filterImages(ann).length == '1', 
+                                                         'col-6': filterImages(ann).length > '1' }"
+                                             [ngStyle]="{'height.px': filterImages(ann).length == '1' ? '500' : '300'}">
                                         <hr>
                                         <pdf-viewer *ngFor="let item of filterFiles(ann)"
                                                     [src]="item.filePath"
@@ -79,7 +83,7 @@
                                     <div *ngIf="true" style="height: 40vh;"></div>
                                 </div>
                                     <div *ngFor="let item of filterVideos(ann)">
-                                        <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop #videoPlayer (ended)="onVideoEnded($event)">
+                                        <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop muted #videoPlayer (ended)="onVideoEnded($event)">
                                             <source [src]="item.filePath" type="video/mp4">
                                             <!-- <source src=".ogg" type="video/ogg">
                                             <source src=".webm" type="video/webm"> -->
