@@ -26,7 +26,7 @@
                                             <span *ngIf="ann.isNew" class="badge badge-primary mr-1">
                                                 Novo
                                             </span>
-                                            <span class="badge badge-danger">
+                                            <span *ngIf="ann.importantIndicator" class="badge badge-danger">
                                                 Važno
                                             </span>
                                         </h5>
@@ -49,14 +49,14 @@
                                         <hr>
     
                                         <!-- Description -->
-                                        <p [innerHTML]="ann.announcementDescription"></p>
+                                        <p class="text-muted" [innerHTML]="ann.announcementDescription"></p>
                                         <!-- <hr>
                                         <div class="text-center w-100">
                                             <img *ngFor="let path of listOfImagesPaths" 
                                                     [src]="path" 
                                                     class="mb-2 p-2 col-3">
                                         </div> -->
-                                        <hr *ngIf="ann.files.length">
+                                        <hr *ngIf="filterImages(ann).length != 0">
                                         <img *ngFor="let item of filterImages(ann)" 
                                              [src]="item.filePath" 
                                              style="object-fit: cover; object-position: 0 0;"
@@ -64,7 +64,7 @@
                                              [ngClass]="{'col-12': filterImages(ann).length == '1', 
                                                          'col-6': filterImages(ann).length > '1' }"
                                              [ngStyle]="{'height.px': filterImages(ann).length == '1' ? '500' : '300'}">
-                                        <hr>
+                                        <hr *ngIf="filterFiles(ann).length != 0">
                                         <pdf-viewer *ngFor="let item of filterFiles(ann)"
                                                     [src]="item.filePath"
                                                     [show-all]="true"
@@ -80,10 +80,11 @@
                                                     style="display: block;"
                                                     class="col-12">
                                         </pdf-viewer>
-                                    <div *ngIf="true" style="height: 40vh;"></div>
+                                    <div *ngIf="filterVideos(ann).length > 0" style="height: 40vh;"></div>
                                 </div>
                                     <div *ngFor="let item of filterVideos(ann)">
-                                        <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop muted #videoPlayer (ended)="onVideoEnded($event)">
+                                        <!-- <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop muted #videoPlayer (ended)="onVideoEnded($event)"> -->
+                                        <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop muted>
                                             <source [src]="item.filePath" type="video/mp4">
                                             <!-- <source src=".ogg" type="video/ogg">
                                             <source src=".webm" type="video/webm"> -->

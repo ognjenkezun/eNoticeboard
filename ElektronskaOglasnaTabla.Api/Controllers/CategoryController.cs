@@ -120,11 +120,12 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
             var categoryResultList = new List<CategoriesDetails>();
 
             category.ForEach(cat => {
-                var res = new CategoriesDetails();
-
-                res.CategoryId = cat.CategoryId;
-                res.CategoryName = cat.CategoryName;
-                res.PriorityId = cat.PriorityId;
+                var res = new CategoriesDetails
+                {
+                    CategoryId = cat.CategoryId,
+                    CategoryName = cat.CategoryName,
+                    PriorityId = cat.PriorityId
+                };
 
                 var resIt = _context.Priorities.FirstOrDefault(x => x.PriorityId == cat.PriorityId);
                 res.PriorityValue = resIt.PriorityValue;
@@ -144,54 +145,56 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
             var category = _context.Categories.OrderBy(x => x.PriorityId).ToList();
 
             category.ForEach(cat => {
-                var res = new CategoriesDetails();
+                var res = new CategoriesDetails
+                {
+                    CategoryId = cat.CategoryId,
+                    CategoryName = cat.CategoryName,
 
-                res.CategoryId = cat.CategoryId;
-                res.CategoryName = cat.CategoryName;
-
-                res.PriorityId = cat.PriorityId;
+                    PriorityId = cat.PriorityId
+                };
                 var priority = _context.Priorities.FirstOrDefault(x => x.PriorityId == cat.PriorityId);
                 res.PriorityValue = priority.PriorityValue;
 
                 var announcementDetailsList = _context.Announcements.Where(x => x.CategoryId == cat.CategoryId)
                                                                     .ToList();
 
-                var filteredAnnouncementDetailsList = announcementDetailsList.OrderByDescending(x => x.AnnouncementDateCreated)
-                                                                             .OrderByDescending(x => x.AnnouncementDateModified)
+                var filteredAnnouncementDetailsList = announcementDetailsList.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
                                                                              .OrderByDescending(x => x.AnnouncementImportantIndicator)
                                                                              .Take(numberOfAnnouncement)
                                                                              .ToList();
 
                 filteredAnnouncementDetailsList.ForEach(ann => {
-                    var resultItem = new AnnouncementDetails();
+                    var resultItem = new AnnouncementDetails
+                    {
 
-                    //Obavjestenje
-                    resultItem.AnnouncementId = ann.AnnouncementId;
-                    resultItem.AnnouncementTitle = ann.AnnouncementTitle;
-                    resultItem.AnnouncementDescription = ann.AnnouncementDescription;
+                        //Obavjestenje
+                        AnnouncementId = ann.AnnouncementId,
+                        AnnouncementTitle = ann.AnnouncementTitle,
+                        AnnouncementDescription = ann.AnnouncementDescription,
 
-                    //Datum kreiranja
-                    resultItem.AnnouncementDateCreated = ann.AnnouncementDateCreated;
+                        //Datum kreiranja
+                        AnnouncementDateCreated = ann.AnnouncementDateCreated,
 
-                    //Datum modifikovanja
-                    resultItem.AnnouncementDateModified = ann.AnnouncementDateModified;
+                        //Datum modifikovanja
+                        AnnouncementDateModified = ann.AnnouncementDateModified,
 
-                    //Datum vazenja
-                    resultItem.AnnouncementExpiryDate = ann.AnnouncementExpiryDate;
+                        //Datum vazenja
+                        AnnouncementExpiryDate = ann.AnnouncementExpiryDate,
 
-                    //Indikator vaznosti
-                    resultItem.ImportantIndicator = ann.AnnouncementImportantIndicator;
+                        //Indikator vaznosti
+                        ImportantIndicator = ann.AnnouncementImportantIndicator,
 
-                    //Kategorija
-                    resultItem.CategoryId = ann.CategoryId;
-                    resultItem.CategoryName = cat.CategoryName;
+                        //Kategorija
+                        CategoryId = ann.CategoryId,
+                        CategoryName = cat.CategoryName,
 
-                    //Prioritet
-                    resultItem.PriorityId = cat.PriorityId;
-                    resultItem.PriorityValue = priority.PriorityValue;
+                        //Prioritet
+                        PriorityId = cat.PriorityId,
+                        PriorityValue = priority.PriorityValue,
 
-                    //Korisnik koji je kreirao obavjestenje
-                    resultItem.UserCreatedId = ann.UserCreatedId;
+                        //Korisnik koji je kreirao obavjestenje
+                        UserCreatedId = ann.UserCreatedId
+                    };
                     var userCreated = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserCreatedId);
                     resultItem.UserCreatedFirstName = userCreated.FirstName;
                     resultItem.UserCreatedLastName = userCreated.LastName;
@@ -234,11 +237,12 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
 
             category.ForEach(cat => {
 
-                var res = new CategoriesDetails();
-
-                res.CategoryId = cat.CategoryId;
-                res.CategoryName = cat.CategoryName;
-                res.PriorityId = cat.PriorityId;
+                var res = new CategoriesDetails
+                {
+                    CategoryId = cat.CategoryId,
+                    CategoryName = cat.CategoryName,
+                    PriorityId = cat.PriorityId
+                };
 
                 var resIt = _context.Priorities.FirstOrDefault(x => x.PriorityId == cat.PriorityId);
                 res.PriorityValue = resIt.PriorityValue;

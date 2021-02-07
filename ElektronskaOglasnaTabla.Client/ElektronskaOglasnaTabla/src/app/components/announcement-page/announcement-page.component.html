@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-8 col-md-7 col-sm-12" [ngClass]="annFromSameCategory.length > 0 ? ['col-lg-8', 'col-md-7'] : ['col-lg-12', 'col-md-12']">
+        <div class="col-lg-8 col-md-7 col-sm-12" [ngClass]="announcementFromSameCategory.length > 0 ? ['col-lg-8', 'col-md-7'] : ['col-lg-12', 'col-md-12']">
 
             <!-- Title -->
             <h4 class="mt-4 text-muted">
@@ -116,8 +116,8 @@
             <app-file-manager *ngIf="listOfFiles.length > 0" [listOfFiles]="listOfFiles" class="text-muted"></app-file-manager>
         </div>
 
-        <div class="col-lg-4 col-md-5 col-sm-12" [ngClass]="annFromSameCategory.length > 0 ? ['col-lg-4', 'col-md-5'] : ['col-lg-12', 'col-md-12']"
-                                                 *ngIf="annFromSameCategory.length > 0">
+        <div class="col-lg-4 col-md-5 col-sm-12" [ngClass]="announcementFromSameCategory.length > 0 ? ['col-lg-4', 'col-md-5'] : ['col-lg-12', 'col-md-12']"
+                                                 *ngIf="announcementFromSameCategory.length > 0">
             <br>
             <!-- Carousel with new announcements -->
             <!-- <h4 class="text-muted pb-2">Najnovije</h4>
@@ -138,10 +138,12 @@
             <h4 class="text-muted">Iz iste kategorije</h4>
             <hr class="col-12 px-0">
             <div class="row">
-                <div *ngFor="let ann of annFromSameCategory"
+                <div *ngFor="let ann of announcementFromSameCategory"
                         class="col-12 my-2">
 
-                    <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)">
+                    <app-announcement [announcementInput]="ann" 
+                                      [announcementExpiry]="configApp.announcementExpiry"
+                                      (click)="onClick(ann.announcementId)">
                     </app-announcement>
                 </div>
             </div>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Categories } from 'src/app/models/Categories';
+
 import { CategoryService } from 'src/app/services/category-service/category.service';
 import { Announcements } from 'src/app/models/Announcements';
 import { AnnouncementService } from 'src/app/services/announcement-service/announcement.service';
@@ -8,6 +9,9 @@ import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators';
+import { AppConfig } from 'src/app/models/AppConfig';
+import { ConfigurationService } from 'src/app/services/configuration-service/configuration.service';
+import { ChatService } from 'src/app/services/chat-service/chat.service';
 
 @Component({
     selector: 'app-categories-panel',
@@ -19,9 +23,10 @@ import { debounceTime, distinctUntilChanged, map, filter } from 'rxjs/operators'
 })
 export class CategoriesPanelComponent implements OnInit {
 
-    public listCategory = null as Categories[];
-    public listAnnouncements = null as AnnouncementDetails[];
-    public selectedCategory = {categoryName: "sdad", categoryId:1, priorityId:1} as Categories;
+    public configApp = {} as AppConfig;
+    public listCategory = [] as Categories[];
+    public listAnnouncements = [] as AnnouncementDetails[];
+    public selectedCategory = {} as Categories;
     public loading = false;
     public spinnerCategories: boolean;
 
@@ -32,21 +37,47 @@ export class CategoriesPanelComponent implements OnInit {
     constructor(private _categoryService: CategoryService,
                 private _announcementService: AnnouncementService,
                 private _route: ActivatedRoute,
-                private _router: Router) { }
+                private _router: Router,
+                private _configService: ConfigurationService,
+                private _chatService: ChatService) { 
+        
+        this.subscribeToEvents();
+    }
 
     ngOnInit(): void {
         this.spinnerCategories = true;
 
-        if(+this._route.snapshot.params['id']) {
-            let id = +this._route.snapshot.params['id'];
-            this.selectedCategory.categoryId = id;
-        }
-        else {
-            this.selectedCategory.categoryId = 0;
-        }
-
         this.loadCategories();
-        this.loadAllAnnouncementsDetailsPerPage();
+        // if (+this._route.snapshot.params['id']) {
+        //     let id = +this._route.snapshot.params['id'];
+        //     this.selectedCategory.categoryId = id;
+        // }
+        // else {
+            // if (this.listCategory.length > 0) {
+            //     this.selectedCategory.categoryId = this.listCategory[0].categoryId;
+            // }
+            // else {
+                //this.selectedCategory.categoryId = 0;
+            // }
+        //}
+        this.loadConfig();
+        //this.loadAllAnnouncementsDetailsPerPage();
+        console.log("Selekcted categoty onInit => ", this.selectedCategory.categoryId);
+    }
+
+    public loadConfig(): void {
+        this._configService.getConfigData(1).subscribe(data => {
+            this.configApp.announcementExpiry = data.announcementExpiry || 1;
+        });
+    }
+
+    private subscribeToEvents(): void {
+        this._chatService.messageReceived.subscribe((message: string) => {
+            console.log(message);
+            this.loadConfig();
+            this.loadCategories();
+            this.loadAllAnnouncementsDetailsPerPage(this.selectedCategory.categoryId);
+        });
     }
 
     loadDefaultAnnouncementsDetails() {
@@ -69,7 +100,19 @@ export class CategoriesPanelComponent implements OnInit {
     loadCategories() {
         this._categoryService.getCategories().subscribe(data => {
             this.listCategory = data;
-            //this.selectedCategory.categoryId = this.listCategory[0].categoryId;
+            
+            //console.log("Data ", data);
+            if (+this._route.snapshot.params['id']) {
+                let id = +this._route.snapshot.params['id'];
+                this.selectedCategory.categoryId = id;
+            }
+            else {
+
+                this.selectedCategory.categoryId = this.listCategory[0].categoryId || 0;
+            }
+            
+            console.log("Selekcted categoty loadCategories => ", this.selectedCategory.categoryId);
+            this.loadAllAnnouncementsDetailsPerPage(this.selectedCategory.categoryId);
         });
     }
 
@@ -81,13 +124,13 @@ export class CategoriesPanelComponent implements OnInit {
     onCategoryChange() {
         this.selectedPage = 1;
         this._router.navigate(['/categories', this.selectedCategory.categoryId]);
-        this.loadAllAnnouncementsDetailsPerPage();
+        this.loadAllAnnouncementsDetailsPerPage(this.selectedCategory.categoryId);
         console.log(this.selectedCategory.categoryId);
     }
 
     onItemsPerPageChange() {
         this.selectedPage = 1;
-        this.loadAllAnnouncementsDetailsPerPage();
+        this.loadAllAnnouncementsDetailsPerPage(this.selectedCategory.categoryId);
         window.scrollTo(0, 0);
     }
 
@@ -95,22 +138,23 @@ export class CategoriesPanelComponent implements OnInit {
         this.selectedPage = event;
         this.selectedPage = event;
         console.log(event);
-        this.loadAllAnnouncementsDetailsPerPage();
+        this.loadAllAnnouncementsDetailsPerPage(this.selectedCategory.categoryId);
         window.scrollTo(0, 0);
     }
 
     selectPage(event: any) {
         this.selectedPage = event;
         console.log(event);
-        this.loadAllAnnouncementsDetailsPerPage();
+        this.loadAllAnnouncementsDetailsPerPage(this.selectedCategory.categoryId);
+        window.scrollTo(0, 0);
     }
 
-    loadAllAnnouncementsDetailsPerPage() {
-        this._announcementService.getAnnouncementFromCategory(this.selectedCategory.categoryId, this.selectedPage, this.itmsPerPage).subscribe(data => {
+    loadAllAnnouncementsDetailsPerPage(categoryId: number) {
+        this._announcementService.getAnnouncementFromCategory(categoryId, this.selectedPage, this.itmsPerPage).subscribe(data => {
             this.listAnnouncements = data;
-            console.log(this.listAnnouncements);
+            console.log("Ann => ", this.listAnnouncements);
             this.spinnerCategories = false;
-            this._announcementService.getNumberOfAnnouncementFromCategory(this.selectedCategory.categoryId).subscribe(data => {
+            this._announcementService.getNumberOfAnnouncementFromCategory(categoryId).subscribe(data => {
                 this.totalAnnItems = data;
                 console.log(this.totalAnnItems)
             });

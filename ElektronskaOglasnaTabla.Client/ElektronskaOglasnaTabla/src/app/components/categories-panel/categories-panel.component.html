@@ -28,7 +28,7 @@
                                         [(ngModel)]="selectedCategory.categoryId"
                                         (change)="onCategoryChange()">
 
-                                    <option selected value="0">---</option>
+                                    <option value="0">---</option>
                                     <option *ngFor="let cat of listCategory" 
                                             [value]="cat.categoryId"> 
                                             
@@ -52,7 +52,10 @@
                     <div class="row">
                         <div class="col-lg-4 col-md-6 col-sm-12 my-3 px-2" 
                                 *ngFor="let ann of listAnnouncements | paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems };">
-                            <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)"></app-announcement>
+                            <app-announcement [announcementInput]="ann"
+                                              [announcementExpiry]="configApp.announcementExpiry"
+                                              (click)="onClick(ann.announcementId)">
+                            </app-announcement>
                         </div>
                     </div>
                 </div>

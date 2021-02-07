@@ -2,9 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
 import { Announcements } from 'src/app/models/Announcements';
+import { AppConfig } from 'src/app/models/AppConfig';
 import { Categories } from 'src/app/models/Categories';
 import { Users } from 'src/app/models/Users';
 import { AnnouncementService } from 'src/app/services/announcement-service/announcement.service';
+import { ChatService } from 'src/app/services/chat-service/chat.service';
+import { ConfigurationService } from 'src/app/services/configuration-service/configuration.service';
 
 @Component({
     selector: 'app-the-latest',
@@ -15,6 +18,7 @@ export class TheLatestComponent implements OnInit {
     public spinnerAnnouncements: boolean;
     public announcementsNotExist: boolean;
 
+    public configApp = {} as AppConfig;
     public listAnnouncements = null as AnnouncementDetails[];
     public ann = {} as Announcements;
     public cat = {} as Categories;
@@ -27,13 +31,33 @@ export class TheLatestComponent implements OnInit {
     public totalAnnItems: number;
 
     constructor(public _announcementService: AnnouncementService,
-                private _router: Router) { }
+                private _configService: ConfigurationService,
+                private _router: Router,
+                private _chatService: ChatService) {
+
+        this.subscribeToEvents();
+    }
 
     public ngOnInit(): void {
         this.spinnerAnnouncements = true;
         this.announcementsNotExist = false;
+        this.loadConfig();
         this.loadTheMostImportantAnnouncementPerPage();
     };
+
+    public loadConfig(): void {
+        this._configService.getConfigData(1).subscribe(data => {
+            this.configApp.announcementExpiry = data.announcementExpiry || 1;
+        });
+    }
+
+    private subscribeToEvents(): void {
+        this._chatService.messageReceived.subscribe((message: string) => {
+            console.log(message);
+            this.loadConfig();
+            this.loadTheMostImportantAnnouncementPerPage();
+        });
+    }
 
     public loadTheMostImportantAnnouncementPerPage(): void {
         this._announcementService.getTheLatestAnnouncementPerPage(this.selectedPage, this.itmsPerPage).subscribe(data => {

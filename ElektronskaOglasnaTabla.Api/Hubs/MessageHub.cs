@@ -1,4 +1,5 @@
-﻿using ElektronskaOglasnaTabla.Domain.Models;
+﻿using ElektronskaOglasnaTabla.Domain.CustomModels;
+using ElektronskaOglasnaTabla.Domain.Models;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -9,9 +10,9 @@ namespace ElektronskaOglasnaTabla.Api.Hubs
 {
     public class MessageHub: Hub
     {
-        public async Task NewMessage(string msg)
+        public async Task NewMessage(AnnouncementDetails announcement)
         {
-            await Clients.All.SendAsync("MessageReceived", msg);
+            await Clients.All.SendAsync("MessageReceived", announcement);
         }
     }
 }

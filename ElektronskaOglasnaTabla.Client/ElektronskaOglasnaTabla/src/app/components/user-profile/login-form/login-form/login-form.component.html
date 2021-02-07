@@ -21,20 +21,11 @@
                             <i class="fa fa-envelope" aria-hidden="true"></i>
                         </span>
                     </div>
-                    <input type="email" 
+                    <input #usernameRef
+                           type="email" 
                            formControlName="userName" 
                            class="form-control" 
                            placeholder="example@mail.com">
-                </div>
-                <div *ngIf="email.invalid && (email.dirty || email.touched)"
-                    class="alert alert-danger">
-
-                    <div *ngIf="email.errors.required">
-                        Potrebno je unijeti korisničko ime.
-                    </div>
-                    <div *ngIf="email.errors.email">
-                        Korisničko ime mora da bude e-mail.
-                    </div>
                 </div>
             </div>
             <div class="form-group">
@@ -63,16 +54,6 @@
                         </span>
                     </div>
                 </div>
-                <div *ngIf="password.invalid && (password.dirty || password.touched)"
-                        class="alert alert-danger">
-    
-                        <div *ngIf="password.errors.required">
-                            Potrebno je unijeti lozinku.
-                        </div>
-                        <div *ngIf="password.errors.minlength">
-                            <p>Dužina lozinke mora biti najmanje 8 karaktera.</p>
-                        </div>
-                    </div>
             </div>
             <!-- <div class="form-group">
                 <input id="chckbxRememberMe" type="checkbox">

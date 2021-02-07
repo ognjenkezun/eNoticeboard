@@ -19,11 +19,11 @@ export class ChatService {
         this.startConnection();
     }
 
-    sendMessage(message: string){
+    sendMessage(message: string) {
         this._hubConnection.invoke('NewMessage', message);
     }
 
-    private createConnection(){
+    private createConnection() {
         this._hubConnection = new HubConnectionBuilder()
             .withUrl('http://localhost:5000/MessageHub')
             .build();

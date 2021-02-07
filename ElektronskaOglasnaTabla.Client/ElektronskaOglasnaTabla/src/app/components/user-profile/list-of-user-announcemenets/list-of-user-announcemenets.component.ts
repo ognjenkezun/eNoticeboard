@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import * as jwt_decode from "jwt-decode";
 import { FileService } from 'src/app/services/file-service/file.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
+import { SignalRService } from 'src/app/services/signal-r/signal-r.service';
 
 @Component({
     selector: 'app-list-of-user-announcemenets',
@@ -60,6 +61,7 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
                 private _categoryService: CategoryService,
                 private _chatService: ChatService,
                 private _fileService: FileService,
+                private _signalRService: SignalRService,
                 private _router: Router,
                 private _modalService: BsModalService) { 
 
@@ -121,6 +123,11 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
 
         this._announcementService.getAnnouncementsDetailsPage(this.selectedPage, this.itmsPerPage).subscribe(data => {
             this.listOfAllAnnouncements = data;
+            let tmp = document.createElement("element");
+            this.listOfAllAnnouncements.forEach(announcement => {
+                tmp.innerHTML = announcement.announcementDescription;
+                announcement.announcementDescription = tmp.textContent || tmp.innerText || "";
+            });
             console.log(data);
             this._announcementService.getNumberOfAnnouncement().subscribe(data => {
                 this.totalAnnItems = data;
@@ -355,10 +362,58 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
         );
     }
 
+    public convertStringWithHtmlTagsToText(text: string): string {
+        let tmp = document.createElement("element");
+        tmp.innerHTML = text;
+        return tmp.textContent || tmp.innerText || "";
+    }
+
     private subscribeToEvents(): void {
         this._chatService.messageReceived.subscribe((message: string) => {
             console.log(message);
             this.loadAllAnnouncement();
+        });
+
+        this._signalRService.announcementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
+            console.warn("ADDED SIGNAL R ANNOUNCEMENT IS => ", newAnnouncement);
+
+            newAnnouncement.announcementDescription = this.convertStringWithHtmlTagsToText(newAnnouncement.announcementDescription);
+
+            this.listOfAllAnnouncements.push(newAnnouncement);
+            this.listOfAllAnnouncements.sort((x, y) => {
+                // if (Date.parse(x.announcementDateCreated.toString()) > Date.parse(y.announcementDateCreated.toString())) {
+                //     return 1;
+                // }
+                // if (Date.parse(x.announcementDateCreated.toString()) < Date.parse(y.announcementDateCreated.toString())) {
+                //     return -1;
+                // }
+                // return 0;
+
+                //POKUSATI
+                //x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated
+                let a = Date.parse(x.announcementDateCreated.toString());
+                let b = Date.parse(y.announcementDateCreated.toString());
+                    
+                return b - a;
+            });
+            this.listOfAllAnnouncements.pop();
+        });
+
+        this._signalRService.updatedAnnouncementRecieved.subscribe((updatedAnnouncement: AnnouncementDetails) => {
+            console.warn("UPDATED SIGNAL R ANNOUNCEMENT IS => ", updatedAnnouncement);
+            let findedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === updatedAnnouncement.announcementId);
+            this.listOfAllAnnouncements[findedIndex] = updatedAnnouncement;
+        });
+
+        this._signalRService.deletedAnnouncementIdRecieved.subscribe((deletedAnnouncementId: number) => {
+            let nextAnnounce = {} as AnnouncementDetails;
+
+            let deletedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);
+            this.listOfAllAnnouncements.push(nextAnnounce);
+            this.listOfAllAnnouncements.splice(deletedIndex, 1);
+
+            nextAnnounce = null;
+            //Pozvati u API-u da se izracuna sljedeci najmladji announcemnt i vratiti ga sa ID-om
         });
     }///
 }

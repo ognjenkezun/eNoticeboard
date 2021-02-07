@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Output, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
 import { UserService } from 'src/app/services/user-service/user.service';
 import { Users } from 'src/app/models/Users';
@@ -11,8 +11,9 @@ import { EventEmitter } from '@angular/core';
     templateUrl: './registration-form.component.html',
     styleUrls: ['./registration-form.component.css']
 })
-export class RegistrationFormComponent implements OnInit {
+export class RegistrationFormComponent implements OnInit, AfterViewInit {
     @Output() closeModal: EventEmitter<null>;
+    @ViewChild('firstNameRef') firstNameRef: ElementRef;
 
     fieldTextType: boolean;
     repeatFieldTextType: boolean;
@@ -22,6 +23,9 @@ export class RegistrationFormComponent implements OnInit {
 
     constructor(private _userService: UserService, private toastr: ToastrService) { 
         this.closeModal = new EventEmitter<null>();
+    }
+    ngAfterViewInit(): void {
+        this.firstNameRef.nativeElement.focus();
     }
 
     ngOnInit() {

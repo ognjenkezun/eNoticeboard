@@ -10,24 +10,38 @@ import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
 export class AnnouncementComponent implements OnInit {
 
     @Input() announcementInput = {} as AnnouncementDetails;
+    @Input() announcementExpiry: number;
     public currentDate: Date;
 
     public isNew: boolean = false;
-    //public imageExist: boolean = false;
-    //public announcementImageURL: string = "https://cdn.pixabay.com/photo/2015/12/01/20/28/fall-1072821_960_720.jpg";
 
     constructor() { }
 
     ngOnInit() {
 
-        //this.announcementInput.announcementDescription = this.announcementInput.announcementDescription.replace(/(<([^>]+)>)/gi, "");
+        this.stripHtml(this.announcementInput.announcementDescription);
+
         let currentTime = Date.now();
         let dateCreated = Date.parse(this.announcementInput.announcementDateCreated.toString());
-        let differenceInMilliceconds = currentTime - dateCreated;
-        let hours = (differenceInMilliceconds/(1000*60*60));
-        if(Math.abs(hours) < 24)
-        {
+        let differenceInMillicecondsCreated = currentTime - dateCreated;
+        let hoursCreated = (differenceInMillicecondsCreated / (1000 * 60  *60));
+
+        if (this.announcementInput.announcementDateModified != null) {
+            let dateModified = Date.parse(this.announcementInput.announcementDateModified.toString());
+            let differenceInMillicecondsModified = currentTime - dateModified;
+            var hoursModified = (differenceInMillicecondsModified / (1000 * 60 * 60)) || 0;
+        }
+
+        if (Math.abs(hoursCreated) < (this.announcementExpiry * 24) ||
+            Math.abs(hoursModified) < (this.announcementExpiry * 24)) {
+                
             this.announcementInput.isNew = true;
         }
+    }
+
+    stripHtml(html: string): void {
+        let tmp = document.createElement("element");
+        tmp.innerHTML = html.replace(/(<([^>]+)>)/gi, " ");
+        this.announcementInput.announcementDescription = tmp.textContent || tmp.innerText || "";
     }
 }

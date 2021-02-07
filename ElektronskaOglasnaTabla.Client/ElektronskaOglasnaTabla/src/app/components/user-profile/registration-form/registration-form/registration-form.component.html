@@ -2,7 +2,8 @@
     <div class="form-input">
         <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
             <div class="form-group">
-                <input type="text" 
+                <input #firstNameRef
+                       type="text" 
                        formControlName="firstName" 
                        class="form-control" 
                        placeholder="Unesi ime">

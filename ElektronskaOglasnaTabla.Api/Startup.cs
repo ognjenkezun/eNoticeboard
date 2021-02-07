@@ -156,6 +156,7 @@ namespace ElektronskaOglasnaTabla.Api
 
             app.UseSignalR(options =>
             {
+                options.MapHub<AnnouncementHub>("/AnnouncementHub");
                 options.MapHub<MessageHub>("/MessageHub");
             });
 

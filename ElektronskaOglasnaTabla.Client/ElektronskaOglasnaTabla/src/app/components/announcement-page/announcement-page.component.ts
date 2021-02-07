@@ -5,6 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
 import { FileService } from 'src/app/services/file-service/file.service';
 import { ChatService } from 'src/app/services/chat-service/chat.service';
+import { ConfigurationService } from 'src/app/services/configuration-service/configuration.service';
+import { AppConfig } from 'src/app/models/AppConfig';
+import { SignalRService } from 'src/app/services/signal-r/signal-r.service';
 
 @Component({
     selector: 'app-announcement-page',
@@ -23,14 +26,15 @@ export class AnnouncementPageComponent implements OnInit {
 
     pdfSrc = "https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf";
 
+    public configApp = {} as AppConfig;
     public announcement = {} as AnnouncementDetails;
-    public listAnnouncements = [] as AnnouncementDetails[];
-    public annFromSameCategory = [] as AnnouncementDetails[];
-    public catId: number;
+    public announcementFromSameCategory = [] as AnnouncementDetails[];
 
     constructor(private _announcementService: AnnouncementService,
                 private _route: ActivatedRoute,
                 private _router: Router,
+                private _configService: ConfigurationService,
+                private _signalRService: SignalRService,
                 private _chatService: ChatService,
                 private _fileService: FileService) { 
         
@@ -40,6 +44,8 @@ export class AnnouncementPageComponent implements OnInit {
     ngOnInit(): void {
         this.listOfFiles = [];
         let id = +this._route.snapshot.params['id'];
+
+        this.loadConfig();
         this._announcementService.getAnnouncementDetails(id).subscribe(data => {
             this.announcement = data;
 
@@ -51,12 +57,19 @@ export class AnnouncementPageComponent implements OnInit {
             }
 
             let currentTime = Date.now();
-            let dateCreated = Date.parse(this.announcement.announcementDateCreated.toString());
-            let differenceInMilliceconds = currentTime - dateCreated;
-            let hours = (differenceInMilliceconds/(1000*60*60));
 
-            if(Math.abs(hours) < 24)
-            {
+            let dateCreated = Date.parse(this.announcement.announcementDateCreated.toString());
+            let differenceInMillicecondsCreated = currentTime - dateCreated;
+            let hoursCreated = (differenceInMillicecondsCreated / (1000 * 60 * 60));
+
+            if (this.announcement.announcementDateModified != null) {
+                let dateModified = Date.parse(this.announcement.announcementDateModified.toString());
+                let differenceInMillicecondsModified = currentTime - dateModified;
+                var hoursModified = (differenceInMillicecondsModified / (1000 * 60 * 60)) || 0;
+            }
+
+            if (Math.abs(hoursCreated) < (this.configApp.announcementExpiry * 24) || 
+                Math.abs(hoursModified) < (this.configApp.announcementExpiry * 24)) {
                 this.announcement.isNew = true;
             }
 
@@ -89,10 +102,16 @@ export class AnnouncementPageComponent implements OnInit {
         // });
     }
 
+    public loadConfig(): void {
+        this._configService.getConfigData(1).subscribe(data => {
+            this.configApp.announcementExpiry = data.announcementExpiry || 1;
+        });
+    }
+
     get filterFiles() {
         if (this.announcement.files) {
             return this.announcement.files.filter(file => 
-                file.type == "video/mp4"
+                file.type.includes("video")
             );
         }
     }
@@ -100,7 +119,7 @@ export class AnnouncementPageComponent implements OnInit {
     get filterImages() {
         if (this.announcement.files) {
             return this.announcement.files.filter(file => 
-                file.type == "image/png" || "image/jpg" || "image/jpeg"
+                file.type.includes("image")
             );
         }
     }
@@ -128,22 +147,79 @@ export class AnnouncementPageComponent implements OnInit {
 
     loadFromSameCategory(categoryId: number, announcementId: number): void {
         this._announcementService.getFromSameCategory(categoryId, announcementId).subscribe(data => {
-            this.annFromSameCategory = data;
+            this.announcementFromSameCategory = data;
             console.log(data);
         });
     }
 
-    loadAnnonucements(): void {
-        this._announcementService.getAnnouncementsDetails().subscribe(data => {
-            this.listAnnouncements = data;
-        });
+    public isNew(announcement: AnnouncementDetails): boolean {
+        let currentTime = Date.now();
+        
+        let dateCreated = Date.parse(announcement.announcementDateCreated.toString());
+        let differenceInMillicecondsCreated = currentTime - dateCreated;
+        let hoursCreated = (differenceInMillicecondsCreated / (1000 * 60 * 60));
+
+        if (announcement.announcementDateModified != null) {
+            let dateModified = Date.parse(announcement.announcementDateModified.toString());
+            let differenceInMillicecondsModified = currentTime - dateModified;
+            var hoursModified = (differenceInMillicecondsModified / (1000 * 60 * 60)) || 0;
+        }
+
+        if (Math.abs(hoursCreated) < (this.configApp.announcementExpiry * 24) ||
+            Math.abs(hoursModified) < (this.configApp.announcementExpiry * 24)) {
+                return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public convertStringWithHtmlTagsToText(text: string): string {
+        let tmp = document.createElement("element");
+        tmp.innerHTML = text;
+        return tmp.textContent || tmp.innerText || "";
     }
 
     private subscribeToEvents(): void {
-
         this._chatService.messageReceived.subscribe((message: string) => {
             console.log(message);
+            this.loadConfig();
             this.loadFromSameCategory(this.announcement.categoryId, this.announcement.announcementId);
+        });
+
+        this._signalRService.announcementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
+            console.warn("ADDED SIGNAL R ANNOUNCEMENT IS => ", newAnnouncement);
+            
+            newAnnouncement.isNew = this.isNew(newAnnouncement);
+            newAnnouncement.announcementDescription = this.convertStringWithHtmlTagsToText(newAnnouncement.announcementDescription);
+            
+            if (this.announcement.categoryId === newAnnouncement.categoryId) {
+                this.announcementFromSameCategory.unshift(newAnnouncement);
+                this.announcementFromSameCategory.pop();
+            }
+        });
+
+        this._signalRService.updatedAnnouncementRecieved.subscribe((updatedAnnouncement: AnnouncementDetails) => {
+            console.warn("UPDATED SIGNAL R ANNOUNCEMENT IS => ", updatedAnnouncement);
+
+            updatedAnnouncement.isNew = this.isNew(updatedAnnouncement);
+
+            if (this.announcement.announcementId === updatedAnnouncement.announcementId) {
+                this.announcement = updatedAnnouncement;
+            }
+
+            if (this.announcement.categoryId === updatedAnnouncement.categoryId) {
+                let findedIndex = this.announcementFromSameCategory.findIndex(announcement => announcement.announcementId === updatedAnnouncement.announcementId);
+                if (findedIndex != -1) {
+                    this.announcementFromSameCategory[findedIndex] = updatedAnnouncement;
+                }
+                else {
+                    this.announcementFromSameCategory.unshift(updatedAnnouncement);
+                    this.announcementFromSameCategory.pop();
+                    //this.listOfTheMostImportantAnnouncements.filter(val => val);
+                }
+            }
+
         });
     }
 }

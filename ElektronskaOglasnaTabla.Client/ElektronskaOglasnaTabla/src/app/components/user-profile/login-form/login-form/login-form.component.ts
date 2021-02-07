@@ -1,4 +1,4 @@
-import { Component, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Output, ViewChild, ViewChildren } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user-service/user.service';
 import { Router } from '@angular/router';
@@ -13,9 +13,10 @@ import { EventEmitter } from '@angular/core';
     templateUrl: './login-form.component.html',
     styleUrls: ['./login-form.component.css']
 })
-export class LoginFormComponent implements OnInit {
+export class LoginFormComponent implements OnInit, AfterViewInit {
     isLoggedIn$: Observable<boolean>;
     @Output() public closeModal: EventEmitter<null>;
+    @ViewChild('usernameRef') usernameRef: ElementRef;
     //*ngIf=userDetails za prikazivanje profila
     userDetails;
 
@@ -34,9 +35,11 @@ export class LoginFormComponent implements OnInit {
 
         this.closeModal = new EventEmitter<null>();
     }
+    ngAfterViewInit(): void {
+        this.usernameRef.nativeElement.focus();
+    }
 
     ngOnInit() {
-
         // if(localStorage.getItem('token') != null) {
         //     this.router.navigateByUrl('/home');
         // }

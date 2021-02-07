@@ -334,7 +334,7 @@
         </div>
         <div class="table-responsive px-1" *ngIf="listOfUserAnnouncements">
             <table class="table table-hover shadow d-none d-md-block">
-                <thead class="thead-dark">
+                <thead class="thead-light">
                     <tr>
                         <th class="py-1" style="width: 10%;">#</th>
                         <th class="py-1" style="max-width: 25%; width: 25%;">Naslov</th>
@@ -351,7 +351,7 @@
 
                         <td (click)="onClick(ann.announcementId)" class="py-1" style="vertical-align: middle;"> {{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage  }} </td>
                         <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann.announcementTitle }} </td>
-                        <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;" [innerHTML]="ann.announcementDescription"></td>
+                        <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann.announcementDescription}} </td>
                         <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann.categoryName }} </td>
                         <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann.announcementDateCreated | date: "dd.MM.yyyy." }} </td>
                         <td class="d-inline-block float-right w-100 py-1" style="vertical-align: middle;">

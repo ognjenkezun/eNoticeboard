@@ -1,6 +1,5 @@
 <div class="container-fluid">
-    <!-- Jumbotron with page title -->
-    <!-- <div class="row">
+    <div class="row">
         <div class="jumbotron rounded py-4 shadow col">
             <div class="container">
                 <h1 class="display-4 text-center">
@@ -19,49 +18,7 @@
                 <br>
             </div>
         </div>
-    </div> -->
-
-    <!-- Carousels -->
-    <!-- <div class="row">
-        <div class="col-lg-6 col-sm-12 text-center" *ngIf="spinnerTheLatest">
-            <div class="spinner-border text-primary" role="status">
-            </div>
-        </div>
-        <div class="col-lg-6 col-sm-12" *ngIf="listOfTheLatestAnnouncements.length">
-            <h4 class="text-muted text-center m-3 m-md-3"> Najnovije </h4>
-            <div class="shadow">
-                <carousel [isAnimated]="true" 
-                        [showIndicators]="false"
-                        [pauseOnFocus]="false">
-
-                    <slide *ngFor="let ann of listOfTheLatestAnnouncements; let i = index">
-                        <app-announcement [announcementInput]="ann"
-                                            (click)="onClick(ann.announcementId)">
-                        </app-announcement>
-                    </slide>
-                </carousel>
-            </div>
-        </div>
-        <div class="col-lg-6 col-sm-12 text-center" *ngIf="spinnerTheMostImportant">
-            <div class="spinner-border text-primary" role="status">
-            </div>
-        </div>
-        <div class="col-lg-6 col-sm-12" *ngIf="listOfTheMostImportantAnnouncements.length">
-            <h4 class="text-muted text-center m-3 m-md-3"> Najvažnije </h4>
-            <div class="shadow">
-                <carousel [isAnimated]="true" 
-                        [showIndicators]="false"
-                        [pauseOnFocus]="false">
-
-                    <slide *ngFor="let ann of listOfTheMostImportantAnnouncements; let i = index">
-                        <app-announcement [announcementInput]="ann"
-                                            (click)="onClick(ann.announcementId)">
-                        </app-announcement>
-                    </slide>
-                </carousel>
-            </div>
-        </div>
-    </div> -->
+    </div>
     <div class="row">
         <div *ngIf="categoriesNotExist">
             <h1> Trenutno nema obavještenja </h1>
@@ -74,7 +31,6 @@
         </div>
     </div>
 
-    <!-- ////////////////////////////////// -->
     <div class="row">
         <h4 class="text-muted mt-0 mb-1 pointerCursor" *ngIf="listOfTheLatestAnnouncements.length" (click)="onTheLatestClick()"> Najnovije </h4>
         <hr class="my-1 w-100" *ngIf="listOfTheLatestAnnouncements.length">
@@ -82,7 +38,8 @@
             class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
                 <app-announcement [announcementInput]="ann" 
-                                    (click)="onClick(ann.announcementId)">
+                                  [announcementExpiry]="configApp.announcementExpiry"
+                                  (click)="onClick(ann.announcementId)">
                 </app-announcement>
         </div>
     </div>
@@ -92,8 +49,9 @@
         <div *ngFor="let ann of listOfTheMostImportantAnnouncements"
             class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
-                <app-announcement [announcementInput]="ann" 
-                                    (click)="onClick(ann.announcementId)">
+                <app-announcement [announcementInput]="ann"
+                                  [announcementExpiry]="configApp.announcementExpiry" 
+                                  (click)="onClick(ann.announcementId)">
                 </app-announcement>
         </div>
     </div>
@@ -107,7 +65,8 @@
             class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
                 <app-announcement [announcementInput]="ann" 
-                                    (click)="onClick(ann.announcementId)">
+                                  [announcementExpiry]="configApp.announcementExpiry"
+                                  (click)="onClick(ann.announcementId)">
                 </app-announcement>
         </div>
     </div>
