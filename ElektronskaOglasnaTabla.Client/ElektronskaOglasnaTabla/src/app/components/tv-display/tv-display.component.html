@@ -6,47 +6,48 @@
             <div class="row">
                 <div class="col-xl-12">
                     <carousel [isAnimated]="true" 
-                              [interval]="duration" 
+                              [interval]="false" 
                               [showIndicators]="false"
                               [pauseOnFocus]="false"
                               [noPause]="true"
                               [(activeSlide)]="activeSlide"
-                              (activeSlideChange)="onSlideChange($event)">
+                              (activeSlideChange)="onSlideChangeeee($event)">
         
-                        <slide *ngFor="let ann of listOfAnnouncements; let i = index">
+                        <slide *ngFor="let ann of listOfAnnouncements; let i = index; trackedBy: trackByIdentity">
                             <div class="card">
                                 <div class="card-body tv-container">
                                     <div class="col-12 d-inline-block" style="overflow-y: scroll; overflow: hidden; height: 95vh;">
-                                        <h4 class="mt-2 text-muted">
+                                        <h2 class="px-0 mt-2 fw-bold text-muted col-10 d-inline-block">
                                             {{ ann.announcementTitle }}
-                                        </h4>
-            
+                                        </h2>
+                                        <span class="text-muted px-0 mt-2 col-2 d-inline-block text-right float-right"> Slajd {{ activeSlide + 1 }} od {{ listOfAnnouncements.length }} </span>
+                                        
                                         <!-- Important indicator -->
-                                        <h5>
-                                            <span *ngIf="ann.isNew" class="badge badge-primary mr-1">
+                                        <h4 class="my-0">
+                                            <h4 *ngIf="ann.isNew" class="badge badge-primary mr-1">
                                                 Novo
-                                            </span>
-                                            <span *ngIf="ann.importantIndicator" class="badge badge-danger">
+                                            </h4>
+                                            <h4 *ngIf="ann.importantIndicator" class="badge badge-danger">
                                                 Važno
-                                            </span>
-                                        </h5>
+                                            </h4>
+                                        </h4>
                                         
                                         <!-- Category -->
-                                        <p class="text-muted">
+                                        <h5 class="text-muted">
                                             Kategorija: {{ ann.categoryName }}
-                                        </p>
-                                        <hr>
+                                        </h5>
+                                        <hr class="my-2">
             
                                         <!-- Data/Time and Author -->
-                                        <p class="text-muted">
+                                        <p class="text-muted my-2">
                                             Obajvljeno {{ ann.announcementDateCreated | date: "dd.MM.yyyy. u HH:mm"}}, 
                                             autor {{ ann.userCreatedFirstName }} {{ ann.userCreatedLastName }} 
                                         </p>
-                                        <p class="text-muted" *ngIf="ann.announcementDateModified && ann.userModifiedFirstName && ann.userModifiedLastName                      ">
+                                        <p class="text-muted my-2" *ngIf="ann.announcementDateModified && ann.userModifiedFirstName && ann.userModifiedLastName                      ">
                                             Modifikovano {{ ann.announcementDateModified | date: "dd.MM.yyyy. u HH:mm"}}, 
                                             modifikovao {{ ann.userModifiedFirstName }} {{ ann.userModifiedLastName }}
                                         </p>
-                                        <hr>
+                                        <hr class="mt-2 mb-4">
     
                                         <!-- Description -->
                                         <p class="text-muted" [innerHTML]="ann.announcementDescription"></p>
@@ -73,10 +74,6 @@
                                                     [render-text]="true"
                                                     [render-text-mode]="1"
                                                     [zoom]="0.9"
-                                                    (page-rendered)="pageRendered($event)"
-                                                    (text-layer-rendered)="textLayerRendered($event)"
-                                                    (on-progress)="onProgress($event)"
-                                                    (after-load-complete)="callBackFn($event)"
                                                     style="display: block;"
                                                     class="col-12">
                                         </pdf-viewer>

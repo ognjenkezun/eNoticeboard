@@ -1,1 +1,19 @@
-<p>user-panel works!</p>
+<div *ngFor="let log of itrChangeLogs">
+    {{log}}
+  </div> 
+<table class="table table-hover shadow d-none d-md-block">
+    <thead class="thead-light">
+        <tr>
+            <th class="py-1" style="max-width: 25%; width: 25%;">Naslov</th>
+            <th class="py-1" style="max-width: 30%; width: 30%;">Opis</th>
+            <th class="py-1" style="max-width: 10%; width: 10%;">Kategorija</th>
+            <th class="py-1" style="max-width: 15%; width: 15%;">Datum objave</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let ann of empArray">
+
+            <td (click)="onClick(ann.announcementId)" class="text-visible-column-ann-title py-1" style="vertical-align: middle;"> {{ ann }} </td>
+        </tr>
+    </tbody>
+</table>

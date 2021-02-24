@@ -56,6 +56,7 @@ import { ListOfAnnouncementsComponent } from './components/list-of-announcements
 import { TheMostImportantAnnouncementComponent } from './components/the-most-important-announcement/the-most-important-announcement.component';
 import { ChartsModule } from 'ng2-charts';
 import { UserStatisticComponent } from './components/user-profile/user-statistic/user-statistic.component';
+import { GgggComponent } from './components/gggg/gggg.component';
 
 @NgModule({
     declarations: [
@@ -89,7 +90,8 @@ import { UserStatisticComponent } from './components/user-profile/user-statistic
         ResetPasswordComponent,
         TheLatestComponent,
         ListOfAnnouncementsComponent,
-        TheMostImportantAnnouncementComponent
+        TheMostImportantAnnouncementComponent,
+        GgggComponent
     ],
     imports: [
         BrowserModule,

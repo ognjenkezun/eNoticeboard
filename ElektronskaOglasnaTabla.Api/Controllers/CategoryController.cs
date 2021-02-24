@@ -49,14 +49,14 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
         // PUT: api/Category/5
         [HttpPut("{id}")]
         [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> PutCategories(int id, Categories categories)
+        public async Task<IActionResult> PutCategories(int id, Categories category)
         {
-            if (id != categories.CategoryId)
+            if (id != category.CategoryId)
             {
                 return BadRequest();
             }
 
-            _context.Entry(categories).State = EntityState.Modified;
+            _context.Entry(category).State = EntityState.Modified;
 
             try
             {
@@ -74,7 +74,7 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok(new { category.CategoryId, category });
         }
 
         // POST: api/Category

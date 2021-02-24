@@ -1,13 +1,11 @@
 <div class="container-fluid">
+
     <div class="row">
         <div class="jumbotron rounded py-4 shadow col">
             <div class="container">
-                <h1 class="display-4 text-center">
-                    Dobro došli na
-                    <strong>
-                        eOglasnu Tablu
-                    </strong>
-                </h1>
+                <h2 class="text-center">
+                    Dobro došli na eOglasnu Tablu
+                </h2>
                 <div class="container">
                     <div class="row">
                         <div class="col">
@@ -19,23 +17,27 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div *ngIf="categoriesNotExist">
-            <h1> Trenutno nema obavještenja </h1>
-        </div>
+
+    <div class="row" *ngIf="categoriesNotExist">
+        <h4 class="text-center text-muted"> Trenutno nema objavljenih obavještenja </h4>
     </div>
+    
     <div class="row">
         <div class="col-12 text-center">
-            <div class="spinner-border text-primary" role="status" *ngIf="spinnerCategories">
+            <div class="spinner-border text-primary" 
+                 role="status" 
+                 *ngIf="spinnerCategories">
             </div>
         </div>
     </div>
 
     <div class="row">
-        <h4 class="text-muted mt-0 mb-1 pointerCursor" *ngIf="listOfTheLatestAnnouncements.length" (click)="onTheLatestClick()"> Najnovije </h4>
+        <h4 class="text-muted mt-0 mb-1 pointerCursor" 
+            *ngIf="listOfTheLatestAnnouncements.length" 
+            (click)="onTheLatestClick()"> Najnovije </h4>
         <hr class="my-1 w-100" *ngIf="listOfTheLatestAnnouncements.length">
         <div *ngFor="let ann of listOfTheLatestAnnouncements"
-            class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
+             class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
                 <app-announcement [announcementInput]="ann" 
                                   [announcementExpiry]="configApp.announcementExpiry"
@@ -43,11 +45,12 @@
                 </app-announcement>
         </div>
     </div>
+
     <div class="row">
         <h4 class="text-muted mt-0 mb-1 pointerCursor" *ngIf="listOfTheMostImportantAnnouncements.length" (click)="onTheMostImportantClick()"> Najvažnije </h4>
         <hr class="my-1 w-100" *ngIf="listOfTheMostImportantAnnouncements.length">
         <div *ngFor="let ann of listOfTheMostImportantAnnouncements"
-            class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
+             class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
                 <app-announcement [announcementInput]="ann"
                                   [announcementExpiry]="configApp.announcementExpiry" 
@@ -55,14 +58,12 @@
                 </app-announcement>
         </div>
     </div>
-    <!-- ////////////////////////////////// -->
 
-    <!-- /////////////////////////////// -->
     <div class="row" *ngFor="let cat of listOfCategory">
         <h4 *ngIf="cat.announcements[0]" class="text-muted mt-0 mb-1 pointerCursor" (click)="onCategoryClick(cat.categoryId)"> {{ cat.categoryName }} </h4>
         <hr *ngIf="cat.announcements[0]" class="my-1 w-100">
         <div *ngFor="let ann of filterAnnPerCat(cat.categoryId)"
-            class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
+             class="col-lg-4 col-md-6 col-sm-12 my-3 px-0 px-sm-2 px-md-2 px-xl-2 px-lg-2">
 
                 <app-announcement [announcementInput]="ann" 
                                   [announcementExpiry]="configApp.announcementExpiry"
@@ -70,99 +71,4 @@
                 </app-announcement>
         </div>
     </div>
-
-    <!-- Row with new announcements -->
-    <!-- <div class="row"
-         *ngIf="listOfAnnouncements">
-        <h4 class="text-muted"> Najnovije </h4>
-    </div>
-    <div class="row">
-        <div class="col-12 p-0">
-            <hr class="my-1">
-        </div>
-    </div>
-    <div class="row"
-         *ngIf="listOfAnnouncements">
-        <div class="col p-0">
-            <div class="container-fluid">
-                <div class="row">
-                    <div *ngFor="let ann of listOfAnnouncements"
-                        class="col-lg-4 col-md-6 col-sm-12 my-3 px-2">
-
-                        <app-announcement [announcementInput]="ann" 
-                                            (click)="onClick(ann.announcementId)">
-                        </app-announcement>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
-    
-    <!-- Row with important annoucements -->
-    <!-- <div class="row"
-         *ngIf="listOfAnnouncements">
-        <h4 class="text-muted"> Najvažnije </h4>
-    </div>
-    <div class="row">
-        <div class="col-12 p-0">
-            <hr class="my-1">
-        </div>
-    </div>
-    <div class="row"
-         *ngIf="listOfAnnouncements">
-        <div class="col p-0">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div *ngFor="let ann of listOfAnnouncementsPage | filter : search | 
-                                    paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }"
-                                    class="col-lg-4 col-md-6 col-sm-12 my-3 px-2">
-    
-                                <app-announcement [announcementInput]="ann" (click)="onClick(ann.announcementId)">
-                                </app-announcement>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12 px-0">
-                        <hr>
-                    </div>
-                    <div class="col-12 px-0">
-                        <div class="container-fluid">
-                            <div class="row d-flex justify-content-between">
-                                <ngb-pagination class="col-lg-8 col-md-7 col-sm-12 p-0"
-                                                [collectionSize]="totalAnnItems" 
-                                                [(page)]="selectedPage" 
-                                                aria-label="Default pagination"
-                                                [boundaryLinks]="true"
-                                                [maxSize]="7"
-                                                [rotate]="true"
-                                                [pageSize]="itmsPerPage"
-                                                (pageChange)="selectPage($event)">
-                                </ngb-pagination>
-                                <select class="custom-select col-lg-4 col-md-5 col-sm-12 mb-3"
-                                        name="pageSize" 
-                                        [(ngModel)]="itmsPerPage"
-                                        (change)="onItemsPerPageChange()">
-                                    <option [ngValue]="2">2 objave po strani</option>
-                                    <option [ngValue]="5">5 objava po strani</option>
-                                    <option [ngValue]="10">10 objava po strani</option>
-                                    <option [ngValue]="20">20 objava po strani</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>  -->
-    <!-- <div class="row">
-        <div class="col-12">
-            <i class="fa fa-arrow-circle-up d-block d-sm-none fa-4x custom-fixed-bottom custom-hover" 
-                title="Idi na vrh" 
-                aria-hidden="true" 
-                (click)="onClickTopPage()">
-            </i>
-        </div>
-    </div> -->
 </div>

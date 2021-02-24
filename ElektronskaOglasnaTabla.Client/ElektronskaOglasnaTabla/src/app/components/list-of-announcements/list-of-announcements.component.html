@@ -174,7 +174,7 @@
                     </button>
                 </div>
 
-                <form [formGroup]="_announcementService.announcementForm" (submit)="onUpdateSubmit(selectedAnnouncement)" autocomplete="off">
+                <form [formGroup]="_announcementService.announcementForm" (submit)="onUpdateSubmit()" autocomplete="off">
                     <div class="modal-body custom-modal-body">
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="form-group">
@@ -245,10 +245,10 @@
                                         {{ file }}
                                     </p>
                                 </div>
-                                <div *ngFor="let fileName of listOfFilesName">
-                                    <span>{{ fileName }}</span>
+                                <div *ngFor="let file of listOfFilesName">
+                                    <span>{{ file.fileName }}</span>
                                     <button class="btn btn-sm ml-2" type="button">
-                                        <span aria-hidden="true">&times;</span>
+                                        <span aria-hidden="true" (click)="onFileDelete(file.id)">&times;</span>
                                     </button>
                                 </div>
                             </div>
@@ -330,6 +330,7 @@
                    name="search" 
                    placeholder="Pretraži" 
                    [(ngModel)]="searchText"
+                   (keyup)="debounce()"
                    autocomplete="off">
         </div>
         <div class="table-responsive px-1" *ngIf="listOfUserAnnouncements">
@@ -345,7 +346,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let ann of listOfUserAnnouncements | filter : searchText | 
+                    <tr *ngFor="let ann of listOfUserAnnouncements | 
                                 paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems };
                                 let i=index">
 
@@ -371,37 +372,51 @@
                     </tr>
                 </tbody>
             </table>
-            <div *ngFor="let ann of listOfUserAnnouncements | filter : searchText | 
-                 paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }; let i=index"
+            <div *ngFor="let ann of listOfUserAnnouncements |
+                         paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }; let i=index"
                  class="col-lg-4 col-md-6 col-sm-12 col-xs-12 d-md-none d-xs-block mb-2 px-0">
-        
-                <!-- <app-announcement [announcementInput]="ann">
-                </app-announcement> -->
 
                 <div class="card mb-3 border-primary">
-                    <div class="card-body text-overflow-ellipsis" (click)="onClick(ann.announcementId)">
-                        <p class="mb-2"><strong> # {{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage }} </strong></p>
-                        <div *ngIf="ann.announcementImportantIndicator">
-                            <span class="badge badge-danger"> Važno! </span>
-                        </div>
-                        <span><strong>Naslov: </strong></span><span> {{ann.announcementTitle}} </span>
-                        <br>
-                        <span><strong>Opis: </strong></span><span [innerHTML]="ann.announcementDescription"></span>
-                        <br>
-                        <span><strong>Kategorija: </strong></span><span> {{ ann.categoryName }} </span>
-                        <br>
-                        <span><strong>Datum objave: </strong></span><span> {{ ann.announcementDateCreated | date: 'dd.MM.yyyy.'}} </span>
-                    </div>
-                    <div class="card-footer">
+                    <div class="card-header py-1">
                         <div class="container-fluid">
                             <div class="row">
-                                <div class="col-6">
+                                <p class="mb-2">
+                                    <strong class="mr-2"> # {{ (i+1) + (itmsPerPage*selectedPage) - itmsPerPage }} </strong>
+                                    <span class="badge badge-danger mr-1" *ngIf="ann.importantIndicator"> Važno! </span>
+                                    <span class="badge badge-primary" *ngIf="ann.isNew"> Novo </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body text-overflow-ellipsis text-muted py-1" (click)="onClick(ann.announcementId)">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <p class="d-inline mb-1 mr-2"><strong>Naslov: </strong></p><p class="custom-ellipsis d-inline mb-1"> {{ann.announcementTitle}} </p>
+                            </div>
+                            <div class="row">
+                                <p class="d-inline mb-1 mr-2"><strong>Kategorija: </strong></p><p class="custom-ellipsis d-inline mb-1"> {{ ann.categoryName }} </p>
+                            </div>
+                            <div class="row">
+                                <p class="mb-1 mr-2"><strong>Opis: </strong></p><p class="line-clamp mb-1" [innerHTML]="ann.announcementDescription"></p>
+                            </div>
+                            <div class="row">
+                                <p class="d-inline mb-1 mr-2"><strong>Datum objave: </strong></p><p class="d-inline mb-1"> {{ ann.announcementDateCreated | date: 'dd.MM.yyyy.'}} </p>
+                            </div>
+                            <div class="row">
+                                <p class="d-inline mb-1 mr-2"><strong>Objavio: </strong></p><p class="d-inline mb-1"> {{ ann.userCreatedFirstName }} {{ ann.userCreatedLastName }} </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer py-1">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-6 pl-0 pr-1">
                                     <button type="button" 
                                             class="btn btn-primary btn-sm w-100" 
                                             (click)="openModalUpdate(templateUpdate, ann)">Izmijeni
                                     </button>
                                 </div>
-                                <div class="col-6">
+                                <div class="col-6 pr-0 pl-1">
                                     <button type="button" 
                                             class="btn btn-danger btn-sm w-100"
                                             data-toggle="modal"

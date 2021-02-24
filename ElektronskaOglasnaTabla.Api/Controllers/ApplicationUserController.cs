@@ -23,9 +23,8 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
     public class ApplicationUserController : ControllerBase
     {
         private readonly ElektronskaOglasnaTablaContext _context;
-        private UserManager<ApplicationUser> _userManager;
-        private SignInManager<ApplicationUser> _signInManager;
-        private RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationSettings _appSettings;
         private readonly ILogger _logger;
         private readonly IEmailSender _emailSender;
@@ -33,7 +32,6 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
         public ApplicationUserController(ElektronskaOglasnaTablaContext context,
                                             UserManager<ApplicationUser> userManager, 
                                             SignInManager<ApplicationUser> signInManger,
-                                            RoleManager<IdentityRole> roleManager, 
                                             IOptions<ApplicationSettings> appSettings, 
                                             ILogger<IdentityUser> logger, 
                                             IEmailSender emailSender)
@@ -41,7 +39,6 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
             _context = context;
             _logger = logger;
             _userManager = userManager;
-            _roleManager = roleManager;
             _signInManager = signInManger;
             _appSettings = appSettings.Value;
             _emailSender = emailSender;
@@ -64,12 +61,13 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
 
             listOfUsers.ForEach(user =>
             {
-                var res = new ApplicationUser();
-
-                res.Id = user.Id;
-                res.FirstName = user.FirstName;
-                res.LastName = user.LastName;
-                res.Email = user.Email;
+                var res = new ApplicationUser
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Email = user.Email
+                };
 
                 usersResultList.Add(res);
             });
@@ -442,13 +440,6 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
 
         //    return Ok();
         //}
-
-        // POST: api/ApplicationUser/adminResetUserPassword
-        [HttpPost("adminResetUserPassword")]
-        public async Task<IActionResult> AdminResetUserPassword(ResetPasswordModel resetPasswordModel)
-        {
-            return null;
-        }
 
         // GET : api/ApplicationUser/getLinkForResetPassword
         [HttpPost("getLinkForResetPassword")]

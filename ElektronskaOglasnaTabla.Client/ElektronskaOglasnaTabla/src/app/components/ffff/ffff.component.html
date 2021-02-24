@@ -1,91 +1,83 @@
-<button type="button" class="btn btn-primary" (click)="openModal(template)">Create template modal</button>
- 
-<ng-template #template>
-    <div class="modal-header">
-        <h4 class="modal-title pull-left">Modal</h4>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-    <div class="modal-body">
-        <div class="col-lg-12 col-sm-12 col-12 mt-4">
-            <!-- <div class="form-input">
-                <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <i class="fa fa-envelope" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            <input type="email" 
-                                   formControlName="userName" 
-                                   class="form-control" 
-                                   placeholder="example@mail.com">
+<button *ngIf="!announcementsNotExist" class="btn btn-primary btn-lg col-4 offset-4 mb-2" (click)="openFullscreen()">Prikaži preko cijelog ekrana</button>
+<div #tvContainer class="container-fluid p-0 hide-browser-border d-none d-xl-block shadow">
+    <div class="row">
+        <div class="col-xl-12">
+            <carousel [isAnimated]="true" 
+                        [interval]="duration" 
+                        [showIndicators]="false"
+                        [pauseOnFocus]="false"
+                        [noPause]="true"
+                        [(activeSlide)]="activeSlide"
+                        (activeSlideChange)="onSlideChange($event)">
+
+                <!-- <slide *ngFor="let ann of listOfAnnouncements; let i = index; trackedBy: trackByIdentity"> -->
+                <slide *ngFor="let ann of listOfAnnouncements; let i = index;">
+                    <div class="card">
+                        <div class="card-body tv-container">
+                            <div class="col-12 d-inline-block" style="overflow-y: scroll; overflow: hidden; height: 95vh;">
+                                <h4 class="mt-2 text-muted">
+                                    {{ ann.announcementTitle }}
+                                </h4>
+                                <h5>
+                                    <span *ngIf="ann.isNew" class="badge badge-primary mr-1">
+                                        Novo
+                                    </span>
+                                    <span *ngIf="ann.importantIndicator" class="badge badge-danger">
+                                        Važno
+                                    </span>
+                                </h5>
+                                <p class="text-muted">
+                                    Kategorija: {{ ann.categoryName }}
+                                </p>
+                                <hr>
+                                <p class="text-muted">
+                                    Obajvljeno {{ ann.announcementDateCreated | date: "dd.MM.yyyy. u HH:mm"}}, 
+                                    autor {{ ann.userCreatedFirstName }} {{ ann.userCreatedLastName }} 
+                                </p>
+                                <p class="text-muted" *ngIf="ann.announcementDateModified && ann.userModifiedFirstName && ann.userModifiedLastName                      ">
+                                    Modifikovano {{ ann.announcementDateModified | date: "dd.MM.yyyy. u HH:mm"}}, 
+                                    modifikovao {{ ann.userModifiedFirstName }} {{ ann.userModifiedLastName }}
+                                </p>
+                                <hr>
+                                <p class="text-muted" [innerHTML]="ann.announcementDescription"></p>
+                                <hr *ngIf="filterImages(ann).length != 0">
+                                <img *ngFor="let item of filterImages(ann)" 
+                                        [src]="item.filePath" 
+                                        style="object-fit: cover; object-position: 0 0;"
+                                        class="mb-2 p-2"
+                                        [ngClass]="{'col-12': filterImages(ann).length == '1', 
+                                                    'col-6': filterImages(ann).length > '1' }"
+                                        [ngStyle]="{'height.px': filterImages(ann).length == '1' ? '500' : '300'}">
+                                <hr *ngIf="filterFiles(ann).length != 0">
+                                <pdf-viewer *ngFor="let item of filterFiles(ann)"
+                                            [src]="item.filePath"
+                                            [show-all]="true"
+                                            [show-borders]="true"
+                                            [original-size]="true"
+                                            [render-text]="true"
+                                            [render-text-mode]="1"
+                                            [zoom]="0.9"
+                                            style="display: block;"
+                                            class="col-12">
+                                </pdf-viewer>
+                            <div *ngIf="filterVideos(ann).length > 0" style="height: 40vh;"></div>
                         </div>
-                        <div *ngIf="email.invalid && (email.dirty || email.touched)"
-                            class="alert alert-danger">
-        
-                            <div *ngIf="email.errors.required">
-                                Potrebno je unijeti korisničko ime.
-                            </div>
-                            <div *ngIf="email.errors.email">
-                                Korisničko ime mora da bude e-mail.
+                            <div *ngFor="let item of filterVideos(ann)">
+                               <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop muted>
+                                    <source [src]="item.filePath" type="video/mp4">
+                                </video>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <i class="fa fa-lock" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                            <input [type]="fieldTextType ? 'text' : 'password'"
-                                    class="form-control"
-                                    formControlName="password" 
-                                    class="form-control" 
-                                    placeholder="Lozinka" 
-                                    autocomplete="on">
-        
-                            <div class="input-group-append">
-                                <span class="input-group-text">
-                                    <i class="fa"
-                                        [ngClass]="{
-                                            'fa-eye-slash': !fieldTextType,
-                                            'fa-eye': fieldTextType
-                                        }"
-                                        (click)="toggleFieldTextType()">
-                                    </i>
-                                </span>
-                            </div>
-                        </div>
-                        <div *ngIf="password.invalid && (password.dirty || password.touched)"
-                                class="alert alert-danger">
-            
-                                <div *ngIf="password.errors.required">
-                                    Potrebno je unijeti lozinku.
-                                </div>
-                                <div *ngIf="password.errors.minlength">
-                                    <p>Dužina lozinke mora biti najmanje 8 karaktera.</p>
-                                </div>
-                            </div>
-                    </div> -->
-                    <!-- <div class="form-group">
-                        <input id="chckbxRememberMe" type="checkbox">
-                        <label class="ml-2 text-white" for="chckbxRememberMe">Zapamti podatke</label>
-                    </div> -->
-                    <!-- <div class="form-group">
-                        <button type="submit" 
-                                class="btn btn-primary text-white" 
-                                [disabled]="!loginForm.valid">
-                            
-                            Prijavi se
-                        </button>
-                    </div>
-                </form>
-            </div> -->
-            <app-login-form (closeModal)="closeModal()"></app-login-form>
+                </slide>
+            </carousel>
         </div>
     </div>
-</ng-template>
+</div>
+<div>
+    <h4 *ngIf="announcementsNotExist" class="text-muted my-5">Trenutno nema obavještenja</h4>
+</div>
+<div class="col-12 text-center my-5">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status" *ngIf="spinnerCarousel">
+    </div>
+</div>

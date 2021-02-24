@@ -19,6 +19,7 @@ import { TheLatestComponent } from './components/the-latest/the-latest.component
 import { ListOfAnnouncementsComponent } from './components/list-of-announcements/list-of-announcements.component';
 import { TheMostImportantAnnouncementComponent } from './components/the-most-important-announcement/the-most-important-announcement.component';
 import { UserStatisticComponent } from './components/user-profile/user-statistic/user-statistic.component';
+import { GgggComponent } from './components/gggg/gggg.component';
 
 const routes: Routes = [
     { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -45,7 +46,7 @@ const routes: Routes = [
     { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'the-latest', component: TheLatestComponent },
     { path: 'the-most-important', component: TheMostImportantAnnouncementComponent },
-    { path: 'users-statistic', component: UserStatisticComponent, canActivate: [AuthGuard], data: { roles: ["Administrator"]} },
+    { path: 'users-statistic', component: UserStatisticComponent, canActivate: [AuthGuard], data: { roles: ["Administrator"] } },
     { path: 'user-profile', canActivate: [AuthGuard], loadChildren: () => import ('./components/user-profile/user-profile.module').then(m => m.UserProfileModule) },
     { path: '**', component: PageNotFoundComponent }
 ];

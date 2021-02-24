@@ -24,10 +24,12 @@ import { SignalRService } from 'src/app/services/signal-r/signal-r.service';
 })
 export class CentralPanelComponent implements OnInit {
 
-    @Input() listOfTheMostImportantAnnouncements: AnnouncementDetails[] = [];
-    @Input() listOfTheLatestAnnouncements: AnnouncementDetails[] = [];
+    public listOfTheMostImportantAnnouncements: AnnouncementDetails[] = [];
+    public listOfTheLatestAnnouncements: AnnouncementDetails[] = [];
 
     public configApp = {} as AppConfig;
+
+    public deletedAnnouncementId: number = 0;
 
     public spinnerTheLatest: boolean;
     public spinnerTheMostImportant: boolean;
@@ -112,28 +114,58 @@ export class CentralPanelComponent implements OnInit {
     }
 
     private subscribeToEvents(): void {
-        this._chatService.messageReceived.subscribe((message: string) => {
-            console.log(message);
-            this.loadConfig();
-        });
+        // this._chatService.messageReceived.subscribe((message: string) => {
+        //     console.log(message);
+        //     this.loadConfig();
+        // });
 
-        this._signalRService.announcementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
+        this._signalRService.newAnnouncementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
             console.warn("ADDED SIGNAL R ANNOUNCEMENT IS => ", newAnnouncement);
             
             newAnnouncement.isNew = this.isNew(newAnnouncement);
             newAnnouncement.announcementDescription = this.convertStringWithHtmlTagsToText(newAnnouncement.announcementDescription);
             
             this.listOfTheLatestAnnouncements.unshift(newAnnouncement);
-            this.listOfTheLatestAnnouncements.pop();
+            if (this.listOfTheLatestAnnouncements.length > this.configApp.numberOfLastAnnPerCategory) {
+                this.listOfTheLatestAnnouncements.pop();
+            }
 
             if (newAnnouncement.importantIndicator > 0) {
                 this.listOfTheMostImportantAnnouncements.unshift(newAnnouncement);
-                this.listOfTheMostImportantAnnouncements.pop();
+                if (this.listOfTheMostImportantAnnouncements.length > this.configApp.numberOfLastAnnPerCategory) {
+                    this.listOfTheMostImportantAnnouncements.pop();
+                }
             }
+
             this.listOfCategory.forEach(category => {
                 if (category.categoryId === newAnnouncement.categoryId) {
-                    category.announcements.unshift(newAnnouncement);
-                    category.announcements.pop();
+                    let numberOfImportant = 0
+                    category.announcements.forEach(announcement => {
+                        if (announcement.importantIndicator > 0)
+                            numberOfImportant ++;
+                    });
+                    
+                    if (newAnnouncement.importantIndicator)
+                        category.announcements.unshift(newAnnouncement);
+                    else {
+                        if (numberOfImportant === 0)
+                            category.announcements.unshift(newAnnouncement);
+                        else {
+                            if (category.announcements.length < this.configApp.numberOfLastAnnPerCategory) {
+                                if (category.announcements.length === numberOfImportant) 
+                                    category.announcements.push(newAnnouncement);
+                                else
+                                    category.announcements.splice(numberOfImportant, 0, newAnnouncement);
+                            }
+                            else {
+                                if (category.announcements.length !== numberOfImportant) 
+                                    category.announcements.splice(numberOfImportant, 0, newAnnouncement);
+                            }
+                        }    
+                    }
+
+                    if (category.announcements.length > this.configApp.numberOfLastAnnPerCategory) 
+                        category.announcements.pop();
                 }
             });
         });
@@ -145,44 +177,125 @@ export class CentralPanelComponent implements OnInit {
 
             let findedIndexInTheLatest = this.listOfTheLatestAnnouncements.findIndex(announcement => announcement.announcementId === updatedAnnouncement.announcementId);
             if (findedIndexInTheLatest != -1) {
-                this.listOfTheLatestAnnouncements[findedIndexInTheLatest] = updatedAnnouncement;
+                this.listOfTheLatestAnnouncements.splice(findedIndexInTheLatest, 1);
+                this.listOfTheLatestAnnouncements.unshift(updatedAnnouncement);
             }
             else {
                 this.listOfTheLatestAnnouncements.unshift(updatedAnnouncement);
                 this.listOfTheLatestAnnouncements.pop();
             }
+
             let findedIndexInTheMostImportant = this.listOfTheMostImportantAnnouncements.findIndex(announcement => announcement.announcementId === updatedAnnouncement.announcementId);
             if (findedIndexInTheMostImportant != -1) {
-                this.listOfTheMostImportantAnnouncements[findedIndexInTheMostImportant] = updatedAnnouncement;
+                if (updatedAnnouncement.importantIndicator) {
+                    this.listOfTheMostImportantAnnouncements.splice(findedIndexInTheMostImportant, 1);
+                    this.listOfTheMostImportantAnnouncements.splice(0, 0, updatedAnnouncement);
+                }
+                else
+                    this.listOfTheMostImportantAnnouncements.splice(findedIndexInTheMostImportant, 1);
+                    //ADD NEXT IMPORTANT!!!
             }
             else {
-                this.listOfTheMostImportantAnnouncements.unshift(updatedAnnouncement);
-                this.listOfTheMostImportantAnnouncements.pop();
-                //this.listOfTheMostImportantAnnouncements.filter(val => val);
+                if (updatedAnnouncement.importantIndicator) {
+                    this.listOfTheMostImportantAnnouncements.unshift(updatedAnnouncement);
+                    this.listOfTheMostImportantAnnouncements.pop();
+                }
             }
+
             this.listOfCategory.forEach(category => {
                 if (category.categoryId === updatedAnnouncement.categoryId) {
+                    let numberOfImportant = 0;
                     let findedIndexAnnouncementInCategory = category.announcements.findIndex(announcement => announcement.announcementId === updatedAnnouncement.announcementId);
+                    
                     if (findedIndexAnnouncementInCategory != -1) {
-                        category.announcements[findedIndexAnnouncementInCategory] = updatedAnnouncement;
+                        category.announcements.splice(findedIndexAnnouncementInCategory, 1);
+
+                        category.announcements.forEach(announcement => {
+                            if (announcement.importantIndicator > 0)
+                                numberOfImportant ++;
+                        });
+
+                        if (updatedAnnouncement.importantIndicator) {
+                            category.announcements.unshift(updatedAnnouncement);
+                        }
+                        else {
+                            category.announcements.splice(numberOfImportant, 0, updatedAnnouncement);
+                        }
                     }
                     else {
-                        category.announcements.unshift(updatedAnnouncement);
-                        category.announcements.pop();
+                        category.announcements.forEach(announcement => {
+                            if (announcement.importantIndicator > 0)
+                                numberOfImportant ++;
+                        });
+
+                        if (updatedAnnouncement.importantIndicator) {
+                            category.announcements.unshift(updatedAnnouncement);
+                        }
+                        else {
+                            if (numberOfImportant === 0)
+                                category.announcements.unshift(updatedAnnouncement);
+                            else {
+                                if (category.announcements.length < this.configApp.numberOfLastAnnPerCategory) {
+                                    if (category.announcements.length === numberOfImportant) 
+                                        category.announcements.push(updatedAnnouncement);
+                                    else
+                                        category.announcements.splice(numberOfImportant, 0, updatedAnnouncement);
+                                }
+                                else {
+                                    if (category.announcements.length !== numberOfImportant) 
+                                        category.announcements.splice(numberOfImportant, 0, updatedAnnouncement);
+                                }
+                            }
+                        }
+
+                        if (category.announcements.length > this.configApp.numberOfLastAnnPerCategory) 
+                            category.announcements.pop();
                     }
                 }
             });
         });
 
-        this._signalRService.deletedAnnouncementIdRecieved.subscribe((deletedAnnouncementId: number) => {
-            let nextAnnounce = {} as AnnouncementDetails;
+        this._signalRService.nextImportantAnnouncementRecieved.subscribe((nextImportantAnnouncement: AnnouncementDetails) => {
+            if (nextImportantAnnouncement != null) {
+                this.listOfTheMostImportantAnnouncements.push(nextImportantAnnouncement);
+            }
+        });
 
-            //let deletedIndex = this.listOfUserAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);
-            //this.listOfUserAnnouncements.splice(deletedIndex, 1);
-            //this.listOfUserAnnouncements.push(nextAnnounce);
+        this._signalRService.nextAnnouncementFromCategoryRecieved.subscribe((nextAnnouncementFromCategory: AnnouncementDetails) => {
+            if (nextAnnouncementFromCategory != null) {
+                this.listOfCategory.find(category => {
+                    if (category.categoryId === nextAnnouncementFromCategory.categoryId) {
+                        category.announcements.push(nextAnnouncementFromCategory);
+                    }
+                });
+            }
+        });
 
-            //nextAnnounce = null;
-            //Pozvati u API-u da se izracuna sljedeci najmladji announcemnt i vratiti ga sa ID-om
+        this._signalRService.nextTheLatestAnnouncementRecieved.subscribe((nextTheLatestAnnouncement: AnnouncementDetails) => {
+            if (nextTheLatestAnnouncement != null) {
+                console.log("NEXT THE LATEST RECIEVED => ", nextTheLatestAnnouncement);
+                this.listOfTheLatestAnnouncements.push(nextTheLatestAnnouncement);
+            }
+        });
+
+        this._signalRService.deletedAnnouncementIdReceived.subscribe((deletedAnnouncementId: number) => {
+            if (deletedAnnouncementId) {
+                console.log("DELETED ID RECIEVED => ", deletedAnnouncementId);
+                const findedIndexInTheLAtest = this.listOfTheLatestAnnouncements.findIndex(x => x.announcementId === deletedAnnouncementId);
+                if (findedIndexInTheLAtest !== -1) {
+                    this.listOfTheLatestAnnouncements.splice(findedIndexInTheLAtest, 1);
+                }
+
+                const findedIndexInTheMostImportant = this.listOfTheMostImportantAnnouncements.findIndex(x => x.announcementId === deletedAnnouncementId);    
+                if (findedIndexInTheMostImportant !== -1) {
+                    this.listOfTheMostImportantAnnouncements.splice(findedIndexInTheMostImportant, 1);
+                }
+
+                this.listOfCategory.forEach(category => {
+                    const indexOfAnnouncementInCategory = category.announcements.findIndex(x => x.announcementId === deletedAnnouncementId);
+                    category.announcements.splice(indexOfAnnouncementInCategory, 1);
+                });
+            }
         });
     }
 

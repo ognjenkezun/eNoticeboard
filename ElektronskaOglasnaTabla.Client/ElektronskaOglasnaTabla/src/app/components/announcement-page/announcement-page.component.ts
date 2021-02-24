@@ -51,8 +51,10 @@ export class AnnouncementPageComponent implements OnInit {
 
             if (this.announcement.files.length > 0) {
                 this.announcement.files.forEach(file => {
-                    this.listOfFiles.push(file.filePath.replace(/^.*[\\\/]/, ''));
-                    console.log("File is => ", file);
+                    if (file.type === 'application/pdf') {
+                        this.listOfFiles.push(file.filePath.replace(/^.*[\\\/]/, ''));
+                        console.log("File is => ", file);
+                    }
                 });
             }
 
@@ -100,6 +102,14 @@ export class AnnouncementPageComponent implements OnInit {
         //     this.listOfFiless.push(this.imageBasePath.concat(file));
         //     console.log("FULL PATH => ", this.imageBasePath.concat(file));
         // });
+    }
+
+    filterPDFFiles(announcement: AnnouncementDetails) {
+        if (announcement.files) {
+            return announcement.files.filter(file => 
+                file.type == "application/pdf"
+            );
+        }
     }
 
     public loadConfig(): void {
@@ -187,7 +197,7 @@ export class AnnouncementPageComponent implements OnInit {
             this.loadFromSameCategory(this.announcement.categoryId, this.announcement.announcementId);
         });
 
-        this._signalRService.announcementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
+        this._signalRService.newAnnouncementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
             console.warn("ADDED SIGNAL R ANNOUNCEMENT IS => ", newAnnouncement);
             
             newAnnouncement.isNew = this.isNew(newAnnouncement);

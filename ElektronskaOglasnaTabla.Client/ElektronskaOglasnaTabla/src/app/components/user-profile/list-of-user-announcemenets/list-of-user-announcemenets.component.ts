@@ -271,17 +271,6 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
         this.loadAllAnnouncement();
     }
 
-    loadAllAnnouncementsDetailsPerPage() {
-        //this._announcementService.getAnnouncementFromCategory(this.selectedCategory.categoryId, this.selectedPage, this.itmsPerPage).subscribe(data => {
-            //this.listAnnouncements = data;
-            //console.log(this.listAnnouncements);
-            // this._announcementService.getNumberOgAnnouncementFromCategory(this.selectedCategory.categoryId).subscribe(data => {
-            //     this.totalAnnItems = data;
-            //     console.log(this.totalAnnItems)
-            // });
-        //});
-    }
-
     returnSelectedAnnonucement(row: any){
         this.selectedAnnouncement = row;
         console.log(row.announcementId);
@@ -369,12 +358,13 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
     }
 
     private subscribeToEvents(): void {
+      
         this._chatService.messageReceived.subscribe((message: string) => {
             console.log(message);
             this.loadAllAnnouncement();
         });
 
-        this._signalRService.announcementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
+        this._signalRService.newAnnouncementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
             console.warn("ADDED SIGNAL R ANNOUNCEMENT IS => ", newAnnouncement);
 
             newAnnouncement.announcementDescription = this.convertStringWithHtmlTagsToText(newAnnouncement.announcementDescription);
@@ -405,7 +395,29 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
             this.listOfAllAnnouncements[findedIndex] = updatedAnnouncement;
         });
 
-        this._signalRService.deletedAnnouncementIdRecieved.subscribe((deletedAnnouncementId: number) => {
+        this._signalRService.nextImportantAnnouncementRecieved.subscribe((deletedAnnouncementId: number) => {
+            let nextAnnounce = {} as AnnouncementDetails;
+
+            let deletedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);
+            this.listOfAllAnnouncements.push(nextAnnounce);
+            this.listOfAllAnnouncements.splice(deletedIndex, 1);
+
+            nextAnnounce = null;
+            //Pozvati u API-u da se izracuna sljedeci najmladji announcemnt i vratiti ga sa ID-om
+        });
+
+        this._signalRService.nextTheLatestAnnouncementRecieved.subscribe((deletedAnnouncementId: number) => {
+            let nextAnnounce = {} as AnnouncementDetails;
+
+            let deletedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);
+            this.listOfAllAnnouncements.push(nextAnnounce);
+            this.listOfAllAnnouncements.splice(deletedIndex, 1);
+
+            nextAnnounce = null;
+            //Pozvati u API-u da se izracuna sljedeci najmladji announcemnt i vratiti ga sa ID-om
+        });
+
+        this._signalRService.nextAnnouncementFromCategoryRecieved.subscribe((deletedAnnouncementId: number) => {
             let nextAnnounce = {} as AnnouncementDetails;
 
             let deletedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);

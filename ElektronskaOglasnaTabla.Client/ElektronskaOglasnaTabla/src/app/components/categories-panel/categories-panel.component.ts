@@ -29,6 +29,7 @@ export class CategoriesPanelComponent implements OnInit {
     public selectedCategory = {} as Categories;
     public loading = false;
     public spinnerCategories: boolean;
+    public announcementsNotExists: boolean;
 
     public selectedPage: number = 1;
     public itmsPerPage: number = 6;
@@ -46,6 +47,7 @@ export class CategoriesPanelComponent implements OnInit {
 
     ngOnInit(): void {
         this.spinnerCategories = true;
+        this.announcementsNotExists = false;
 
         this.loadCategories();
         // if (+this._route.snapshot.params['id']) {
@@ -154,6 +156,8 @@ export class CategoriesPanelComponent implements OnInit {
             this.listAnnouncements = data;
             console.log("Ann => ", this.listAnnouncements);
             this.spinnerCategories = false;
+            if (this.listAnnouncements.length === 0)
+                this.announcementsNotExists = true;
             this._announcementService.getNumberOfAnnouncementFromCategory(categoryId).subscribe(data => {
                 this.totalAnnItems = data;
                 console.log(this.totalAnnItems)

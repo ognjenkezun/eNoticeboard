@@ -1,14 +1,19 @@
 import { EventEmitter, Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@aspnet/signalr';
 import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
+import { Announcements } from 'src/app/models/Announcements';
+import { DeleteAnnouncementWS } from 'src/app/models/DeleteAnnouncementWS';
 
 @Injectable({
     providedIn: 'root'
 })
 export class SignalRService {
-    announcementRecieved = new EventEmitter<AnnouncementDetails>();
+    newAnnouncementRecieved = new EventEmitter<AnnouncementDetails>();
     updatedAnnouncementRecieved = new EventEmitter<AnnouncementDetails>();
-    deletedAnnouncementIdRecieved = new EventEmitter<number>();
+    deletedAnnouncementIdReceived = new EventEmitter<number>();
+    nextTheLatestAnnouncementRecieved = new EventEmitter<AnnouncementDetails>();
+    nextImportantAnnouncementRecieved = new EventEmitter<AnnouncementDetails>();
+    nextAnnouncementFromCategoryRecieved = new EventEmitter<AnnouncementDetails>();
 
     connectionEstablished = new EventEmitter<Boolean>();
 
@@ -21,7 +26,7 @@ export class SignalRService {
         this.startConnection();
     }
 
-    sendAnnouncement(announcement: AnnouncementDetails) {
+    sendAnnouncement(announcement: Announcements) {
         this._hubConnection.invoke('NewAnnouncement', announcement);
     }
 
@@ -29,8 +34,16 @@ export class SignalRService {
         this._hubConnection.invoke('SendUpdatedAnnouncement', announcement);
     }
 
-    sendDeletedAnnouncement(announcement: AnnouncementDetails) {
-        this._hubConnection.invoke('SendDeletedAnnouncementId', announcement);
+    sendDeletedImportantAnnouncement(deletedAnnouncementData: DeleteAnnouncementWS) {
+        this._hubConnection.invoke('SendNextImportantAnnouncement', deletedAnnouncementData);
+    }
+
+    sendDeletedTheLatestAnnouncement(deletedAnnouncement: DeleteAnnouncementWS) {
+        this._hubConnection.invoke('SendNextTheLatestAnnouncement', deletedAnnouncement);
+    }
+
+    sendDeletedAnnouncementFromCategory(deletedAnnouncement: DeleteAnnouncementWS) {
+        this._hubConnection.invoke('SendNextAnnouncementFromCategory', deletedAnnouncement);
     }
 
     private createConnection() {
@@ -57,15 +70,29 @@ export class SignalRService {
 
     private registerOnServerEvents(): void {
         this._hubConnection.on('AddedAnnouncementReceived', (newAnnouncement: AnnouncementDetails) => {
-            this.announcementRecieved.emit(newAnnouncement);
+            this.newAnnouncementRecieved.emit(newAnnouncement);
         });
         
         this._hubConnection.on('UpdatedAnnouncementReceived', (updatedAnnouncement: AnnouncementDetails) => {
             this.updatedAnnouncementRecieved.emit(updatedAnnouncement);
         });
 
-        this._hubConnection.on('DeletedAnnouncementIdReceived', (deletedAnnouncementId: number) => {
-            this.deletedAnnouncementIdRecieved.emit(deletedAnnouncementId);
+        this._hubConnection.on('DeletedImportantAnnouncementIdReceived', (nextImportantAnnouncement: AnnouncementDetails) => {
+            this.nextImportantAnnouncementRecieved.emit(nextImportantAnnouncement);
+        });
+
+        this._hubConnection.on('DeletedAnnouncementIdFromCategoryReceived', (nextAnnouncementFromCategory: AnnouncementDetails) => {
+            this.nextAnnouncementFromCategoryRecieved.emit(nextAnnouncementFromCategory);
+        });
+
+        this._hubConnection.on('DeletedTheLatestAnnouncementIdReceived', (nextTheLatestAnnouncement: AnnouncementDetails, 
+                                                                          deletedAnnouncementId: number) => {
+            
+            console.log("nextTheLatestAnnouncement =======> ", nextTheLatestAnnouncement);
+            console.log("deletedAnnouncementId =======> ", deletedAnnouncementId);
+            
+            this.nextTheLatestAnnouncementRecieved.emit(nextTheLatestAnnouncement);
+            this.deletedAnnouncementIdReceived.emit(deletedAnnouncementId);
         });
     }
 }

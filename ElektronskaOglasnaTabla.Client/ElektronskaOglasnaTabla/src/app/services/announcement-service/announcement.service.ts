@@ -139,6 +139,11 @@ export class AnnouncementService {
         return this._httpClient.post<any>(`${this.apiURL}Announcement/filteredAnnouncements/${page}&${pageSize}`, ann);
     }
 
+    public getSearchedAnnouncements(searchTerm: string, page: number, pageSize: number)
+        : Observable<AnnouncementDetails[]> {
+    return this._httpClient.get<AnnouncementDetails[]>(`${this.apiURL}Announcement/search?search-term=${searchTerm}&current-page=${page}&page-size=${pageSize}`);
+    }
+
     public getFromSameCategory(categoryId: number, announcementId: number)
                                     : Observable<AnnouncementDetails[]> {
         return this._httpClient.get<AnnouncementDetails[]>(`${this.apiURL}Announcement/announcementDetailsFromSameCategory/${categoryId}&${announcementId}`);

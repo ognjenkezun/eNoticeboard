@@ -8,45 +8,38 @@
             </h4>
 
             <!-- Important indicator -->
-            <h4>
-                <!-- Provjeriti za posljednja 24 sata (trenutno vrijeme - vrijeme postavljanja < 24 h) !!!!!!!! -->
-                <span *ngIf="announcement.isNew" class="badge badge-primary mr-1">
+            <h5 class="my-0">
+                <h5 *ngIf="announcement.isNew" class="badge badge-primary mr-1">
                     Novo
-                </span>
-                <span *ngIf="announcement.importantIndicator" class="badge badge-danger">
+                </h5>
+                <h5 *ngIf="announcement.importantIndicator" class="badge badge-danger">
                     Važno
-                </span>
-            </h4>
+                </h5>
+            </h5>
 
             <!-- Category -->
-            <p class="text-muted cursor-pointer" (click)="onCategoryClick(announcement.categoryId)">
+            <h5 class="text-muted cursor-pointer" (click)="onCategoryClick(announcement.categoryId)">
                 Kategorija: {{ announcement.categoryName }} 
-            </p>
-            <hr>
+            </h5>
+            <hr class="my-2">
 
             <!-- Data/Time and Author -->
-            <p class="text-muted">
+            <p class="text-muted my-2">
                 Objavljeno {{ announcement.announcementDateCreated | date: "dd.MM.yyyy. u HH:mm"}}, 
                 {{ announcement.userCreatedFirstName }} {{ announcement.userCreatedLastName }}
             </p>
-            <p class="text-muted" *ngIf="announcement.announcementDateModified && announcement.userModifiedFirstName && announcement.userModifiedLastName">
+            <p class="text-muted my-2" *ngIf="announcement.announcementDateModified && announcement.userModifiedFirstName && announcement.userModifiedLastName">
                 Modifikovano {{ announcement.announcementDateModified | date: "dd.MM.yyyy. u HH:mm"}}, 
                 {{ announcement.userModifiedFirstName }} {{ announcement.userModifiedLastName }}
             </p>
-            <hr>
+            <hr class="mt-2 mb-4">
 
             <!-- Data/Time and Author modified if Modified  -->
             <div *ngIf="false"></div>
-
-            <!-- Preview Image -->
-            <!-- <img *ngIf="true" class="img-fluid rounded" src="http://placehold.it/1200x300" alt="Slika vijesti" width="100%">
-            <hr *ngIf="true"> -->
             
             <!-- Description -->
             <p class="text-muted" [innerHTML]="announcement.announcementDescription"></p>
             <hr>
-            <!-- <p>Priloženi fajovi</p>
-            <app-file-manager></app-file-manager> -->
             
             <div *ngFor="let item of filterFiles">
                 <video class="col-12 px-0" controls>
@@ -69,71 +62,30 @@
                     </slide>
                 </carousel>
             </div>
-                    <!-- class="mb-2 p-2 col-lg-4 col-md-6 col-sm-12"> -->
-            <!-- <div *ngFor="let item of filterDocuments">
-                <p>{{item?.filePath}}, </p>
-            </div> -->
-
-            <!-- PDF viewer -->
-            <!-- <pdf-viewer *ngFor="let item of filterDocuments"
+            <hr *ngIf="listOfFiles.length > 0">
+            <pdf-viewer *ngFor="let item of filterPDFFiles(announcement)"
                         [src]="item.filePath"
-                        [render-text]="true"
                         [show-all]="true"
-                        [original-size]="false"
-                        [zoom]="0.9"
                         [show-borders]="true"
-                        class="col-12"
-                        style="display: block;">
-            </pdf-viewer> -->
-
-            <!-- <video class="col-12" controls>
-                <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
-                <source src=".ogg" type="video/ogg">
-                <source src=".webm" type="video/webm">
-            </video>
-            <img *ngFor="let path of listOfImagesPaths" 
-                    [src]="path" 
-                    class="mb-2 p-2 col-lg-4 col-md-6 col-sm-12">
-            <hr> -->
-            <!-- <pdf-viewer *ngFor="let path of listOfFilesPaths"
-                        [src]="path" 
+                        [original-size]="true"
                         [render-text]="true"
-                        [show-all]="true"
-                        style="display: block; padding: 0;">
-            </pdf-viewer> -->
-            <!-- <pdf-viewer [src]="pdfSrc"
-                        [render-text]="true"
-                        [show-all]="true"
-                        [original-size]="false"
+                        [render-text-mode]="1"
                         [zoom]="0.9"
-                        [show-borders]="true"
-                        class="col-12"
-                        style="display: block;">
+                        style="display: block;"
+                        class="col-12">
             </pdf-viewer>
-            <hr> -->
+            <hr *ngIf="listOfFiles.length > 0">
             <p *ngIf="listOfFiles.length > 0" class="text-muted">Priloženi fajovi</p>
-            <!-- UZETI PUTANJE ZA DOWNLOAD!!!! ################################ -->
             <app-file-manager *ngIf="listOfFiles.length > 0" [listOfFiles]="listOfFiles" class="text-muted"></app-file-manager>
         </div>
 
-        <div class="col-lg-4 col-md-5 col-sm-12" [ngClass]="announcementFromSameCategory.length > 0 ? ['col-lg-4', 'col-md-5'] : ['col-lg-12', 'col-md-12']"
+        <div class="col-lg-4 col-md-5 col-sm-12" [ngClass]="announcementFromSameCategory.length > 0 
+                                                            ? ['col-lg-4', 'col-md-5'] 
+                                                            : ['col-lg-12', 'col-md-12']"
                                                  *ngIf="announcementFromSameCategory.length > 0">
+            
             <br>
-            <!-- Carousel with new announcements -->
-            <!-- <h4 class="text-muted pb-2">Najnovije</h4>
-            <div class="shadow">
-                <carousel [isAnimated]="true" 
-                        [showIndicators]="false"
-                        [pauseOnFocus]="false">
 
-                    <slide *ngFor="let ann of listAnnouncements; let i = index">
-                        <app-announcement [announcementInput]="ann"
-                                            (click)="onClick(ann.announcementId)">
-                        </app-announcement>
-                    </slide>
-                </carousel>
-            </div>
-            <hr class="col-12 px-0"> -->
             <!-- Announcement from same category -->
             <h4 class="text-muted">Iz iste kategorije</h4>
             <hr class="col-12 px-0">

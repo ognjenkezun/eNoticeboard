@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Announcements } from 'src/app/models/Announcements';
 import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
 
 @Component({
@@ -36,6 +35,17 @@ export class AnnouncementComponent implements OnInit {
             Math.abs(hoursModified) < (this.announcementExpiry * 24)) {
                 
             this.announcementInput.isNew = true;
+        }
+    }
+
+    filterImages(announcement: AnnouncementDetails) {
+        if (announcement.files) {
+            console.log("IMAGE FILES => ", announcement.files.filter(file =>
+                file.type.includes("image")
+            ));
+            return announcement.files.filter(file =>
+                file.type.includes("image")
+            );
         }
     }
 

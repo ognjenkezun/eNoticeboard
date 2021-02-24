@@ -6,8 +6,8 @@
     <p *ngFor="let file of listOfFiles">
         {{ file }}
         <app-file-download [disabled]="showProgress" 
-                            [fileName]="file" 
-                            (downloadStatus)="downloadStatus($event)">
+                           [fileName]="file" 
+                           (downloadStatus)="downloadStatus($event)">
         </app-file-download>
     </p>
 </div>

@@ -1,0 +1,17 @@
+.line-clamp {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.custom-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.divtext {
+    max-height: 115px;
+    overflow: hidden;
+}
