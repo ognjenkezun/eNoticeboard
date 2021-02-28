@@ -10,9 +10,9 @@ namespace ElektronskaOglasnaTabla.Api.Hubs
 {
     public class MessageHub: Hub
     {
-        public async Task NewMessage(AnnouncementDetails announcement)
+        public async Task NewMessage(string message)
         {
-            await Clients.All.SendAsync("MessageReceived", announcement);
+            await Clients.Others.SendAsync("MessageReceived", message);
         }
     }
 }

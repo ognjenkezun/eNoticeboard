@@ -36,12 +36,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <!--<label style="padding-right: 10px;">Choose Category</label>
-                                <kendo-dropdownlist [data]="listOfCategories">
-                                </kendo-dropdownlist>
-                                <br>-->
-                                <!--<label class="d-inline-block" style="padding-right: 10px;">Izaberite kategoriju</label>-->
-                                
                                 <label for="selCateg">Izaberi kategoriju</label>
                                 <select class="form-control d-inline-block"
                                         id="selCateg"
@@ -54,12 +48,6 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <!--
-                                <label for="priority">
-                                <strong>Important Indicator</strong>
-                                </label>
-                                <input id="priority" type="checkbox" formControlName="announcementPriority" class="form-control">
-                                -->
                                 <div class="form-check">
                                     <input class="form-check-input" 
                                             type="checkbox" 
@@ -73,16 +61,31 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <!-- <app-file-upload [disabled]="showProgress" [listOfFiles]="listOfFiles" (uploadStatus)="uploadStatus($event)"></app-file-upload> -->
-                                <app-file-upload></app-file-upload>
-                            </div>
-                            <div class="form-group">
-                                <!-- <app-file-upload [disabled]="showProgress" [listOfFiles]="listOfFiles" (uploadStatus)="uploadStatus($event)"></app-file-upload> -->
-                                <app-image-upload></app-image-upload>
-                            </div>
-                            <div class="form-group">
-                                <!-- <app-file-upload [disabled]="showProgress" [listOfFiles]="listOfFiles" (uploadStatus)="uploadStatus($event)"></app-file-upload> -->
-                                <app-image-upload></app-image-upload>
+                                <div class="container-uploaded">
+                                    <button [disabled]="disabled"
+                                            [ngClass]="{'disabled': disabled}"
+                                            class="btn btn-success"
+                                            (click)="inputFile.click()"
+                                            type="button">
+                                        Dodaj fajl
+                                    </button>
+                                    <input name="fileUpload" 
+                                           id="fileUpload" 
+                                           (change)="upload($event)" 
+                                           type="file" 
+                                           #inputFile 
+                                           multiple 
+                                           hidden>
+                                    <p *ngFor="let file of listOfFiles">
+                                        {{ file }}
+                                    </p>
+                                </div>
+                                <div *ngFor="let file of listOfFilesName">
+                                    <span>{{ file.fileName }}</span>
+                                    <button class="btn btn-sm ml-2" type="button">
+                                        <span aria-hidden="true" (click)="onFileDelete(file.id)">&times;</span>
+                                    </button>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="datePickerAdd">Rok prikaza</label>
@@ -99,9 +102,7 @@
                                                         dateInputFormat: 'DD.MM.YYYY.' }">
                             </div>
                             <div class="form-group">
-                                <label>Unesi opis</label>
-                                <!--<kendo-editor [(ngModel)]="annDescription" name="annDescription" style="height: 370px;"></kendo-editor>-->
-                                <kendo-editor class="custom-kendo-text-editor"
+                                <label>Unesi opis</label><kendo-editor class="custom-kendo-text-editor"
                                                 formControlName="announcementDescription" 
                                                 name="annDescription">
                                                 <kendo-toolbar>
@@ -136,7 +137,6 @@
                                                     </kendo-toolbar-buttongroup>
                                                 </kendo-toolbar>
                                 </kendo-editor>
-                                <!--<input type="text" formControlName="announcementDescription" class="form-control" placeholder="Description">-->
                             </div>
                         </div>
                     </div>
@@ -176,12 +176,6 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <!--<label style="padding-right: 10px;">Choose Category</label>
-                                <kendo-dropdownlist [data]="listOfCategories">
-                                </kendo-dropdownlist>
-                                <br>-->
-                                <!--<label class="d-inline-block" style="padding-right: 10px;">Izaberite kategoriju</label>-->
-                                
                                 <label for="selCategUpdate">Izaberi kategoriju</label>
                                 <select class="form-control d-inline-block"
                                         id="selCategUpdate"
@@ -193,20 +187,7 @@
                                     </option>
                                 </select>
                             </div>
-                            <!-- <div class="form-group">
-                                <label for="imageFile">Izaberi sliku</label>
-                                <div class="custom-file">
-                                    <input type="file" class="custom-file-input" id="imageFile">
-                                    <label class="custom-file-label" for="imageFile">Izaberi</label>
-                                </div>
-                            </div> -->
                             <div class="form-group">
-                                <!--
-                                <label for="priority">
-                                <strong>Important Indicator</strong>
-                                </label>
-                                <input id="priority" type="checkbox" formControlName="announcementPriority" class="form-control">
-                                -->
                                 <div class="form-check">
                                     <input class="form-check-input" 
                                             type="checkbox" 
@@ -219,21 +200,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <!-- <div class="form-group"> -->
-                                <!-- <app-file-upload [disabled]="showProgress" [listOfFiles]="listOfFiles" (uploadStatus)="uploadStatus($event)"></app-file-upload> -->
-                                <!-- <app-file-upload></app-file-upload>
-                            </div> -->
-                            <!-- <div class="form-group"> -->
-                                <!-- <app-file-upload [disabled]="showProgress" [listOfFiles]="listOfFiles" (uploadStatus)="uploadStatus($event)"></app-file-upload> -->
-                                <!-- <app-image-upload></app-image-upload>
-                            </div>
-                            <div class="form-group"> -->
-                                <!-- <app-file-upload [disabled]="showProgress" [listOfFiles]="listOfFiles" (uploadStatus)="uploadStatus($event)"></app-file-upload> -->
-                                <!-- <app-image-upload></app-image-upload>
-                            </div> -->
                             <div class="form-group">
-                                <!-- <app-file-upload [listOfFiles]="listOfFiles"></app-file-upload> -->
-                                <!-- <app-file-upload></app-file-upload> -->
                                 <div class="container-uploaded">
                                     <button [disabled]="disabled"
                                             [ngClass]="{'disabled': disabled}"
@@ -253,10 +220,10 @@
                                         {{ file }}
                                     </p>
                                 </div>
-                                <div *ngFor="let fileName of listOfFilesName">
-                                    <span>{{ fileName }}</span>
+                                <div *ngFor="let file of listOfFilesName">
+                                    <span>{{ file.fileName }}</span>
                                     <button class="btn btn-sm ml-2" type="button">
-                                        <span aria-hidden="true">&times;</span>
+                                        <span aria-hidden="true" (click)="onFileDelete(file.id)">&times;</span>
                                     </button>
                                 </div>
                             </div>
@@ -275,7 +242,6 @@
                             </div>
                             <div class="form-group">
                                 <label>Unesi opis</label>
-                                <!--<kendo-editor [(ngModel)]="annDescription" name="annDescription" style="height: 370px;"></kendo-editor>-->
                                 <kendo-editor class="custom-kendo-text-editor"
                                                 formControlName="announcementDescription" 
                                                 name="annDescription">
@@ -311,11 +277,6 @@
                                                     </kendo-toolbar-buttongroup>
                                                 </kendo-toolbar>
                                 </kendo-editor>
-                                <!-- <textarea rows="10" 
-                                            formControlName="announcementDescription"
-                                            class="form-control">
-                                </textarea> -->
-                                <!--<input type="text" formControlName="announcementDescription" class="form-control" placeholder="Description">-->
                             </div>
                         </div>
                     </div>
@@ -339,6 +300,7 @@
                    name="search" 
                    placeholder="Pretraži" 
                    [(ngModel)]="searchText"
+                   (keyup)="debounce()"
                    autocomplete="off">
         </div>
         <div class="table-responsive px-1" *ngIf="listOfAllAnnouncements">
@@ -355,7 +317,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor="let ann of listOfAllAnnouncements | filter : searchText | 
+                    <tr *ngFor="let ann of listOfAllAnnouncements | 
                                 paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems };
                                 let i=index">
 
@@ -382,12 +344,9 @@
                     </tr>
                 </tbody>
             </table>
-            <div *ngFor="let ann of listOfAllAnnouncements | filter : searchText | 
+            <div *ngFor="let ann of listOfAllAnnouncements | 
                  paginate: { itemsPerPage: itmsPerPage, currentPage: selectedPage, totalItems: totalAnnItems }; let i=index"
                  class="col-lg-4 col-md-6 col-sm-12 col-xs-12 d-md-none d-xs-block mb-2 px-0">
-        
-                <!-- <app-announcement [announcementInput]="ann">
-                </app-announcement> -->
 
                 <div class="card mb-3 border-primary">
                     <div class="card-body text-overflow-ellipsis" (click)="onClick(ann.announcementId)">

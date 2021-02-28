@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ConfigurationService } from 'src/app/services/configuration-service/configuration.service';
 import { AppConfig } from 'src/app/models/AppConfig';
 import { ToastrService } from 'ngx-toastr';
+import { ChatService } from 'src/app/services/chat-service/chat.service';
 
 @Component({
     selector: 'app-application-config-panel',
@@ -12,11 +13,11 @@ import { ToastrService } from 'ngx-toastr';
 export class ApplicationConfigPanelComponent implements OnInit {
 
     private configApp = {} as AppConfig;
-    //private configApps = null as AppConfig[];
 
     constructor(private fb: FormBuilder,
                 private _configService: ConfigurationService,
-                private _toastrService: ToastrService) { }
+                private _toastrService: ToastrService,
+                private _chatService: ChatService) { }
 
     configForm = this.fb.group({
         annExpiry: [this.configApp.announcementExpiry, Validators.required],
@@ -42,7 +43,6 @@ export class ApplicationConfigPanelComponent implements OnInit {
     }
 
     onSubmit(): void {
-        //this.configApp.id = 1;
         this.configApp.announcementExpiry = this.configForm.controls['annExpiry'].value;
         this.configApp.automaticallyUpdate = this.configForm.controls['autoUpdate'].value;
         this.configApp.numberOfLastAnnPerCategory = this.configForm.controls['slideDuration'].value;
@@ -50,13 +50,14 @@ export class ApplicationConfigPanelComponent implements OnInit {
         console.log("Config obj => ", this.configForm);
         
         this._configService.updateConfigData(1, this.configApp).subscribe(data => {
-            //SUCC TOASTR
+            this._toastrService.success("Uspješno primijenjena podešavanja", "Akcija uspješna");
+
+            let message = "Message sent!";
+            this._chatService.sendMessage(message);
         }, err => {
-            //Err TOASTR
+            this._toastrService.success(err, "Akcija neuspješna");
         });
         this.configForm.reset();
         this.loadConfig();
-        //tostr notification
-        //this.configApp = null;
     }
 }

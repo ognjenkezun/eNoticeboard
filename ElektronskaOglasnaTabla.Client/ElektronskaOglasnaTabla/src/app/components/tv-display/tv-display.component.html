@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-12">
         <button *ngIf="!announcementsNotExist" class="btn btn-primary btn-lg col-4 offset-4 mb-2" (click)="openFullscreen()">Prikaži preko cijelog ekrana</button>
-        <div #tvContainer class="container-fluid p-0 hide-browser-border d-none d-xl-block shadow">
+        <div #tvContainer class="container-fluid p-0 hide-browser-border d-none d-xl-block shadow" style="display: none;">
             <div class="row">
                 <div class="col-xl-12">
                     <carousel [isAnimated]="true" 
@@ -11,7 +11,7 @@
                               [pauseOnFocus]="false"
                               [noPause]="true"
                               [(activeSlide)]="activeSlide"
-                              (activeSlideChange)="onSlideChangeeee($event)">
+                              (activeSlideChange)="onSlideChange($event)">
         
                         <slide *ngFor="let ann of listOfAnnouncements; let i = index; trackedBy: trackByIdentity">
                             <div class="card">
@@ -51,12 +51,7 @@
     
                                         <!-- Description -->
                                         <p class="text-muted" [innerHTML]="ann.announcementDescription"></p>
-                                        <!-- <hr>
-                                        <div class="text-center w-100">
-                                            <img *ngFor="let path of listOfImagesPaths" 
-                                                    [src]="path" 
-                                                    class="mb-2 p-2 col-3">
-                                        </div> -->
+
                                         <hr *ngIf="filterImages(ann).length != 0">
                                         <img *ngFor="let item of filterImages(ann)" 
                                              [src]="item.filePath" 
@@ -80,65 +75,10 @@
                                     <div *ngIf="filterVideos(ann).length > 0" style="height: 40vh;"></div>
                                 </div>
                                     <div *ngFor="let item of filterVideos(ann)">
-                                        <!-- <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop muted #videoPlayer (ended)="onVideoEnded($event)"> -->
                                         <video style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop muted>
-                                            <source [src]="item.filePath" type="video/mp4">
-                                            <!-- <source src=".ogg" type="video/ogg">
-                                            <source src=".webm" type="video/webm"> -->
+                                            <source [src]="item.filePath" [type]="item.type">
                                         </video>
                                     </div>
-                                    <!-- <div class="col-6 d-inline-block">
-                                        <video class="col-12" style="position: absolute; top: 0;" autoplay loop #videoPlayer>
-                                            <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
-                                            <source src=".ogg" type="video/ogg">
-                                            <source src=".webm" type="video/webm">
-                                            <p>Browser doesn't suport the video tag.</p>
-                                        </video>
-                                    </div> -->
-                                    <!-- OVO DOLE JE PRAVO !!!!!!!!!!!! ############### -->
-                                    <!-- <div *ngIf="true">
-                                        <video class="" style="position: fixed; bottom: 10px; right: 10px; width: auto; height: 40vh;" autoplay loop #videoPlayer (ended)="onVideoEnded($event)">
-                                            <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
-                                            <source src=".ogg" type="video/ogg">
-                                            <source src=".webm" type="video/webm">
-                                            <p>Browser doesn't suport the video tag.</p>
-                                        </video>
-                                    </div> -->
-                                    
-                                    <!-- <video class="w-100" style="position: fixed" controls autoplay>
-                                        <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
-                                    </video> -->
-                                    <!-- <div class="col-5" style="border: 1px solid red; 
-                                                                height: 250px; 
-                                                                right: 0; 
-                                                                top: 0; 
-                                                                position: fixed; 
-                                                                z-index: 100;
-                                                                text-align: center;
-                                                                background-color: blue;">
-                                        <video class="w-100" controls autoplay>
-                                            <source src="http://localhost:5000/Resources/Files/big_buck_bunny_720p_1mb.mp4" type="video/mp4">
-                                        </video>-->
-                                        <!-- <h1 style="color: red; 
-                                                    vertical-align: middle; 
-                                                    align-items: center;">
-                                            VIDEO
-                                        </h1> -->
-                                    <!--</div> -->
-                                    <!-- <div class="col-8 offset-2" style="border: 1px solid blue; 
-                                                                        height: 400px;
-                                                                        position: fixed; 
-                                                                        z-index: 99;
-                                                                        text-align: center;
-                                                                        background-color: red;">
-                                        <h1 style="color: blue; 
-                                                    vertical-align: middle; 
-                                                    align-items: center;">
-                                            VIDEO
-                                        </h1>
-                                    </div> -->
-                                    <!-- Title -->
-                                    
                                 </div>
                             </div>
                         </slide>

@@ -1,14 +1,12 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, QueryList, OnDestroy, Inject, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit, OnDestroy, Inject } from '@angular/core';
 import { AnnouncementService } from 'src/app/services/announcement-service/announcement.service';
 import { AnnouncementDetails } from 'src/app/models/AnnouncementDetails';
 import { DOCUMENT } from '@angular/common';
-import { PDFDocumentProxy, PDFProgressData } from 'ng2-pdf-viewer';
-import { ChatService } from 'src/app/services/chat-service/chat.service';
 import { ConfigurationService } from 'src/app/services/configuration-service/configuration.service';
 import { AppConfig } from 'src/app/models/AppConfig';
 import { SignalRService } from 'src/app/services/signal-r/signal-r.service';
 import { ToastrService } from 'ngx-toastr';
-import { config } from 'rxjs';
+import { ChatService } from 'src/app/services/chat-service/chat.service';
 
 @Component({
     selector: 'app-tv-display',
@@ -24,31 +22,20 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     public listOfImagesPaths: string[] = [];
 
     public configApp = {} as AppConfig;
-
-    public duration: number = 30000;
-    public numberOfSlideChange: number = 0;
-    public numberOfFinishVideo: number = 0;
     
     public fullscreenComponent;
-
-    public listOfMockAnnouncement = [];
-
     public interval;
     public automaticallyUpdateInterval;
-    public timeForAutomaticallyUpdate: number;
     public spinnerCarousel: boolean;
     public announcementsNotExist: boolean;
 
     public activeSlide: number = 0;
 
-    public counterOfHeight: number = 0;
-    public scrollHeight: number = 0;
-    public endDetected: boolean = false;
-
     constructor(private _announcementService: AnnouncementService,
                 private _configService: ConfigurationService,
                 private _signalRService: SignalRService,
                 private _toastr: ToastrService,
+                private _chatService: ChatService,
                 @Inject(DOCUMENT) private document: any) { 
 
         this.subscribeToEvents();
@@ -59,14 +46,10 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
         this.announcementsNotExist = false;
         
         this.loadConfig();
-
-        this.timeForAutomaticallyUpdate = (this.configApp.automaticallyUpdate * 1000) || 3600000;
         
         this.automaticallyUpdateInterval = setInterval(() => {
             this.loadConfig();
-        }, this.timeForAutomaticallyUpdate);
-
-        this.duration = 0;
+        }, (this.configApp.automaticallyUpdate * 1000) || 3600000);
     }
 
     ngAfterViewInit(): void {
@@ -103,20 +86,18 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
     public loadConfig(): void {
         this._configService.getConfigData(1).subscribe(data => {
-            let configApp = data;
-            this.duration = (configApp.slideDurationOnTv * 1000) || 30000;
-
-            this.loadAnnouncements(configApp);
+            this.configApp = data;
+            this.loadAnnouncements(this.configApp);
         });
     }
 
-    onSlideChangeeee(activeSlide: number): void {
+    onSlideChange(activeSlide: number): void {
         clearInterval(this.interval);
         this.interval = 0;
-        let numberOfSlideChange = 0;
+        let numberOfScrolling = 0;
         let counterOfHeight = 0;
         
-        console.log("Pauza 5 sekundi");
+        console.log("Pauza 5 sekundi na pocetku");
         var elem = this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children[activeSlide].children[0].children[0].children[0].children[0];
         elem.scrollTop = 0;
         let scrollHeight: number = elem.scrollHeight;
@@ -138,17 +119,18 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
                     }
                     else {
                         counterOfHeight = 0;
-                        numberOfSlideChange ++;
-                        if (numberOfSlideChange == 1) {
+                        numberOfScrolling ++;
+                        if (numberOfScrolling == 1) {
                             clearInterval(this.interval);
+                            this.interval = 0;
+                            
                             console.log("Skrolanje zavrseno");
                             console.log("Aktivni slajd", activeSlide + 1);
 
-                            this.interval = 0;
-                            numberOfSlideChange = 0;
+                            numberOfScrolling = 0;
                             counterOfHeight = 0;
 
-                            console.log("Pauza 5 sekundi");
+                            console.log("Pauza 5 sekundi na kraju");
                             setTimeout(() => {
                                 if (activeSlide == this.listOfAnnouncements.length) {
                                     this.activeSlide = 0;
@@ -188,92 +170,6 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
             return announcement.files.filter(file =>
                 file.type.includes("image")
             );
-        }
-    }
-
-    onSlideChange(event: any): void {
-        console.log("This outside => ", this.tvContainer);
-        console.log("ACTIVE SLIDE => ", this.activeSlide);
-        console.log("ACTIVE SLIDE (AS EVENT) => ", this.activeSlide);
-         
-        //if (this._afterViewInitExecuted) {
-        var elem: any;
-        setTimeout(() => {
-            elem = this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children[this.activeSlide].children[0].children[0].children[0].children[0];
-            elem.scrollTop = 0;
-        }, 0);
-
-        if(this.duration > 0) {
-            setTimeout(() => {
-                clearInterval(this.interval);
-                this.interval = 0;
-                let scrollSpeed = 0;
-                this.counterOfHeight = 0;
-                
-                //var elem = this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children[this.activeSlide].children[0].children[0].children[0].children[0];
-                //elem.scrollTop = 0;
-                
-                this.scrollHeight = this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children[this.activeSlide].children[0].children[0].children[0].children[0].scrollHeight;
-                scrollSpeed = +((this.scrollHeight / (this.duration - 10000)) * 50);
-                
-                this.interval = setInterval(() => {
-                    if (this.counterOfHeight < elem.scrollHeight) {
-                        this.counterOfHeight += scrollSpeed;
-                        elem.scrollBy(0, scrollSpeed);
-                    }
-                    else {
-                        this.counterOfHeight = 0;
-                        elem.scrollTop = 0;
-                        clearInterval(this.interval);
-                        this.interval = 0;
-                    }
-                }, 50);
-            }, 10000);
-        }
-        else if (this.duration === 0) {
-            setTimeout(() => {
-                clearInterval(this.interval);
-                this.interval = 0;
-                let scrollSpeed = 0;
-                //this.duration = 5000;
-                this.numberOfSlideChange = 0;
-                this.counterOfHeight = 0;
-                
-                // var elem = this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children[this.activeSlide].children[0].children[0].children[0].children[0];
-                // elem.scrollTop = 0;
-                
-                this.scrollHeight = this.tvContainer.nativeElement.children[0].children[0].children[0].children[0].children[0].children[this.activeSlide].children[0].children[0].children[0].children[0].scrollHeight;
-                console.log(this.scrollHeight);
-                scrollSpeed = +((this.scrollHeight / this.duration) * 100);
-                
-                this.interval = setInterval(() => {
-                    if (this.counterOfHeight < elem.scrollHeight) {
-                        //this.counterOfHeight += scrollSpeed;
-                        this.counterOfHeight += 5;
-                        elem.scrollBy(0, 5);
-                        //elem.scrollBy(0, 1);
-                    }
-                    else {
-                        this.counterOfHeight = 0;
-                        this.numberOfSlideChange ++;
-                        console.log("Number of slide changes => ", this.numberOfSlideChange);
-                        if (this.numberOfSlideChange == 2) {
-                            console.log("Count => ", this.activeSlide);
-                            if (this.activeSlide === (this.listOfAnnouncements.length - 1))
-                                this.activeSlide = 0;
-                            else
-                                this.activeSlide ++;
-                            this.numberOfSlideChange = 0;
-                        }
-                        elem.scrollTop = 0;
-                        //////Pokusati
-                        // setTimeout(() => {
-                        //     console.log("Zastoj 10 sekundi nakon povratka skrola na vrh.");
-                        // }, 10000);
-                    }
-                }, 50);
-                console.log("Zastoj 10 sekundi nakon povratka skrola na vrh.");
-            }, 10000);
         }
     }
 
@@ -331,6 +227,11 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     private subscribeToEvents(): void {
+        this._chatService.messageReceived.subscribe((message: string) => {
+            console.log(message);
+            this.loadConfig();
+        });
+
         this._signalRService.newAnnouncementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
             this._toastr.success(`Dodato novo obavještenje "${newAnnouncement.announcementTitle}"!`, 'Dodavanje uspješno.');
             this.loadConfig();

@@ -149,44 +149,6 @@ namespace ElektronskaOglasnaTabla.Api
             _context.Announcements.Add(announcement);
             await _context.SaveChangesAsync();
 
-            /*var newAnnouncement = new AnnouncementDetails
-            {
-
-                //Obavjestenje
-                AnnouncementId = announcement.AnnouncementId,
-                AnnouncementTitle = announcement.AnnouncementTitle,
-                AnnouncementDescription = announcement.AnnouncementDescription,
-                AnnouncementDateCreated = announcement.AnnouncementDateCreated,
-                AnnouncementDateModified = announcement.AnnouncementDateModified,
-                AnnouncementExpiryDate = announcement.AnnouncementExpiryDate,
-                ImportantIndicator = announcement.AnnouncementImportantIndicator,
-                CategoryId = announcement.CategoryId
-            };
-            var categ = _context.Categories.FirstOrDefault(x => x.CategoryId == announcement.CategoryId);
-            newAnnouncement.CategoryName = categ.CategoryName;
-            newAnnouncement.PriorityId = categ.PriorityId;
-            var prior = _context.Priorities.FirstOrDefault(x => x.PriorityId == categ.PriorityId);
-            newAnnouncement.PriorityValue = prior.PriorityValue;
-            newAnnouncement.UserCreatedId = announcement.UserCreatedId;
-            var userCreated = _userManager.Users.FirstOrDefault(user => user.Id == announcement.UserCreatedId);
-            newAnnouncement.UserCreatedFirstName = userCreated.FirstName;
-            newAnnouncement.UserCreatedLastName = userCreated.LastName;
-            if (announcement.UserModifiedId != null)
-            {
-                newAnnouncement.UserModifiedId = announcement.UserModifiedId;
-                var userModified = _userManager.Users.FirstOrDefault(user => user.Id == announcement.UserModifiedId);
-                newAnnouncement.UserModifiedFirstName = userModified.FirstName;
-                newAnnouncement.UserModifiedLastName = userModified.LastName;
-            }
-            var files = _context.Files.Where(x => x.AnnouncementId == announcement.AnnouncementId)
-                                      .ToList();
-            files.ForEach(file =>
-            {
-                newAnnouncement.Files.Add(file);
-            });
-
-            await NewAnnouncement(newAnnouncement);*/
-
             return Ok(new { announcement });
         }
 
@@ -226,66 +188,75 @@ namespace ElektronskaOglasnaTabla.Api
         [HttpGet("announcementDetails")]
         public ActionResult<IEnumerable<AnnouncementDetails>> GetAnnouncementsDetails()
         {
-            var anouncementDetailsList = _context.Announcements.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
-                                                               .ToList();
             var result = new List<AnnouncementDetails>();
 
-            anouncementDetailsList.ForEach(ann => {
-                var resultItem = new AnnouncementDetails
-                {
+            var category = _context.Categories.OrderBy(x => x.CategoryName)
+                                              .OrderBy(x => x.PriorityId).ToList();
 
-                    //Obavjestenje
-                    AnnouncementId = ann.AnnouncementId,
-                    AnnouncementTitle = ann.AnnouncementTitle,
-                    AnnouncementDescription = ann.AnnouncementDescription,
+            category.ForEach(cat => {
+                var priority = _context.Priorities.FirstOrDefault(x => x.PriorityId == cat.PriorityId);
 
-                    //Datum kreiranja
-                    AnnouncementDateCreated = ann.AnnouncementDateCreated,
+                var announcementDetailsList = _context.Announcements.Where(x => (x.CategoryId == cat.CategoryId && x.AnnouncementShow == true))
+                                                                    .ToList();
 
-                    //Datum modifikovanja
-                    AnnouncementDateModified = ann.AnnouncementDateModified,
+                var filteredAnnouncementDetailsList = announcementDetailsList.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
+                                                                             .OrderByDescending(x => x.AnnouncementImportantIndicator)
+                                                                             .ToList();
 
-                    //Datum vazenja
-                    AnnouncementExpiryDate = ann.AnnouncementExpiryDate,
+                filteredAnnouncementDetailsList.ForEach(ann => {
+                    var resultItem = new AnnouncementDetails
+                    {
+                        //Obavjestenje
+                        AnnouncementId = ann.AnnouncementId,
+                        AnnouncementTitle = ann.AnnouncementTitle,
+                        AnnouncementDescription = ann.AnnouncementDescription,
 
-                    //Indikator vaznosti
-                    ImportantIndicator = ann.AnnouncementImportantIndicator,
+                        //Datum kreiranja
+                        AnnouncementDateCreated = ann.AnnouncementDateCreated,
 
-                    //Kategorija
-                    CategoryId = ann.CategoryId
-                };
-                var categ = _context.Categories.FirstOrDefault(x => x.CategoryId == ann.CategoryId);
-                resultItem.CategoryName = categ.CategoryName;
+                        //Datum modifikovanja
+                        AnnouncementDateModified = ann.AnnouncementDateModified,
 
-                //Prioritet
-                resultItem.PriorityId = categ.PriorityId;
-                var prior = _context.Priorities.FirstOrDefault(x => x.PriorityId == categ.PriorityId);
-                resultItem.PriorityValue = prior.PriorityValue;
+                        //Datum vazenja
+                        AnnouncementExpiryDate = ann.AnnouncementExpiryDate,
 
-                //Korisnik koji je kreirao obavjestenje
-                resultItem.UserCreatedId = ann.UserCreatedId;
-                var userCreated = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserCreatedId);
-                resultItem.UserCreatedFirstName = userCreated.FirstName;
-                resultItem.UserCreatedLastName = userCreated.LastName;
+                        //Indikator vaznosti
+                        ImportantIndicator = ann.AnnouncementImportantIndicator,
 
-                ////Korisnik koji je modifikovao obavjestenje
-                if (ann.UserModifiedId != null)
-                {
-                    resultItem.UserModifiedId = ann.UserModifiedId;
-                    var userModified = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserModifiedId);
-                    resultItem.UserModifiedFirstName = userModified.FirstName;
-                    resultItem.UserModifiedLastName = userModified.LastName;
-                }
+                        //Kategorija
+                        CategoryId = ann.CategoryId,
+                        CategoryName = cat.CategoryName,
 
-                var files = _context.Files.Where(x => x.AnnouncementId == ann.AnnouncementId)
+                        //Prioritet
+                        PriorityId = cat.PriorityId,
+                        PriorityValue = priority.PriorityValue,
+
+                        //Korisnik koji je kreirao obavjestenje
+                        UserCreatedId = ann.UserCreatedId
+                    };
+                    var userCreated = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserCreatedId);
+                    resultItem.UserCreatedFirstName = userCreated.FirstName;
+                    resultItem.UserCreatedLastName = userCreated.LastName;
+
+                    ////Korisnik koji je modifikovao obavjestenje
+                    if (ann.UserModifiedId != null)
+                    {
+                        resultItem.UserModifiedId = ann.UserModifiedId;
+                        var userModified = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserModifiedId);
+                        resultItem.UserModifiedFirstName = userModified.FirstName;
+                        resultItem.UserModifiedLastName = userModified.LastName;
+                    }
+
+                    var files = _context.Files.Where(x => x.AnnouncementId == ann.AnnouncementId)
                                           .ToList();
 
-                files.ForEach(file =>
-                {
-                    resultItem.Files.Add(file);
+                    files.ForEach(file =>
+                    {
+                        resultItem.Files.Add(file);
+                    });
+
+                    result.Add(resultItem);
                 });
-                
-                result.Add(resultItem);
             });
 
             return result;
@@ -296,93 +267,80 @@ namespace ElektronskaOglasnaTabla.Api
         [HttpGet("announcementDetails/{page}&{pageSize}")]
         public IEnumerable<AnnouncementDetails> GetAnnouncementsDetails(int page, int pageSize)
         {
-            var anouncementDetailsList = _context.Announcements.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
-                                                               .OrderByDescending(x => x.AnnouncementImportantIndicator)
-                                                               .Skip((page - 1)* pageSize)
-                                                               .Take(pageSize)
-                                                               .ToList();
-
             var result = new List<AnnouncementDetails>();
 
-            anouncementDetailsList.ForEach(ann => {
-                var resultItem = new AnnouncementDetails
-                {
+            var category = _context.Categories.OrderBy(x => x.CategoryName)
+                                              .OrderBy(x => x.PriorityId).ToList();
 
-                    //Obavjestenje
-                    AnnouncementId = ann.AnnouncementId,
-                    AnnouncementTitle = ann.AnnouncementTitle,
-                    AnnouncementDescription = ann.AnnouncementDescription,
+            category.ForEach(cat => {
+                var priority = _context.Priorities.FirstOrDefault(x => x.PriorityId == cat.PriorityId);
 
-                    //Datum kreiranja
-                    AnnouncementDateCreated = ann.AnnouncementDateCreated,
+                var announcementDetailsList = _context.Announcements.Where(x => (x.CategoryId == cat.CategoryId && x.AnnouncementShow == true))
+                                                                    .ToList();
 
-                    //Datum modifikovanja
-                    AnnouncementDateModified = ann.AnnouncementDateModified,
+                var filteredAnnouncementDetailsList = announcementDetailsList.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
+                                                                             .OrderByDescending(x => x.AnnouncementImportantIndicator)
+                                                                             .ToList();
 
-                    //Datum vazenja
-                    AnnouncementExpiryDate = ann.AnnouncementExpiryDate,
+                filteredAnnouncementDetailsList.ForEach(ann => {
+                    var resultItem = new AnnouncementDetails
+                    {
+                        //Obavjestenje
+                        AnnouncementId = ann.AnnouncementId,
+                        AnnouncementTitle = ann.AnnouncementTitle,
+                        AnnouncementDescription = ann.AnnouncementDescription,
 
-                    //Indikator vaznosti
-                    ImportantIndicator = ann.AnnouncementImportantIndicator,
-                    Files = _context.Files.Where(x => x.AnnouncementId == ann.AnnouncementId).ToList(),
+                        //Datum kreiranja
+                        AnnouncementDateCreated = ann.AnnouncementDateCreated,
 
-                    //Kategorija
-                    CategoryId = ann.CategoryId
-                };
-                var categ = _context.Categories.FirstOrDefault(x => x.CategoryId == ann.CategoryId);
-                resultItem.CategoryName = categ.CategoryName;
+                        //Datum modifikovanja
+                        AnnouncementDateModified = ann.AnnouncementDateModified,
 
-                //Prioritet
-                resultItem.PriorityId = categ.PriorityId;
-                var prior = _context.Priorities.FirstOrDefault(x => x.PriorityId == categ.PriorityId);
-                resultItem.PriorityValue = prior.PriorityValue;
+                        //Datum vazenja
+                        AnnouncementExpiryDate = ann.AnnouncementExpiryDate,
 
-                //Korisnik koji je kreirao obavjestenje
-                resultItem.UserCreatedId = ann.UserCreatedId;
-                var userCreated = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserCreatedId);
-                resultItem.UserCreatedFirstName = userCreated.FirstName;
-                resultItem.UserCreatedLastName = userCreated.LastName;
+                        //Indikator vaznosti
+                        ImportantIndicator = ann.AnnouncementImportantIndicator,
 
-                ////Korisnik koji je modifikovao obavjestenje
-                if (ann.UserModifiedId != null)
-                {
-                    resultItem.UserModifiedId = ann.UserModifiedId;
-                    var userModified = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserModifiedId);
-                    resultItem.UserModifiedFirstName = userModified.FirstName;
-                    resultItem.UserModifiedLastName = userModified.LastName;
-                }
+                        //Kategorija
+                        CategoryId = ann.CategoryId,
+                        CategoryName = cat.CategoryName,
 
-                //Korisnik koji je kreirao obavjestenje
-                //resultItem.UserId = ann.UserId;
-                //var us = _context.Users.FirstOrDefault(x => x.UserId == ann.UserId);
-                //resultItem.UserFirstName = us.UserFirstName;
-                //resultItem.UserLastName = us.UserLastName;
-                //resultItem.UserEmail = us.UserEmail;
+                        //Prioritet
+                        PriorityId = cat.PriorityId,
+                        PriorityValue = priority.PriorityValue,
 
-                ////Tip korisnika koji je krirao obavjestenje
-                //resultItem.UserTypeId = us.UserTypeId;
-                //var tyUs = _context.UserTypes.FirstOrDefault(x => x.UserTypeId == us.UserTypeId);
-                //resultItem.UserTypeName = tyUs.UserTypeName;
+                        //Korisnik koji je kreirao obavjestenje
+                        UserCreatedId = ann.UserCreatedId
+                    };
+                    var userCreated = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserCreatedId);
+                    resultItem.UserCreatedFirstName = userCreated.FirstName;
+                    resultItem.UserCreatedLastName = userCreated.LastName;
 
-                ////Korisnik koji je modifikovao obavjestenje
-                //if (ann.AnnouncementUserModified != null)
-                //{
-                //    resultItem.UserIdModified = ann.AnnouncementUserModified;
-                //    var usMod = _context.Users.FirstOrDefault(x => x.UserId == ann.AnnouncementUserModified);
-                //    resultItem.UserModifiedFirstName = usMod.UserFirstName;
-                //    resultItem.UserModifiedLastName = usMod.UserLastName;
-                //    resultItem.UserModifiedEmail = usMod.UserEmail;
+                    ////Korisnik koji je modifikovao obavjestenje
+                    if (ann.UserModifiedId != null)
+                    {
+                        resultItem.UserModifiedId = ann.UserModifiedId;
+                        var userModified = _userManager.Users.FirstOrDefault(user => user.Id == ann.UserModifiedId);
+                        resultItem.UserModifiedFirstName = userModified.FirstName;
+                        resultItem.UserModifiedLastName = userModified.LastName;
+                    }
 
-                //    //Tip korisnika koji je modifikovao obavjestenje
-                //    resultItem.UserModifiedTypeId = usMod.UserTypeId;
-                //    var tyUsMod = _context.UserTypes.FirstOrDefault(x => x.UserTypeId == usMod.UserTypeId);
-                //    resultItem.UserModifiedTypeName = tyUsMod.UserTypeName;
-                //}
+                    var files = _context.Files.Where(x => x.AnnouncementId == ann.AnnouncementId)
+                                          .ToList();
 
-                result.Add(resultItem);
+                    files.ForEach(file =>
+                    {
+                        resultItem.Files.Add(file);
+                    });
+
+                    result.Add(resultItem);
+                });
             });
 
-            return result;
+            return result.Skip((page - 1) * pageSize)
+                         .Take(pageSize)
+                         .ToList();
         }
 
         // GET: api/Announcement/announcementDetails/5
@@ -448,33 +406,6 @@ namespace ElektronskaOglasnaTabla.Api
                 resultItem.Files.Add(file);
             });
 
-            //Korisnik koji je kreirao obavjestenje
-            //resultItem.UserId = announcements.UserId;
-            //var us = _context.Users.FirstOrDefault(x => x.UserId == announcements.UserId);
-            //resultItem.UserFirstName = us.UserFirstName;
-            //resultItem.UserLastName = us.UserLastName;
-            //resultItem.UserEmail = us.UserEmail;
-
-            ////Tip korisnika koji je krirao obavjestenje
-            //resultItem.UserTypeId = us.UserTypeId;
-            //var tyUs = _context.UserTypes.FirstOrDefault(x => x.UserTypeId == us.UserTypeId);
-            //resultItem.UserTypeName = tyUs.UserTypeName;
-
-            ////Korisnik koji je modifikovao obavjestenje
-            //if (announcements.AnnouncementUserModified != null)
-            //{
-            //    resultItem.UserIdModified = announcements.AnnouncementUserModified;
-            //    var usMod = _context.Users.FirstOrDefault(x => x.UserId == announcements.AnnouncementUserModified);
-            //    resultItem.UserModifiedFirstName = usMod.UserFirstName;
-            //    resultItem.UserModifiedLastName = usMod.UserLastName;
-            //    resultItem.UserModifiedEmail = usMod.UserEmail;
-
-            //    //Tip korisnika koji je modifikovao obavjestenje
-            //    resultItem.UserModifiedTypeId = usMod.UserTypeId;
-            //    var tyUsMod = _context.UserTypes.FirstOrDefault(x => x.UserTypeId == usMod.UserTypeId);
-            //    resultItem.UserModifiedTypeName = tyUsMod.UserTypeName;
-            //}
-
             return resultItem;
         }
 
@@ -500,7 +431,7 @@ namespace ElektronskaOglasnaTabla.Api
 
             if (id != 0)
             {
-                var announcementDetailsListFromCategory = _context.Announcements.Where(x => x.CategoryId == id)
+                var announcementDetailsListFromCategory = _context.Announcements.Where(x => (x.CategoryId == id && x.AnnouncementShow == true))
                                                                                 .OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
                                                                                 .OrderByDescending(x => x.AnnouncementImportantIndicator)
                                                                                 .Skip((page - 1) * pageSize)
@@ -554,33 +485,6 @@ namespace ElektronskaOglasnaTabla.Api
                         resultItem.UserModifiedFirstName = userModified.FirstName;
                         resultItem.UserModifiedLastName = userModified.LastName;
                     }
-
-                    //Korisnik koji je kreirao obavjestenje
-                    //resultItem.UserId = ann.UserId;
-                    //var us = _context.Users.FirstOrDefault(x => x.UserId == ann.UserId);
-                    //resultItem.UserFirstName = us.UserFirstName;
-                    //resultItem.UserLastName = us.UserLastName;
-                    //resultItem.UserEmail = us.UserEmail;
-
-                    ////Tip korisnika koji je krirao obavjestenje
-                    //resultItem.UserTypeId = us.UserTypeId;
-                    //var tyUs = _context.UserTypes.FirstOrDefault(x => x.UserTypeId == us.UserTypeId);
-                    //resultItem.UserTypeName = tyUs.UserTypeName;
-
-                    ////Korisnik koji je modifikovao obavjestenje
-                    //if (ann.AnnouncementUserModified != null)
-                    //{
-                    //    resultItem.UserIdModified = ann.AnnouncementUserModified;
-                    //    var usMod = _context.Users.FirstOrDefault(x => x.UserId == ann.AnnouncementUserModified);
-                    //    resultItem.UserModifiedFirstName = usMod.UserFirstName;
-                    //    resultItem.UserModifiedLastName = usMod.UserLastName;
-                    //    resultItem.UserModifiedEmail = usMod.UserEmail;
-
-                    //    //Tip korisnika koji je modifikovao obavjestenje
-                    //    resultItem.UserModifiedTypeId = usMod.UserTypeId;
-                    //    var tyUsMod = _context.UserTypes.FirstOrDefault(x => x.UserTypeId == usMod.UserTypeId);
-                    //    resultItem.UserModifiedTypeName = tyUsMod.UserTypeName;
-                    //}
 
                     result.Add(resultItem);
                 });
@@ -727,8 +631,6 @@ namespace ElektronskaOglasnaTabla.Api
                 query = query.Where(x => x.AnnouncementImportantIndicator == ann.AnnouncementImportantIndicator);
             }
 
-            //Sorting
-
             //Pagination
             var numberOfAnnouncement = query.Count();
             var anouncementDetailsList = query.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
@@ -800,7 +702,6 @@ namespace ElektronskaOglasnaTabla.Api
             {
                 var userId = HttpContext.User.Claims.Where(c => c.Type == "userId").FirstOrDefault().Value;
 
-                //IQueryable<Announcements> query = _context.Announcements;
                 var anouncementDetailsList = _context.Announcements.Where(x => x.UserCreatedId == userId)
                                                                    .ToList();
 
@@ -810,7 +711,99 @@ namespace ElektronskaOglasnaTabla.Api
                 {
                     anouncementDetailsList = anouncementDetailsList.Where(x => x.AnnouncementDescription.ToLower().Contains(searchTerm.ToLower()) ||
                                                                                x.AnnouncementTitle.ToLower().Contains(searchTerm.ToLower()))
-                        .ToList();
+                                                                   .ToList();
+                    numberOfAnnouncement = anouncementDetailsList.Count();
+                    anouncementDetailsList = anouncementDetailsList.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
+                                                                   .OrderByDescending(x => x.AnnouncementImportantIndicator)
+                                                                   .Skip((page - 1) * pageSize)
+                                                                   .Take(pageSize)
+                                                                   .ToList();
+                }
+                else
+                {
+                    numberOfAnnouncement = anouncementDetailsList.Count();
+                    anouncementDetailsList = anouncementDetailsList.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
+                                                                   .OrderByDescending(x => x.AnnouncementImportantIndicator)
+                                                                   .Skip((page - 1) * pageSize)
+                                                                   .Take(pageSize)
+                                                                   .ToList();
+                }
+
+                var result = new List<AnnouncementDetails>();
+
+
+                anouncementDetailsList.ForEach(item =>
+                {
+                    var resultItem = new AnnouncementDetails
+                    {
+
+                        //Obavjestenje
+                        AnnouncementId = item.AnnouncementId,
+                        AnnouncementTitle = item.AnnouncementTitle,
+                        AnnouncementDescription = item.AnnouncementDescription,
+
+                        //Datum kreiranja
+                        AnnouncementDateCreated = item.AnnouncementDateCreated,
+
+                        //Datum modifikovanja
+                        AnnouncementDateModified = item.AnnouncementDateModified,
+
+                        //Datum vazenja
+                        AnnouncementExpiryDate = item.AnnouncementExpiryDate,
+
+                        //Indikator vaznosti
+                        ImportantIndicator = item.AnnouncementImportantIndicator,
+
+                        //Kategorija
+                        CategoryId = item.CategoryId
+                    };
+                    var categ = _context.Categories.FirstOrDefault(x => x.CategoryId == item.CategoryId);
+                    resultItem.CategoryName = categ.CategoryName;
+
+                    //Prioritet
+                    resultItem.PriorityId = categ.PriorityId;
+                    var prior = _context.Priorities.FirstOrDefault(x => x.PriorityId == categ.PriorityId);
+                    resultItem.PriorityValue = prior.PriorityValue;
+
+                    //Korisnik koji je kreirao obavjestenje
+                    resultItem.UserCreatedId = item.UserCreatedId;
+                    var userCreated = _userManager.Users.FirstOrDefault(user => user.Id == item.UserCreatedId);
+                    resultItem.UserCreatedFirstName = userCreated.FirstName;
+                    resultItem.UserCreatedLastName = userCreated.LastName;
+
+                    ////Korisnik koji je modifikovao obavjestenje
+                    if (!string.IsNullOrWhiteSpace(item.UserModifiedId))
+                    {
+                        resultItem.UserModifiedId = item.UserModifiedId;
+                        var userModified = _userManager.Users.FirstOrDefault(user => user.Id == item.UserModifiedId);
+                        resultItem.UserModifiedFirstName = userModified.FirstName;
+                        resultItem.UserModifiedLastName = userModified.LastName;
+                    }
+
+                    result.Add(resultItem);
+                });
+
+                return Ok(new { result, numberOfAnnouncement });
+            }
+
+            return BadRequest(new { message = "User is not logged in." });
+        }
+
+        [HttpGet("searchByAdmin/")]
+        [Authorize(Roles = "Administrator")]
+        public ActionResult<IEnumerable<AnnouncementDetails>> GetFilteredAnnouncementsForAdmin([FromQuery(Name = "search-term")]string searchTerm, [FromQuery(Name = "current-page")]int page, [FromQuery(Name = "page-size")]int pageSize)
+        {
+            if (HttpContext.User.HasClaim(c => c.Type == "userId"))
+            {
+                var anouncementDetailsList = _context.Announcements.ToList();
+
+                var numberOfAnnouncement = 0;
+
+                if (!string.IsNullOrWhiteSpace(searchTerm))
+                {
+                    anouncementDetailsList = anouncementDetailsList.Where(x => x.AnnouncementDescription.ToLower().Contains(searchTerm.ToLower()) ||
+                                                                               x.AnnouncementTitle.ToLower().Contains(searchTerm.ToLower()))
+                                                                   .ToList();
                     numberOfAnnouncement = anouncementDetailsList.Count();
                     anouncementDetailsList = anouncementDetailsList.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
                                                                    .OrderByDescending(x => x.AnnouncementImportantIndicator)
@@ -892,13 +885,6 @@ namespace ElektronskaOglasnaTabla.Api
         [HttpGet("announcementDetailsFromSameCategory/{categoryId}&{announcementId}")]
         public ActionResult<IEnumerable<AnnouncementDetails>> GetAnnouncementsDetailsFromSameCategory(int categoryId, int announcementId)
         {
-            //var announcementDetails = _context.Announcements.OrderByDescending(x => x.AnnouncementDateCreated)
-            //                                                .OrderByDescending(x => x.AnnouncementDateModified)
-            //                                                .OrderByDescending(x => x.AnnouncementImportantIndicator)
-            //                                                .Take(3)
-            //                                                .Where(x => x.CategoryId == categoryId)
-            //                                                .ToList();
-
             var announcementDetails = _context.Announcements.Where(x => (x.CategoryId == categoryId && 
                                                                          x.AnnouncementId != announcementId))
                                                             .ToList();
@@ -960,16 +946,6 @@ namespace ElektronskaOglasnaTabla.Api
 
             return result;
         }
-
-        /*[HttpGet("announcementDetailsPerCategory/{numberOfAnn}")]
-        public ActionResult<IEnumerable<AnnouncementDetails>> GetAnnouncementsDetailsPerCategory(int numberOfAnn)
-        {
-
-            ActionResult<IEnumerable<AnnouncementDetails>> result;
-            result = GetAnnouncementsDetails();
-
-            return null;
-        }*/
 
         [HttpGet("numberTheMostImportantAnnouncements")]
         public int GetNumberTheMostImportantAnnouncements()

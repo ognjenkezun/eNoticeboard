@@ -23,15 +23,17 @@
     </div>
     <div class="card-body container-fluid mx-0 px-1 px-1 px-sm-2 px-md-2 px-lg-2 px-xl-2 py-3">
         <div class="row divtext">
-            <div [ngClass]="{'col-5': filterImages(announcementInput)}" *ngIf="filterImages(announcementInput)">
-                <img src="https://www.searchenginejournal.com/wp-content/uploads/2018/10/How-to-Boost-Your-Images%E2%80%99-Visibility-on-Google-Images-760x400.png" 
-                     style="object-fit: cover; object-position: center center;" 
-                     class="d-none d-sm-block w-100 h-100"/>
-                     <!-- [ngStyle]="{'height.px': filterImages(ann).length == '1' ? '500' : '300'}"/> -->
+            <!-- {{filterImages(announcementInput)}} -->
+            <div [ngClass]="{'col-0 col-md-5': filterImages(announcementInput)?.length > 0,
+                             'col-0 d-none': filterImages(announcementInput)?.length == 0}"
+                 *ngIf="filterImages(announcementInput)?.length">
+                <img *ngFor="let file of filterImages(announcementInput)"
+                     [src]="file.filePath" 
+                     style="object-fit: cover; object-position: center center;"
+                     class="d-none d-md-block w-100 h-100"/>
             </div>
-            <div [ngClass]="{'col-7': filterImages(announcementInput),
-                             'col-12': !filterImages(announcementInput)}" 
-                 class="text-justify">
+            <div [ngClass]="{'col-12 col-md-7': filterImages(announcementInput)?.length > 0,
+                             'col-12': filterImages(announcementInput)?.length == 0}">
                 <!-- <span class="text-muted small line-clamp" [innerHTML]="announcementInput.announcementDescription"> -->
                 <span class="text-muted small line-clamp">
                     {{ announcementInput.announcementDescription }}
@@ -47,14 +49,14 @@
     </div>
     <div class="card-footer container-fluid mx-0 py-1 px-1 px-sm-2 px-md-2 px-lg-2 px-xl-2">
         <div class="row">
-            <p class="card-text col-12 mb-0">
-                <small class="w-100 text-muted custom-ellipsis">
+            <p class="card-text col-12 mb-0 custom-ellipsis">
+                <small class="w-100 text-muted">
                     Objavljeno {{ announcementInput.announcementDateCreated | date: 'dd.MM.yyyy. u HH:mm' }}, 
                     {{ announcementInput.userCreatedFirstName }} {{ announcementInput.userCreatedLastName }}
                 </small>
             </p>
-            <p class="card-text col-12 mb-0">
-                <small class="w-100 text-muted custom-ellipsis" *ngIf="announcementInput.announcementDateModified && announcementInput.userModifiedFirstName && announcementInput.userModifiedLastName                      ">
+            <p class="card-text col-12 mb-0 custom-ellipsis">
+                <small class="w-100 text-muted" *ngIf="announcementInput.announcementDateModified && announcementInput.userModifiedFirstName && announcementInput.userModifiedLastName                      ">
                     Modifikovano {{ announcementInput.announcementDateModified | date: "dd.MM.yyyy. u HH:mm"}},
                     {{ announcementInput.userModifiedFirstName }} {{ announcementInput.userModifiedLastName }}
                 </small>

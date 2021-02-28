@@ -29,7 +29,8 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Categories>>> GetCategories()
         {
-            return await _context.Categories.OrderBy(x => x.PriorityId).ToListAsync();
+            return await _context.Categories.OrderBy(x => x.CategoryName)
+                                            .OrderBy(x => x.PriorityId).ToListAsync();
         }
 
         // GET: api/Category/5
@@ -115,7 +116,8 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
         //[Authorize(Roles = "Administrator")]
         public ActionResult<IEnumerable<CategoriesDetails>> GetCategoriesDetails()
         {
-            var category = _context.Categories.OrderBy(x => x.PriorityId).ToList();
+            var category = _context.Categories.OrderBy(x => x.CategoryName)
+                                              .OrderBy(x => x.PriorityId).ToList();
 
             var categoryResultList = new List<CategoriesDetails>();
 
@@ -142,7 +144,8 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
         public ActionResult<IEnumerable<CategoriesDetails>> GetCategoriesWithAnnouncements(int numberOfAnnouncement)
         {
             var categoryResultList = new List<CategoriesDetails>();
-            var category = _context.Categories.OrderBy(x => x.PriorityId).ToList();
+            var category = _context.Categories.OrderBy(x => x.CategoryName)
+                                              .OrderBy(x => x.PriorityId).ToList();
 
             category.ForEach(cat => {
                 var res = new CategoriesDetails
@@ -155,7 +158,7 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
                 var priority = _context.Priorities.FirstOrDefault(x => x.PriorityId == cat.PriorityId);
                 res.PriorityValue = priority.PriorityValue;
 
-                var announcementDetailsList = _context.Announcements.Where(x => x.CategoryId == cat.CategoryId)
+                var announcementDetailsList = _context.Announcements.Where(x => (x.CategoryId == cat.CategoryId && x.AnnouncementShow == true))
                                                                     .ToList();
 
                 var filteredAnnouncementDetailsList = announcementDetailsList.OrderByDescending(x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated)
@@ -166,7 +169,6 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
                 filteredAnnouncementDetailsList.ForEach(ann => {
                     var resultItem = new AnnouncementDetails
                     {
-
                         //Obavjestenje
                         AnnouncementId = ann.AnnouncementId,
                         AnnouncementTitle = ann.AnnouncementTitle,
@@ -207,6 +209,14 @@ namespace ElektronskaOglasnaTabla.Api.Controllers
                         resultItem.UserModifiedFirstName = userModified.FirstName;
                         resultItem.UserModifiedLastName = userModified.LastName;
                     }
+
+                    var files = _context.Files.Where(x => x.AnnouncementId == ann.AnnouncementId)
+                                          .ToList();
+
+                    files.ForEach(file =>
+                    {
+                        resultItem.Files.Add(file);
+                    });
 
                     res.Announcements.Add(resultItem);
                 });

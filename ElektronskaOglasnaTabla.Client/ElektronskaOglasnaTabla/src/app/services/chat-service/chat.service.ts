@@ -46,7 +46,7 @@ export class ChatService {
     }
 
     private registerOnServerEvents(): void {
-        this._hubConnection.on('MessageReceived', (data: any) => {
+        this._hubConnection.on('MessageReceived', (data: string) => {
             this.messageReceived.emit(data);
         });
     }

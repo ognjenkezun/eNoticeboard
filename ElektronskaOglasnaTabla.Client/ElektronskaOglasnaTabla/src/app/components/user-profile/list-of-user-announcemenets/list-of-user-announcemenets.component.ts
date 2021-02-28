@@ -1,6 +1,5 @@
-import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ElementRef, ViewChild } from '@angular/core';
 import { AnnouncementService } from 'src/app/services/announcement-service/announcement.service';
-import { Announcements } from 'src/app/models/Announcements';
 import { CompositeFilterDescriptor, filterBy } from '@progress/kendo-data-query';
 import { Ng2SearchPipeModule } from 'ng2-search-filter';
 import { ToastrService } from 'ngx-toastr';
@@ -10,10 +9,13 @@ import { CategoryService } from 'src/app/services/category-service/category.serv
 import { Categories } from 'src/app/models/Categories';
 import { ChatService } from 'src/app/services/chat-service/chat.service';
 import { Router } from '@angular/router';
-import * as jwt_decode from "jwt-decode";
 import { FileService } from 'src/app/services/file-service/file.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { SignalRService } from 'src/app/services/signal-r/signal-r.service';
+import { Files } from 'src/app/models/Files';
+import { AppConfig } from 'src/app/models/AppConfig';
+import { DeleteAnnouncementWS } from 'src/app/models/DeleteAnnouncementWS';
+import { ConfigurationService } from 'src/app/services/configuration-service/configuration.service';
 
 @Component({
     selector: 'app-list-of-user-announcemenets',
@@ -23,10 +25,11 @@ import { SignalRService } from 'src/app/services/signal-r/signal-r.service';
       Ng2SearchPipeModule
     ]
 })
-export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
+export class ListOfUserAnnouncemenetsComponent implements OnInit {
 
-    public confirmClicked: boolean = false;
-    public cancelClicked: boolean = false;
+    public listOfImages: string[] = [];
+    public files = [] as Files[];
+    public appConfig = {} as AppConfig;
 
     modalRefAdd: BsModalRef;
     modalRefUpdate: BsModalRef;
@@ -37,17 +40,14 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
     public listOfCategories = [] as Categories[];
 
     public listOfFiles: string[];
-    public listOfFilesName: string[];
+    public listOfFilesName: {id: number, fileName: string}[] = [];
+    public ann = {} as AnnouncementDetails;
 
     public selectedAnnouncement = {} as AnnouncementDetails;
-    //public filter: CompositeFilterDescriptor;
 
     public listOfAllAnnouncements = [] as AnnouncementDetails[];
-    
-    //With model AnnouncementDetails
-    //public listOfAllAnnouncements = [] as AnnouncementDetails[];
 
-    public searchText: string = null;
+    public searchText: string = "";
 
     public selectedPage: number = 1;
     public itmsPerPage: number = 5;
@@ -57,26 +57,19 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
 
     constructor(public _announcementService: AnnouncementService, 
                 private _toastr: ToastrService,
-                private _sharingDataService: SharingDataService,
+                private _appConfigService: ConfigurationService,
                 private _categoryService: CategoryService,
-                private _chatService: ChatService,
                 private _fileService: FileService,
                 private _signalRService: SignalRService,
                 private _router: Router,
-                private _modalService: BsModalService) { 
-
-        this.subscribeToEvents();//
-    }
+                private _modalService: BsModalService) { }
 
     ngOnInit(): void {
         this.currentDate = new Date();
-        this.loadAllAnnouncement();
+        this.loadAllUserAnnouncements();
         this.listOfFiles = [];
         this.listOfFilesName = [];
-        this._sharingDataService.currentAnnouncement.subscribe(data => {
-           //this.listOfAllAnnouncements.push(null);
-        });
-
+        this._announcementService.announcementForm.reset();
         this._modalService.onHide.subscribe(() => {
             this._announcementService.announcementForm.reset();
         });
@@ -84,14 +77,16 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
         this.loadCategories();
     }
 
+    loadConfig(): void {
+        this._appConfigService.getConfigData(1).subscribe(data => {
+            this.appConfig = data;
+        });
+    }
+
     loadCategories(): void {
         this._categoryService.getCategories().subscribe(data => {
             this.listOfCategories = data;
         });
-    }
-
-    ngOnDestroy(): void {
-      //UNSUBSCRIBE
     }
 
     openModalAdd(template: TemplateRef<any>) {
@@ -103,6 +98,8 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
 
     closeModalAdd() {
         this.modalRefAdd.hide();
+        this.listOfFilesName = [];
+        this.files = [];
     }
 
     openModalUpdate(template: TemplateRef<any>, row: any) {
@@ -110,57 +107,46 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
             template,
             Object.assign({}, { class: 'modal-dialog modal-dialog-centered modal-dialog-scrollable' })
         );
-
-        this.fillFields(row);
+        console.log("ROW FROM openModalUpdate method => ", row);
+        
+        this._announcementService.getAnnouncementDetails(row.announcementId).subscribe(data => {
+            this.fillFields(data);
+        });
     }
 
     closeModalUpdate() {
         this.modalRefUpdate.hide();
         this.listOfFilesName = [];
+        this.files = [];
     }
 
-    public loadAllAnnouncement(): void {
-
-        this._announcementService.getAnnouncementsDetailsPage(this.selectedPage, this.itmsPerPage).subscribe(data => {
-            this.listOfAllAnnouncements = data;
-            let tmp = document.createElement("element");
+    public loadAllUserAnnouncements(): void {
+        this.loadConfig();
+        this._announcementService.getSearchedAnnouncementsForAdmin(this.searchText, this.selectedPage, this.itmsPerPage).subscribe(data => {
+            this.listOfAllAnnouncements = data['result'];
+            this.totalAnnItems = data['numberOfAnnouncement'];
+            let currentTime = Date.now();
             this.listOfAllAnnouncements.forEach(announcement => {
-                tmp.innerHTML = announcement.announcementDescription;
-                announcement.announcementDescription = tmp.textContent || tmp.innerText || "";
-            });
-            console.log(data);
-            this._announcementService.getNumberOfAnnouncement().subscribe(data => {
-                this.totalAnnItems = data;
-                console.log(this.totalAnnItems)
+                let dateCreated = Date.parse(announcement.announcementDateCreated.toString());
+                let differenceInMillicecondsCreated = currentTime - dateCreated;
+                let hoursCreated = (differenceInMillicecondsCreated / (1000 * 60 * 60));
+
+                if (announcement.announcementDateModified != null) {
+                    let dateModified = Date.parse(announcement.announcementDateModified.toString());
+                    let differenceInMillicecondsModified = currentTime - dateModified;
+                    var hoursModified = (differenceInMillicecondsModified / (1000 * 60 * 60)) || 0;
+                }
+
+                if (Math.abs(hoursCreated) < (this.appConfig.announcementExpiry * 24) ||
+                    Math.abs(hoursModified) < (this.appConfig.announcementExpiry * 24)) {
+                    announcement.isNew = true;
+                }
+                announcement.announcementDescription = this.convertStringWithHtmlTagsToText(announcement.announcementDescription);
             });
         });
-
-      //With model AnnoucementDetails
-      /*this._announcementService.getAnnouncementDetails().subscribe(data => {
-        this.listOfAllAnnouncements = data;
-        console.log(data);
-      });*/
     }
 
-    public filterChange(filter: CompositeFilterDescriptor): void {
-      //this.filter = filter;
-      //this.listOfAllAnnouncements = filterBy(this.listOfAllAnnouncements, filter);
-    }
-
-    /*public RowSelected(row: any): void
-    {
-      this.selectedAnnouncement = row;
-      console.log(this.selectedAnnouncement);
-    }*/
-
-    public onUpdateSubmit(row: any): void {
-        console.log(row);
-        console.log(row.announcementId);
-        console.log("Announcement UPDATED!");
-
-        this.selectedAnnouncement = row;
-        console.log(this.selectedAnnouncement);
-
+    public onUpdateSubmit(): void {
         if (this._announcementService.announcementForm.get('announcementImportant').value) {
             this.importantIndicatorToNumber = 1;
         }
@@ -168,8 +154,6 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
             this.importantIndicatorToNumber = 0;
         }
 
-        console.log("ANN ID => ", this.selectedAnnouncement.announcementId);
-        console.log("USER ID => ", this.selectedAnnouncement.userCreatedId);
         let updatedAnnouncement = {
             announcementId: this.selectedAnnouncement.announcementId,
             announcementTitle: this._announcementService.announcementForm.get('announcementTitle').value,
@@ -183,40 +167,50 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
 
         this._announcementService.editAnnouncement(updatedAnnouncement.announcementId, updatedAnnouncement).subscribe(
             (res: any) => {
+                this.files.forEach(item => {
+                    item.announcementId = this.selectedAnnouncement.announcementId;
+                });
+
+                this._fileService.addFile(this.files).subscribe(data => {
+                    console.log("Added file in table Files is => ", data);
+                });
+
                 this._toastr.success('Obavještenje uspješno izmijenjeno!', 'Izmjena uspješna.');
                 this._announcementService.announcementForm.reset();
                 this.modalRefUpdate.hide();
-                this.loadAllAnnouncement();
                 this.listOfFilesName = [];
 
-                let mes = "Message sent!";
-                this._chatService.sendMessage(mes);
+                this._signalRService.sendUpdatedAnnouncement(res.updatedAnnouncement);
+
+                this.loadAllUserAnnouncements();
+                this.selectedPage = 1;
             },
             err => {
                 this._toastr.error(err, 'Izmjena nije uspjela.');
                 console.log(err);
             }
         );
+
+        this.ann.announcementTitle = null;
+        this.ann.announcementDescription = null;
+        this.ann.importantIndicator = null;
+        this.ann.categoryId = null;
+        this.ann.announcementExpiryDate = null;
+
         this.selectedAnnouncement = null;
     }
+
+    public onFileDelete(id: number): void {
+        console.log("Deleted file with ID => ", id);
+    }
     
-    public fillFields(row: any): void
-    {
-        //let dateAndTimeModified: Date = new Date();
-        //let token = localStorage.getItem('token');
-        //let currentUser = jwt_decode(token);
-        //console.log(currentUser);
+    public fillFields(announcement: AnnouncementDetails): void {
 
-        console.log(row);
-        console.log(row.announcementId);
-        console.log("Announcement UPDATED!");
+        this.selectedAnnouncement = announcement;
 
-        this.selectedAnnouncement = row;
-        console.log(this.selectedAnnouncement);
         if (this.selectedAnnouncement.files) {
             this.selectedAnnouncement.files.forEach(file => {
-                this.listOfFilesName.push(file.filePath.replace(/^.*[\\\/]/, ''));
-                console.log("File is => ", file);
+                this.listOfFilesName.push({ id: file.fileId, fileName: file.filePath.replace(/^.*[\\\/]/, '') });
             });
         }
 
@@ -225,32 +219,19 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
         this._announcementService.announcementForm.controls['announcementImportant'].setValue(this.selectedAnnouncement.importantIndicator);
         this._announcementService.announcementForm.controls['announcementCategory'].setValue(this.selectedAnnouncement.categoryId);
         this._announcementService.announcementForm.controls['announcementExpiryDate'].setValue(new Date(this.selectedAnnouncement.announcementExpiryDate));
-        
-        // if(this._announcementService.announcementForm.get('announcementImportant').value){
-        //     this.importantIndicatorToNumber = 1;
-        // }
-        // else{
-        //     this.importantIndicatorToNumber = 0;
-        // }
+ 
+        console.log("SELECTED ANNOUNCEMENT => ", this.selectedAnnouncement);
+        console.log("ROW => ", announcement);
+        console.log("FORM DATA => ", this._announcementService.announcementForm);
+    }
 
-        console.log("ANN ID => ", this.selectedAnnouncement.announcementId);
-        console.log("USER ID => ", this.selectedAnnouncement.userCreatedId);
-        // let updatedAnnouncement = {
-        //     announcementId: this.selectedAnnouncement.announcementId,
-        //     announcementTitle: this._announcementService.announcementForm.get('announcementTitle').value,
-        //     announcementDescription: this._announcementService.announcementForm.get('announcementDescription').value,
-        //     announcementDateCreated: this.selectedAnnouncement.announcementDateCreated,
-        //     announcementImportantIndicator: this.importantIndicatorToNumber,
-        //     userCreatedId: this.selectedAnnouncement.userCreatedId,
-        //     categoryId: this._announcementService.announcementForm.get('announcementCategory').value,
-        //     announcementExpiryDate: this._announcementService.announcementForm.get('announcementExpiryDate').value
-        // }
-
-        // this._announcementService.editAnnouncement(updatedAnnouncement.announcementId, updatedAnnouncement).subscribe();
-        
-
-        // let mes = "Message sent!";
-        // this.chatService.sendMessage(mes);
+    debounce() {
+        let wordSearch = this.searchText;
+        setTimeout(() => {
+            if (wordSearch === this.searchText) {
+                this.loadAllUserAnnouncements();
+            } 
+        }, 1000);
     }
 
     onClick(announcementId: number): void {
@@ -260,7 +241,7 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
 
     onItemsPerPageChange(): void {
         this.selectedPage = 1;
-        this.loadAllAnnouncement();
+        this.loadAllUserAnnouncements();
         window.scrollTo(0, 0);
     }
 
@@ -268,28 +249,33 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
         this.selectedPage = event;
         console.log(event);
         window.scrollTo(0, 0);
-        this.loadAllAnnouncement();
+        this.loadAllUserAnnouncements();
     }
 
-    returnSelectedAnnonucement(row: any){
+    returnSelectedAnnonucement(row: any) {
         this.selectedAnnouncement = row;
         console.log(row.announcementId);
     }
 
-    public deleteAnnouncement(): void
-    {
+    public deleteAnnouncement(): void {
         this._announcementService.deleteAnnouncement(this.selectedAnnouncement.announcementId).subscribe(
             (res: any) => {
                 console.log(res);
                 
-                if(res.succeeded){
+                if (res.succeeded) {
                     this._toastr.success('Obavještenje obrisano');
                     console.log("Obavještenje obrisano");
                 }
-                this.loadAllAnnouncement();
 
-                let mes = "Message sent!";
-                this._chatService.sendMessage(mes);
+                let deletedAnnouncementData: DeleteAnnouncementWS = {
+                    deletedAnnouncementId: res.announcementId,
+                    pageSize: this.appConfig.numberOfLastAnnPerCategory
+                };
+
+                this._signalRService.sendDeletedTheLatestAnnouncement(deletedAnnouncementData);
+
+                this.loadAllUserAnnouncements();
+                this.selectedPage = 1;
             },
             err => {
                 this._toastr.error('Obavještenje nije obrisano', err);
@@ -301,20 +287,37 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
         this.modalShow = false;
     }
 
-    onSubmit(): void {
-        // let currentDateAndTime: Date = new Date();
-        // let dateTimeNow = new Date();
-        //dateFormat(dateTimeNow, "dd.mm.yyyy. HH:MM:ss");
-        console.log("ADD button clicked");
-        console.warn(this._announcementService.announcementForm.value);
-        //let token = localStorage.getItem('token');
-        //let currentUser = jwt_decode(token);
-        //console.log(currentUser);
+    public upload(event) {
+        if (event.target.files && event.target.files.length > 0) {
+            let fileObject = event.target.files;
+            for (let i = 0; i < fileObject["length"]; i ++) {
+                let file = {
+                    filePath: fileObject[i].name,
+                    type: fileObject[i].type
+                };
+                this.files.push(file);
+            }
+            console.log("FILES => ", this.files);
+            console.log("FILES LENGTH=> ", this.files["length"]);
+            for (let i = 0; i < this.files["length"]; i ++) {
+                this.listOfFiles.push(this.files[i].filePath);
+            }
+            
+            this._fileService.uploadFiles(event.target.files).subscribe(
+                res => {
+                    this.listOfFilesName = [];
+                }
+            );
+        }
+    }
 
-        if(this._announcementService.announcementForm.get('announcementImportant').value){
+    onSubmit(): void {
+        console.warn(this._announcementService.announcementForm.value);
+
+        if (this._announcementService.announcementForm.get('announcementImportant').value) {
             this.importantIndicatorToNumber = 1;
         }
-        else{
+        else {
             this.importantIndicatorToNumber = 0;
         }
 
@@ -323,109 +326,39 @@ export class ListOfUserAnnouncemenetsComponent implements OnInit, OnDestroy {
             announcementDescription: this._announcementService.announcementForm.get('announcementDescription').value,
             announcementImportantIndicator: this.importantIndicatorToNumber,
             categoryId: this._announcementService.announcementForm.get('announcementCategory').value,
-            announcementExpiryDate: this._announcementService.announcementForm.get('announcementExpiryDate').value,
-            announcementShow: true
+            announcementExpiryDate: this._announcementService.announcementForm.get('announcementExpiryDate').value
         }
-
-        console.log(announcement);
-
-        //this._sharingDataService.changeAnnouncement(announcementAA);
 
         this._announcementService.addAnnouncement(announcement).subscribe(
             (res: any) => {
-                console.log("POST DATA => ", res);
-                
+                for (let i = 0; i < this.files.length; i++) {
+                    this.files[i].announcementId = res.announcement.announcementId;
+                }
+
+                this._fileService.addFile(this.files).subscribe(data => {
+                    console.log("Added file in table Files is => ", data);
+                    this.files = [];
+                });
+
                 this._toastr.success('Novo obavještenje dodato!', 'Dodavanje uspješno.');
                 this._announcementService.announcementForm.reset();
                 this.modalRefAdd.hide();
-                this.loadAllAnnouncement();
                 this.listOfFilesName = [];
 
-                let mes = "Message sent!";
-                this._chatService.sendMessage(mes);
+                this._signalRService.sendAnnouncement(res.announcement);
+
+                this.loadAllUserAnnouncements();
+                this.selectedPage = 1;
             },
             err => {
                 this._toastr.error(err, 'Dodavanje nije uspjelo.');
-                console.log(err);
             }
         );
     }
 
     public convertStringWithHtmlTagsToText(text: string): string {
         let tmp = document.createElement("element");
-        tmp.innerHTML = text;
+        tmp.innerHTML = text.replace(/(<([^>]+)>)/gi, " ");
         return tmp.textContent || tmp.innerText || "";
     }
-
-    private subscribeToEvents(): void {
-      
-        this._chatService.messageReceived.subscribe((message: string) => {
-            console.log(message);
-            this.loadAllAnnouncement();
-        });
-
-        this._signalRService.newAnnouncementRecieved.subscribe((newAnnouncement: AnnouncementDetails) => {
-            console.warn("ADDED SIGNAL R ANNOUNCEMENT IS => ", newAnnouncement);
-
-            newAnnouncement.announcementDescription = this.convertStringWithHtmlTagsToText(newAnnouncement.announcementDescription);
-
-            this.listOfAllAnnouncements.push(newAnnouncement);
-            this.listOfAllAnnouncements.sort((x, y) => {
-                // if (Date.parse(x.announcementDateCreated.toString()) > Date.parse(y.announcementDateCreated.toString())) {
-                //     return 1;
-                // }
-                // if (Date.parse(x.announcementDateCreated.toString()) < Date.parse(y.announcementDateCreated.toString())) {
-                //     return -1;
-                // }
-                // return 0;
-
-                //POKUSATI
-                //x => (x.AnnouncementDateModified > x.AnnouncementDateCreated) ? x.AnnouncementDateModified : x.AnnouncementDateCreated
-                let a = Date.parse(x.announcementDateCreated.toString());
-                let b = Date.parse(y.announcementDateCreated.toString());
-                    
-                return b - a;
-            });
-            this.listOfAllAnnouncements.pop();
-        });
-
-        this._signalRService.updatedAnnouncementRecieved.subscribe((updatedAnnouncement: AnnouncementDetails) => {
-            console.warn("UPDATED SIGNAL R ANNOUNCEMENT IS => ", updatedAnnouncement);
-            let findedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === updatedAnnouncement.announcementId);
-            this.listOfAllAnnouncements[findedIndex] = updatedAnnouncement;
-        });
-
-        this._signalRService.nextImportantAnnouncementRecieved.subscribe((deletedAnnouncementId: number) => {
-            let nextAnnounce = {} as AnnouncementDetails;
-
-            let deletedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);
-            this.listOfAllAnnouncements.push(nextAnnounce);
-            this.listOfAllAnnouncements.splice(deletedIndex, 1);
-
-            nextAnnounce = null;
-            //Pozvati u API-u da se izracuna sljedeci najmladji announcemnt i vratiti ga sa ID-om
-        });
-
-        this._signalRService.nextTheLatestAnnouncementRecieved.subscribe((deletedAnnouncementId: number) => {
-            let nextAnnounce = {} as AnnouncementDetails;
-
-            let deletedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);
-            this.listOfAllAnnouncements.push(nextAnnounce);
-            this.listOfAllAnnouncements.splice(deletedIndex, 1);
-
-            nextAnnounce = null;
-            //Pozvati u API-u da se izracuna sljedeci najmladji announcemnt i vratiti ga sa ID-om
-        });
-
-        this._signalRService.nextAnnouncementFromCategoryRecieved.subscribe((deletedAnnouncementId: number) => {
-            let nextAnnounce = {} as AnnouncementDetails;
-
-            let deletedIndex = this.listOfAllAnnouncements.findIndex(announcement => announcement.announcementId === deletedAnnouncementId);
-            this.listOfAllAnnouncements.push(nextAnnounce);
-            this.listOfAllAnnouncements.splice(deletedIndex, 1);
-
-            nextAnnounce = null;
-            //Pozvati u API-u da se izracuna sljedeci najmladji announcemnt i vratiti ga sa ID-om
-        });
-    }///
 }

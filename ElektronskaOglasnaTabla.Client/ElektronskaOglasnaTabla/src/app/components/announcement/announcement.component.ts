@@ -39,14 +39,18 @@ export class AnnouncementComponent implements OnInit {
     }
 
     filterImages(announcement: AnnouncementDetails) {
-        if (announcement.files) {
-            console.log("IMAGE FILES => ", announcement.files.filter(file =>
-                file.type.includes("image")
-            ));
-            return announcement.files.filter(file =>
+        let file;
+        if (announcement.files.length) {
+            
+            file = announcement.files.filter(file =>
                 file.type.includes("image")
             );
         }
+        else {
+            file = [];
+        }
+        
+        return file;
     }
 
     stripHtml(html: string): void {

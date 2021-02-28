@@ -67,16 +67,6 @@ export class AnnouncementService {
         return this._httpClient.get<Announcements>(`${this.apiURL}Announcement/${id}`);
     }
 
-    // public deleteAnnouncement(id: number, token: string){
-    //     const httpOptions = {
-    //         headers: new HttpHeaders({
-    //             'Content-Type': 'application/json',
-    //             'Authorization': token
-    //         })
-    //     };
-    //     return this._httpClient.delete(`${this.apiURL}Announcement/${id}`, httpOptions);
-    // }
-
     public deleteAnnouncement(id: number) {
         return this._httpClient.delete(`${this.apiURL}Announcement/${id}`);
     }
@@ -140,8 +130,13 @@ export class AnnouncementService {
     }
 
     public getSearchedAnnouncements(searchTerm: string, page: number, pageSize: number)
-        : Observable<AnnouncementDetails[]> {
-    return this._httpClient.get<AnnouncementDetails[]>(`${this.apiURL}Announcement/search?search-term=${searchTerm}&current-page=${page}&page-size=${pageSize}`);
+                                    : Observable<AnnouncementDetails[]> {
+        return this._httpClient.get<AnnouncementDetails[]>(`${this.apiURL}Announcement/search?search-term=${searchTerm}&current-page=${page}&page-size=${pageSize}`);
+    }
+
+    public getSearchedAnnouncementsForAdmin(searchTerm: string, page: number, pageSize: number)
+                                    : Observable<AnnouncementDetails[]> {
+        return this._httpClient.get<AnnouncementDetails[]>(`${this.apiURL}Announcement/searchByAdmin?search-term=${searchTerm}&current-page=${page}&page-size=${pageSize}`);
     }
 
     public getFromSameCategory(categoryId: number, announcementId: number)
