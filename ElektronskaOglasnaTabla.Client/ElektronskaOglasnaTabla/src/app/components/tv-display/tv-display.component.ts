@@ -107,8 +107,6 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
 
         setTimeout(() => {
             console.log("Pauza zavrsena");
-            
-            if (activeSlide < this.listOfAnnouncements.length) {
                 this.interval = setInterval(() => {
                     if (scrollHeight > counterOfHeight) {
                         counterOfHeight += 1;
@@ -128,11 +126,12 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
                             console.log("Aktivni slajd", activeSlide + 1);
 
                             numberOfScrolling = 0;
-                            counterOfHeight = 0;
+                            //counterOfHeight = 0;
 
                             console.log("Pauza 5 sekundi na kraju");
                             setTimeout(() => {
-                                if (activeSlide == this.listOfAnnouncements.length) {
+
+                                if ((activeSlide + 1) == this.listOfAnnouncements.length) {
                                     this.activeSlide = 0;
                                 }
                                 else {
@@ -142,10 +141,6 @@ export class TvDisplayComponent implements OnInit, AfterViewInit, OnDestroy {
                         }
                     }
                 }, 50);
-            }
-            else {
-                this.activeSlide = 0;
-            }
         }, 5000);
     }
 

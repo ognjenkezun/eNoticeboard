@@ -1,49 +1,45 @@
-<div class="col-12" *ngIf="statistic; else noAnnouncements">
-    <h4 class="text-muted">Statistika</h4>
-    <div class="table-responsive px-1" *ngIf="statistic">                
-        <table class="table shadow">
-            <thead class="thead-light">
-                <tr>
-                    <th style="width: 5%; max-width: 5%;">#</th>
-                    <th style="width: 100%; max-width: 100%;">Registrovani korisnik</th>
-                    <th style="width: 30%; max-width: 30%;">Broj objava</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of statistic; let i = index">
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ item.user }}</td>
-                    <td>{{ item.numberOfUserAnnouncements }}</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <h4 class="text-muted">Grafički prikaz</h4>
-    <div>
-        <div style="display: block;">
-            <canvas baseChart 
-                [datasets]="barChartData"
-                [labels]="barChartLabels"
-                [options]="barChartOptions"
-                [plugins]="barChartPlugins"
-                [legend]="barChartLegend"
-                [chartType]="barChartType">
-            </canvas>
+<div class="container-fluid" *ngIf="statistic; else noAnnouncements">
+    <div class="row">
+        <div class="col-lg-6 col-12">
+            <h4 class="text-muted">Statistika</h4>
+            <div class="table-responsive px-1" *ngIf="statistic">                
+                <table class="table shadow">
+                    <thead class="thead-light">
+                        <tr>
+                            <th style="width: 5%; max-width: 5%;">#</th>
+                            <th style="width: 100%; max-width: 100%;">Registrovani korisnik</th>
+                            <th style="width: 30%; max-width: 30%;">Broj objava</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of statistic; let i = index">
+                            <td>{{ i + 1 }}</td>
+                            <td>{{ item.user }}</td>
+                            <td>{{ item.numberOfUserAnnouncements }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-6 col-12">
+            <h4 class="text-muted">Grafički prikaz</h4>
+            <div style="display: block;">
+                <canvas baseChart 
+                    [datasets]="barChartData"
+                    [labels]="barChartLabels"
+                    [options]="barChartOptions"
+                    [plugins]="barChartPlugins"
+                    [legend]="barChartLegend"
+                    [chartType]="barChartType">
+                </canvas>
+            </div>
         </div>
     </div>
-    <!-- <ngx-charts-bar-vertical 
-        [view]="[1000,400]"
-        [results]="saleData"
-        [xAxisLabel]="'Products'"
-        [legendTitle]="'Product Sale Chart'"
-        [yAxisLabel]="'Sale'"
-        [legend]="true"
-        [showXAxisLabel]="true"
-        [showYAxisLabel]="true"
-        [xAxis]="true"
-        [yAxis]="true"
-        [gradient]="true">
-    </ngx-charts-bar-vertical> -->
+</div>
+<div class="col-12">
+    <div class="col-lg-6 col-12">
+
+    </div>
 </div>
 <ng-template #noAnnouncements>
     <h4 class="text-muted">Trenutno nema unesenih obavještenja</h4>
